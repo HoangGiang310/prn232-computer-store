@@ -1,6 +1,10 @@
 const express = require("express");
 const router = express.Router();
 
-router.get("/me", (req, res) => res.json({ message: "Auth route hoạt động" }));
+router.get("/", (req, res) => {
+  res.json({
+    message: "Orders API OK",
+  });
+});
 
 module.exports = router;

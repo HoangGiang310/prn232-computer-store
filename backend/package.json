@@ -1,21 +1,37 @@
 {
-  "name": "backend",
+  "name": "1.nodejs-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "nodejs",
+  "main": "src/server.js",
   "scripts": {
-  "dev": "nodemon src/app.js"
-},
-  "keywords": [],
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon ./src/server.js",
+    "start": "node ./src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dinhngocthien2004/1.NODEJS-Backend.git"
+  },
+  "keywords": [
+    "nodejs-be"
+  ],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/dinhngocthien2004/1.NODEJS-Backend/issues"
+  },
+  "homepage": "https://github.com/dinhngocthien2004/1.NODEJS-Backend#readme",
   "dependencies": {
     "cors": "^2.8.6",
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1"
+    "dotenv": "^16.0.3",
+    "ejs": "3.1.10",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "socket.io": "^4.8.3"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "@types/node": "^25.9.1",
+    "nodemon": "^3.1.10",
+    "prisma": "^7.8.0"
   }
 }
