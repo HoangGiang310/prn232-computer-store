@@ -1,106 +1,88 @@
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+const prisma = require("../../prisma");
 
 class OrderController {
-  async createOrderPOS(req, res, next) {
-    const { customerId, items, discount, payMethod } = req.body; // items: [{productId, serialCode}]
-    const staffId = req.user.id;
-
+  async checkout(req, res, next) {
     try {
+      const { customerId, items, discount = 0, payMethod } = req.body;
+      const staffId = req.user.id;
+
+      if (!customerId || !Array.isArray(items) || items.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Đơn hàng phải có khách hàng và sản phẩm.",
+        });
+      }
+
       const result = await prisma.$transaction(async (tx) => {
         let total = 0;
-        const orderItemsData = [];
+        const orderItems = [];
 
         for (const item of items) {
           const product = await tx.product.findUnique({
             where: { id: item.productId },
           });
-          if (!product)
-            throw new Error(`Không tìm thấy sản phẩm mã ${item.productId}`);
-
-          const serial = await tx.serial.findUnique({
-            where: { code: item.serialCode },
-          });
-          if (!serial || serial.status !== "IN_STOCK") {
+          if (!product) {
+            throw new Error(`Sản phẩm ${item.productId} không tồn tại.`);
+          }
+          if (product.stock < item.quantity) {
             throw new Error(
-              `Số Máy Serial ${item.serialCode} không khả dụng trong kho.`,
+              `Sản phẩm ${product.name} chỉ còn ${product.stock} chiếc trong kho.`,
             );
           }
-
-          total += product.price;
-
-          // Cập nhật trạng thái số serial máy
-          await tx.serial.update({
-            where: { code: item.serialCode },
-            data: { status: "SOLD", soldAt: new Date() },
-          });
-
-          orderItemsData.push({
+          const quantity = item.quantity || 1;
+          total += product.price * quantity;
+          orderItems.push({
             productId: item.productId,
+            quantity,
             price: product.price,
           });
         }
 
-        const finalTotal = total - discount;
-        const orderCode = "HD-" + Date.now().toString().slice(-8).toUpperCase();
-
-        const newOrder = await tx.order.create({
+        const order = await tx.order.create({
           data: {
-            code: orderCode,
+            code: `HD-${Date.now()}`,
             customerId,
             staffId,
-            total: finalTotal,
+            total: total - discount,
             discount,
             payMethod,
             status: "COMPLETED",
+            items: {
+              create: orderItems,
+            },
           },
+          include: { items: true },
         });
 
-        for (let i = 0; i < orderItemsData.length; i++) {
-          const createdItem = await tx.orderItem.create({
-            data: {
-              orderId: newOrder.id,
-              productId: orderItemsData[i].productId,
-              price: orderItemsData[i].price,
-            },
-          });
-
-          // Liên kết ngược mã Serial sang cấu trúc OrderItem và tạo bảo hành tự động 1 năm
-          await tx.serial.update({
-            where: { code: items[i].serialCode },
-            data: {
-              orderItemId: createdItem.id,
-              warranty: {
-                create: {
-                  startDate: new Date(),
-                  endDate: new Date(
-                    new Date().setFullYear(new Date().getFullYear() + 1),
-                  ),
-                  notes: "Gói bảo hành điện tử tiêu chuẩn 12 tháng hệ thống.",
-                },
-              },
-            },
+        for (const item of items) {
+          await tx.product.update({
+            where: { id: item.productId },
+            data: { stock: { decrement: item.quantity || 1 } },
           });
         }
 
-        return newOrder;
+        return order;
       });
 
-      // Phát thông báo Real-time (Socket.io) đến Admin/Quản lý ngay lập tức
-      req.io.emit("new-order-alert", {
-        message: `Đơn hàng mới ${result.code} vừa được xuất tại quầy POS!`,
-        total: result.total,
-      });
-
-      res
-        .status(201)
-        .json({
-          success: true,
-          message: "Thanh toán đơn hàng thành công!",
-          data: result,
-        });
+      return res.status(201).json({ success: true, data: result });
     } catch (error) {
-      res.status(400).json({ success: false, message: error.message });
+      next(error);
+    }
+  }
+
+  async getAll(req, res, next) {
+    try {
+      const orders = await prisma.order.findMany({
+        include: {
+          customer: true,
+          staff: true,
+          items: { include: { product: true } },
+        },
+        orderBy: { createdAt: "desc" },
+      });
+      return res.status(200).json({ success: true, data: orders });
+    } catch (error) {
+      next(error);
     }
   }
 }

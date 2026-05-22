@@ -1,10 +1,9 @@
 const express = require("express");
 const router = express.Router();
+const orderController = require("./order.controller");
+const authMiddleware = require("../../middlewares/auth.middleware");
 
-router.get("/", (req, res) => {
-  res.json({
-    message: "Orders API OK",
-  });
-});
+router.post("/checkout", authMiddleware, orderController.checkout);
+router.get("/", authMiddleware, orderController.getAll);
 
 module.exports = router;
