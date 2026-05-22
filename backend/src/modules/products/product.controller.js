@@ -1,41 +1,64 @@
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+const prisma = require("../../prisma");
 
 class ProductController {
-  // [GET] /api/products (Lấy danh sách + Tìm kiếm + Lọc theo khoảng giá)
   async getAll(req, res, next) {
     try {
-      const { search, brand, categoryId, minPrice, maxPrice } = req.query;
-      let whereClause = {};
+      const { search, brand, minPrice, maxPrice, stockStatus } = req.query;
+      const where = {};
 
       if (search) {
-        whereClause.name = { contains: search };
+        where.OR = [
+          { name: { contains: search, mode: "insensitive" } },
+          { slug: { contains: search, mode: "insensitive" } },
+          { brand: { contains: search, mode: "insensitive" } },
+          { cpu: { contains: search, mode: "insensitive" } },
+          { ram: { contains: search, mode: "insensitive" } },
+        ];
       }
-      if (brand) whereClause.brand = brand;
-      if (categoryId) whereClause.categoryId = categoryId;
+      if (brand) {
+        where.brand = { equals: brand, mode: "insensitive" };
+      }
       if (minPrice || maxPrice) {
-        whereClause.price = {
+        where.price = {
           ...(minPrice && { gte: parseFloat(minPrice) }),
           ...(maxPrice && { lte: parseFloat(maxPrice) }),
         };
       }
+      if (stockStatus) {
+        if (stockStatus === "in_stock") {
+          where.stock = { gt: 0 };
+        } else if (stockStatus === "low_stock") {
+          where.stock = { gt: 0, lt: 5 };
+        } else if (stockStatus === "out_of_stock") {
+          where.stock = 0;
+        }
+      }
 
       const products = await prisma.product.findMany({
-        where: whereClause,
-        include: {
-          category: true,
-          _count: { select: { serials: { where: { status: "IN_STOCK" } } } }, // Đếm số máy còn trong kho
-        },
+        where,
         orderBy: { createdAt: "desc" },
       });
-
       return res.status(200).json({ success: true, data: products });
     } catch (error) {
       next(error);
     }
   }
 
-  // [POST] /api/products
+  async getOne(req, res, next) {
+    try {
+      const id = parseInt(req.params.id, 10);
+      const product = await prisma.product.findUnique({ where: { id } });
+      if (!product) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Sản phẩm không tồn tại." });
+      }
+      return res.status(200).json({ success: true, data: product });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async create(req, res, next) {
     try {
       const {
@@ -47,13 +70,21 @@ class ProductController {
         display,
         price,
         costPrice,
-        categoryId,
+        stock,
         images,
       } = req.body;
 
-      const slug = name.toLowerCase().replace(/ /g, "-") + "-" + Date.now();
+      if (!name || !brand || price === undefined) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Tên, hãng và giá là bắt buộc." });
+      }
 
-      const newProduct = await prisma.product.create({
+      const slug = `${name.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`;
+      const imageString = Array.isArray(images)
+        ? images.filter(Boolean).join(",")
+        : images || "";
+      const product = await prisma.product.create({
         data: {
           name,
           slug,
@@ -63,43 +94,71 @@ class ProductController {
           storage,
           display,
           price: parseFloat(price),
-          costPrice: parseFloat(costPrice),
-          categoryId,
-          images: images || [], // Dạng Json mảng ảnh
+          costPrice: costPrice ? parseFloat(costPrice) : 0,
+          stock: stock ? parseInt(stock, 10) : 0,
+          images: imageString,
         },
       });
-
-      return res
-        .status(201)
-        .json({
-          success: true,
-          message: "Thêm sản phẩm thành công!",
-          data: newProduct,
-        });
+      return res.status(201).json({ success: true, data: product });
     } catch (error) {
       next(error);
     }
   }
 
-  // [GET] /api/products/serials/:code (Tra cứu lý lịch máy theo số Serial)
-  async getSerialDetail(req, res, next) {
+  async update(req, res, next) {
     try {
-      const { code } = req.params;
-      const serialData = await prisma.serial.findUnique({
-        where: { code },
-        include: { product: true, warranty: true, import: true },
+      const id = parseInt(req.params.id, 10);
+      const {
+        name,
+        brand,
+        cpu,
+        ram,
+        storage,
+        display,
+        price,
+        costPrice,
+        stock,
+        images,
+      } = req.body;
+
+      const imageString = Array.isArray(images)
+        ? images.filter(Boolean).join(",")
+        : images || "";
+      const product = await prisma.product.update({
+        where: { id },
+        data: {
+          name,
+          brand,
+          cpu,
+          ram,
+          storage,
+          display,
+          price:
+            price !== undefined && price !== "" ? parseFloat(price) : undefined,
+          costPrice:
+            costPrice !== undefined && costPrice !== ""
+              ? parseFloat(costPrice)
+              : undefined,
+          stock:
+            stock !== undefined && stock !== ""
+              ? parseInt(stock, 10)
+              : undefined,
+          images: images !== undefined ? imageString : undefined,
+        },
       });
+      return res.status(200).json({ success: true, data: product });
+    } catch (error) {
+      next(error);
+    }
+  }
 
-      if (!serialData) {
-        return res
-          .status(404)
-          .json({
-            success: false,
-            message: "Không tìm thấy số máy Serial này trên hệ thống.",
-          });
-      }
-
-      return res.status(200).json({ success: true, data: serialData });
+  async delete(req, res, next) {
+    try {
+      const id = parseInt(req.params.id, 10);
+      await prisma.product.delete({ where: { id } });
+      return res
+        .status(200)
+        .json({ success: true, message: "Xóa sản phẩm thành công." });
     } catch (error) {
       next(error);
     }
