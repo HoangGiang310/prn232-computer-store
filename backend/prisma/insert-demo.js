@@ -172,54 +172,21 @@ async function main() {
 
   try {
     const password = await bcrypt.hash("admin123", 10);
-
-    const adminId = await ensureUser(connection, {
-      name: "Administrator",
-      email: "admin@computerstore.local",
-      password,
-      role: "ADMIN",
-      isActive: true,
-    });
-
-    const customerId = await ensureCustomer(connection, {
-      name: "Khách hàng 1",
-      phone: "0901234567",
-      email: "khachhang1@example.com",
-      address: "Hà Nội",
-    });
-
     const categoryId = await ensureCategory(connection, "Laptop Gaming");
-
     const productId = await ensureProduct(connection, {
-      name: "ASUS ROG Strix G16",
-      slug: "asus-rog-strix-g16",
+      name: "ASUS ROG Flow Z13",
+      slug: "asus-rog-flow-z13",
       brand: "ASUS",
       cpu: "Intel Core i9",
       ram: "32GB",
       storage: "1TB SSD",
-      display: "16-inch 240Hz",
-      price: 42990000,
-      costPrice: 33990000,
-      stock: 10,
-      images: "https://example.com/images/asus-rog.jpg",
+      display: "13.4-inch 165Hz",
+      price: 52990000,
+      costPrice: 41990000,
+      stock: 6,
+      images: "https://example.com/images/asus-rog-flow-z13.jpg",
       categoryId,
     });
-
-    const secondProductId = await ensureProduct(connection, {
-      name: "Dell XPS 15",
-      slug: "dell-xps-15",
-      brand: "Dell",
-      cpu: "Intel Core i7",
-      ram: "16GB",
-      storage: "512GB SSD",
-      display: "15.6-inch OLED",
-      price: 37990000,
-      costPrice: 29990000,
-      stock: 8,
-      images: "https://example.com/images/dell-xps.jpg",
-      categoryId,
-    });
-
     const staffId = await ensureUser(connection, {
       name: "Nhân viên bán hàng",
       email: "staff@computerstore.local",
@@ -227,32 +194,30 @@ async function main() {
       role: "STAFF",
       isActive: true,
     });
+    const customerId = await ensureCustomer(connection, {
+      name: "Nguyễn Văn A",
+      phone: "0901234567",
+      email: "customer@example.com",
+      address: "Hà Nội",
+    });
 
-    const demoOrderId = await ensureOrder(connection, {
+    const orderId = await ensureOrder(connection, {
       code: "ORD-20260525-0001",
       customerId,
       staffId,
-      productId: secondProductId,
+      productId,
       quantity: 1,
-      price: 37990000,
+      price: 52990000,
     });
 
-    console.log("✅ Seed dữ liệu hoàn thành.");
-    console.log({
-      adminId,
-      customerId,
-      categoryId,
-      productId,
-      secondProductId,
-      staffId,
-      demoOrderId,
-    });
+    console.log("✅ Insert demo hoàn thành.");
+    console.log({ categoryId, productId, staffId, customerId, orderId });
   } finally {
     await connection.end();
   }
 }
 
 main().catch((error) => {
-  console.error(error);
+  console.error("❌ Lỗi insert demo:", error);
   process.exit(1);
 });
