@@ -14,6 +14,22 @@ export default function LoginPage() {
     ? router.query.redirect[0]
     : router.query.redirect;
 
+  const roleMap: Record<
+    string,
+    { label: string; className: string }
+  > = {
+    admin: { label: "Admin", className: "button role-button admin" },
+    manager: { label: "Quản lý kho", className: "button role-button manager" },
+    bookkeeper: { label: "Kế toán", className: "button role-button bookkeeper" },
+    staff: { label: "Nhân viên", className: "button role-button staff" },
+    customer: { label: "Khách hàng", className: "button role-button customer" },
+  };
+
+  const roleButton =
+    typeof redirectQuery === "string" && roleMap[redirectQuery]
+      ? roleMap[redirectQuery]
+      : { label: "Đăng ký", className: "button register-button" };
+
   useEffect(() => {
     const auth = getAuth();
     if (auth?.token) {
@@ -75,8 +91,8 @@ export default function LoginPage() {
             <button type="submit" className="button login-button" disabled={loading}>
               {loading ? "Đang đăng nhập..." : "Đăng nhập"}
             </button>
-            <button type="button" className="button register-button" disabled>
-              Đăng ký
+            <button type="button" className={roleButton.className} disabled>
+              {roleButton.label}
             </button>
           </div>
 
