@@ -163,6 +163,30 @@ body {
   margin-bottom: 24px;
 }
 
+.copyright-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  max-width: 520px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 16px 0 8px;
+  color: #6b7280;
+}
+
+.copyright-line {
+  flex: 1;
+  height: 1px;
+  background: #d1d5db;
+}
+
+.copyright-row p {
+  margin: 0;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+}
+
 .role-selector-wrapper {
   display: flex;
   gap: 12px;
