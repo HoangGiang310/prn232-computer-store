@@ -41,6 +41,12 @@ namespace ComputerStoreApi.Controllers
             return Ok(new { token, role = user.Role, username = user.Username });
         }
 
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            return Ok(new { message = "Đã đăng xuất thành công." });
+        }
+
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto register)
         {

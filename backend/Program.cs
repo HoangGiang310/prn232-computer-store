@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Npgsql;
 using ComputerStoreApi.Data;
 using ComputerStoreApi.Models;
 using ComputerStoreApi.Services;
 
+const string databaseName = "computerstore";
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -48,9 +50,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("Admin", policy => policy.RequireRole("admin"));
-    options.AddPolicy("Sales", policy => policy.RequireRole("sales"));
-    options.AddPolicy("Accountant", policy => policy.RequireRole("accountant"));
-    options.AddPolicy("Warehouse", policy => policy.RequireRole("warehouse"));
+    options.AddPolicy("Staff", policy => policy.RequireRole("staff"));
     options.AddPolicy("Customer", policy => policy.RequireRole("customer"));
 });
 
@@ -67,38 +67,51 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
+var defaultConnectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
+var masterConnectionString = new NpgsqlConnectionStringBuilder(defaultConnectionString) { Database = "postgres" }.ConnectionString;
+using (var masterConnection = new NpgsqlConnection(masterConnectionString))
+{
+    masterConnection.Open();
+    using var checkDb = new NpgsqlCommand("SELECT 1 FROM pg_database WHERE datname = @db", masterConnection);
+    checkDb.Parameters.AddWithValue("db", databaseName);
+    var exists = checkDb.ExecuteScalar() != null;
+    if (!exists)
+    {
+        using var createDb = new NpgsqlCommand($"CREATE DATABASE \"{databaseName}\"", masterConnection);
+        createDb.ExecuteNonQuery();
+    }
+}
+
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.EnsureCreated();
 
-    if (!db.Users.Any())
+    var hasher = new PasswordHasher<User>();
+    var defaultUsers = new Dictionary<string, (string Email, string Role, string Password)>
     {
-        var hasher = new PasswordHasher<User>();
-        var defaultUsers = new List<User>
-        {
-            new User { Username = "admin", Email = "admin@computerstore.local", Role = "admin" },
-            new User { Username = "sales", Email = "sales@computerstore.local", Role = "sales" },
-            new User { Username = "accountant", Email = "accountant@computerstore.local", Role = "accountant" },
-            new User { Username = "warehouse", Email = "warehouse@computerstore.local", Role = "warehouse" },
-            new User { Username = "customer", Email = "customer@computerstore.local", Role = "customer" }
-        };
+        ["admin"] = ("admin@computerstore.local", "admin", "Admin@123"),
+        ["staff"] = ("staff@computerstore.local", "staff", "Staff@123"),
+        ["customer"] = ("customer@computerstore.local", "customer", "Customer@123")
+    };
 
-        var passwords = new Dictionary<string, string>
+    foreach (var (username, data) in defaultUsers)
+    {
+        if (!db.Users.Any(u => u.Username == username))
         {
-            { "admin", "Admin@123" },
-            { "sales", "Sales@123" },
-            { "accountant", "Accountant@123" },
-            { "warehouse", "Warehouse@123" },
-            { "customer", "Customer@123" }
-        };
-
-        foreach (var user in defaultUsers)
-        {
-            user.PasswordHash = hasher.HashPassword(user, passwords[user.Username]);
+            var user = new User
+            {
+                Username = username,
+                Email = data.Email,
+                Role = data.Role
+            };
+            user.PasswordHash = hasher.HashPassword(user, data.Password);
             db.Users.Add(user);
         }
+    }
 
+    if (db.ChangeTracker.HasChanges())
+    {
         db.SaveChanges();
     }
 }

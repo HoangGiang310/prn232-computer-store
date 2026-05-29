@@ -44,43 +44,51 @@ export default function LoginPage() {
         <p>Nhập tên đăng nhập và mật khẩu để truy cập hệ thống.</p>
       </section>
 
-      <section className="card">
-        <form onSubmit={handleSubmit} className="form">
-          <label>
-            Tên đăng nhập
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              autoFocus
-            />
-          </label>
+      <section className="card login-card">
+        <form onSubmit={handleSubmit} className="login-form">
+          <div className="input-group">
+            <label>
+              Tên đăng nhập
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                autoFocus
+              />
+            </label>
 
-          <label>
-            Mật khẩu
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </label>
+            <label>
+              Mật khẩu
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </label>
+          </div>
 
           {error ? <p className="error">{error}</p> : null}
 
-          <button type="submit" className="button" disabled={loading}>
-            {loading ? "Đang đăng nhập..." : "Đăng nhập"}
-          </button>
-        </form>
+          <div className="buttons-group">
+            <button type="submit" className="button login-button" disabled={loading}>
+              {loading ? "Đang đăng nhập..." : "Đăng nhập"}
+            </button>
+            <button type="button" className="button register-button" disabled>
+              Đăng ký
+            </button>
+          </div>
 
-        <div className="note">
-          <p>
+          <p className="signup-note">
             Nếu bạn chưa có tài khoản, vui lòng liên hệ quản trị viên để được
             cấp quyền.
           </p>
-          <Link href="/">Quay lại trang chủ</Link>
-        </div>
+
+          <Link href="/" className="button back-button">
+            Quay lại trang chủ
+          </Link>
+        </form>
       </section>
     </main>
   );

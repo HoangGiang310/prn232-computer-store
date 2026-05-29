@@ -24,7 +24,7 @@ namespace ComputerStoreApi.Controllers
             return Ok(products);
         }
 
-        [Authorize(Roles = "admin,sales,warehouse")]
+        [Authorize(Roles = "admin,staff")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Product product)
         {
@@ -33,7 +33,7 @@ namespace ComputerStoreApi.Controllers
             return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
         }
 
-        [Authorize(Roles = "admin,sales,warehouse")]
+        [Authorize(Roles = "admin,staff")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] Product product)
         {
@@ -52,7 +52,7 @@ namespace ComputerStoreApi.Controllers
             return NoContent();
         }
 
-        [Authorize(Roles = "admin,warehouse")]
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
