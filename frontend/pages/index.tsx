@@ -1,32 +1,46 @@
-import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/router";
 
 export default function Home() {
+  const [selectedRole, setSelectedRole] = useState("");
+  const router = useRouter();
+
+  const handleAccess = () => {
+    if (selectedRole) {
+      router.push(`/login?redirect=${selectedRole}`);
+    }
+  };
+
   return (
     <main className="main">
       <section className="card header">
-        <h1>Computer Store</h1>
-        <p>Chọn quyền truy cập để xem giao diện quản lý hoặc đặt hàng.</p>
+        <h1>COMPUTER STORE</h1>
+        <p>Cửa Hàng Laptop, Linh Kiện Điện Tử</p>
       </section>
 
-      <section className="card">
-        <h2>Ứng dụng</h2>
-        <ul>
-          <li>
-            <Link href="/login?redirect=admin" className="button">
-              Đăng nhập Admin
-            </Link>
-          </li>
-          <li>
-            <Link href="/login?redirect=staff" className="button">
-              Đăng nhập Staff
-            </Link>
-          </li>
-          <li>
-            <Link href="/login?redirect=customer" className="button">
-              Đăng nhập Customer
-            </Link>
-          </li>
-        </ul>
+      <section className="card role-section">
+        <h2>Chọn vai trò để truy cập</h2>
+        <div className="role-selector-wrapper">
+          <select
+            className="role-selector"
+            value={selectedRole}
+            onChange={(e) => setSelectedRole(e.target.value)}
+          >
+            <option value="">-- Chọn vai trò --</option>
+            <option value="admin">Admin</option>
+            <option value="staff">Nhân viên</option>
+            <option value="customer">Khách hàng</option>
+            <option value="bookkeeper">Kế toán</option>
+            <option value="manager">Quản lý kho</option>
+          </select>
+          <button
+            className="button access-button"
+            onClick={handleAccess}
+            disabled={!selectedRole}
+          >
+            Truy Cập
+          </button>
+        </div>
       </section>
     </main>
   );

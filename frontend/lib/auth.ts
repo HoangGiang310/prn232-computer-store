@@ -38,12 +38,14 @@ export function getRedirectFromRole(role: string) {
   switch (role) {
     case "admin":
       return "/admin";
-    case "sales":
-    case "warehouse":
-    case "accountant":
+    case "staff":
       return "/staff";
     case "customer":
       return "/customer";
+    case "bookkeeper":
+      return "/bookkeeper";
+    case "manager":
+      return "/manager";
     default:
       return "/";
   }

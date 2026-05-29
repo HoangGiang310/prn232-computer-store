@@ -17,7 +17,7 @@ namespace ComputerStoreApi.Controllers
             _dbContext = dbContext;
         }
 
-        [Authorize(Roles = "admin,sales,accountant,warehouse,customer")]
+        [Authorize(Roles = "admin,staff,customer")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -25,7 +25,7 @@ namespace ComputerStoreApi.Controllers
             return Ok(orders);
         }
 
-        [Authorize(Roles = "admin,sales,customer")]
+        [Authorize(Roles = "admin,staff,customer")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Order order)
         {
@@ -35,7 +35,7 @@ namespace ComputerStoreApi.Controllers
             return CreatedAtAction(nameof(GetById), new { id = order.Id }, order);
         }
 
-        [Authorize(Roles = "admin,sales,accountant,warehouse")]
+        [Authorize(Roles = "admin,staff")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] Order order)
         {
@@ -49,7 +49,7 @@ namespace ComputerStoreApi.Controllers
             return NoContent();
         }
 
-        [Authorize(Roles = "admin,sales,warehouse")]
+        [Authorize(Roles = "admin,staff,customer")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
