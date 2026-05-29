@@ -56,7 +56,16 @@ export default function LoginPage() {
   return (
     <main className="main">
       <section className="card header">
-        <h1>Đăng nhập</h1>
+        <h1 className="shop-title">
+          <span className="colored-letter letter-1">T</span>
+          <span className="colored-letter letter-2">Q</span>
+          <span className="colored-letter letter-3">G</span>
+          <span className="colored-letter letter-space"> </span>
+          <span className="colored-letter letter-4">S</span>
+          <span className="colored-letter letter-5">H</span>
+          <span className="colored-letter letter-6">O</span>
+          <span className="colored-letter letter-7">P</span>
+        </h1>
         <p>Nhập tên đăng nhập và mật khẩu để truy cập hệ thống.</p>
       </section>
 
