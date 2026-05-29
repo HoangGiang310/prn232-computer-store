@@ -106,6 +106,12 @@ export default function LoginPage() {
           </Link>
         </form>
       </section>
+
+      <div className="copyright-row">
+        <span className="copyright-line" />
+        <p>© Copyright by DevTeam - Do not reup</p>
+        <span className="copyright-line" />
+      </div>
     </main>
   );
 }

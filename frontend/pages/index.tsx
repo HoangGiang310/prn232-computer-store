@@ -76,6 +76,12 @@ export default function Home() {
           </div>
         </section>
       </div>
+
+      <div className="copyright-row">
+        <span className="copyright-line" />
+        <p>© Copyright by DevTeam - Do not reup</p>
+        <span className="copyright-line" />
+      </div>
     </main>
   );
 }
