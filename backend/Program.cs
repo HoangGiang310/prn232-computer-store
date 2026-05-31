@@ -12,6 +12,9 @@ using ComputerStoreApi.Services;
 const string databaseName = "computerstore";
 var builder = WebApplication.CreateBuilder(args);
 
+// ==========================================
+// 1. ĐĂNG KÝ CÁC SERVICES TRONG CONTAINER
+// ==========================================
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -19,11 +22,15 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Computer Store API", Version = "v1" });
 });
 
+// Cấu hình kết nối cơ sở dữ liệu PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Đăng ký các Service xử lý Logic/Nghiệp vụ
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<DatabaseSeeder>(); // Đăng ký bộ gieo dữ liệu mẫu ở đây
 
+// Cấu hình Authentication (JWT Token)
 var jwtKey = builder.Configuration["Jwt:Key"]!;
 var jwtIssuer = builder.Configuration["Jwt:Issuer"]!;
 var jwtAudience = builder.Configuration["Jwt:Audience"]!;
@@ -47,13 +54,17 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// Cấu hình Phân quyền Authorization dựa trên vai trò hệ thống
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("Admin", policy => policy.RequireRole("admin"));
-    options.AddPolicy("Staff", policy => policy.RequireRole("staff"));
+    options.AddPolicy("Staff", policy => policy.RequireRole("sales", "warehouse", "accountant")); // Sửa theo các vai trò thực tế
     options.AddPolicy("Customer", policy => policy.RequireRole("customer"));
 });
 
+// ==========================================
+// 2. BUILD ỨNG DỤNG & CẤU HÌNH PIPELINE
+// ==========================================
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -62,58 +73,48 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseHttpsRedirection();
+// Kích hoạt Middleware xác thực quyền truy cập
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
+// ==========================================
+// 3. TỰ ĐỘNG KHỞI TẠO DATABASE & SEED DATA
+// ==========================================
 var defaultConnectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
 var masterConnectionString = new NpgsqlConnectionStringBuilder(defaultConnectionString) { Database = "postgres" }.ConnectionString;
-using (var masterConnection = new NpgsqlConnection(masterConnectionString))
+
+try
 {
-    masterConnection.Open();
-    using var checkDb = new NpgsqlCommand("SELECT 1 FROM pg_database WHERE datname = @db", masterConnection);
-    checkDb.Parameters.AddWithValue("db", databaseName);
-    var exists = checkDb.ExecuteScalar() != null;
-    if (!exists)
+    // Bước A: Kiểm tra xem database "computerstore" đã tồn tại trên PostgreSQL chưa, nếu chưa thì tạo mới
+    using (var masterConnection = new NpgsqlConnection(masterConnectionString))
     {
-        using var createDb = new NpgsqlCommand($"CREATE DATABASE \"{databaseName}\"", masterConnection);
-        createDb.ExecuteNonQuery();
-    }
-}
-
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.EnsureCreated();
-
-    var hasher = new PasswordHasher<User>();
-    var defaultUsers = new Dictionary<string, (string Email, string Role, string Password)>
-    {
-        ["admin"] = ("admin@computerstore.local", "admin", "Admin@123"),
-        ["staff"] = ("staff@computerstore.local", "staff", "Staff@123"),
-        ["customer"] = ("customer@computerstore.local", "customer", "Customer@123")
-    };
-
-    foreach (var (username, data) in defaultUsers)
-    {
-        if (!db.Users.Any(u => u.Username == username))
+        masterConnection.Open();
+        using var checkDb = new NpgsqlCommand("SELECT 1 FROM pg_database WHERE datname = @db", masterConnection);
+        checkDb.Parameters.AddWithValue("db", databaseName);
+        var exists = checkDb.ExecuteScalar() != null;
+        if (!exists)
         {
-            var user = new User
-            {
-                Username = username,
-                Email = data.Email,
-                Role = data.Role
-            };
-            user.PasswordHash = hasher.HashPassword(user, data.Password);
-            db.Users.Add(user);
+            using var createDb = new NpgsqlCommand($"CREATE DATABASE \"{databaseName}\"", masterConnection);
+            createDb.ExecuteNonQuery();
         }
     }
 
-    if (db.ChangeTracker.HasChanges())
+    // Bước B: Chạy hàm SeedAllData() từ DatabaseSeeder để gieo dữ liệu mẫu Laptop, Voucher, Đơn hàng...
+    using (var scope = app.Services.CreateScope())
     {
-        db.SaveChanges();
+        var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
+        seeder.SeedAllData();
     }
 }
+catch (Exception ex)
+{
+    // Ghi log lỗi nếu quá trình khởi tạo DB hoặc gieo dữ liệu gặp trục trặc
+    var logger = app.Services.CreateScope().ServiceProvider.GetRequiredService<ILogger<Program>>();
+    logger.LogError(ex, "Đã xảy ra lỗi trong quá trình khởi tạo hoặc gieo dữ liệu Database.");
+}
 
+// ==========================================
+// 4. KÍCH HOẠT ỨNG DỤNG CHẠY
+// ==========================================
 app.Run();

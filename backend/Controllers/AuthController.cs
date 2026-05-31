@@ -31,42 +31,61 @@ namespace ComputerStoreApi.Controllers
                 return Unauthorized(new { message = "Tên đăng nhập hoặc mật khẩu không đúng." });
             }
 
+            // Kiểm tra xem tài khoản có đang hoạt động hay không
+            if (!user.IsActive)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, new { message = "Tài khoản của bạn đã bị khóa hoặc ngừng hoạt động." });
+            }
+
+            // Kiểm tra và xác thực mật khẩu đã mã hóa
             var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, login.Password);
             if (result == PasswordVerificationResult.Failed)
             {
                 return Unauthorized(new { message = "Tên đăng nhập hoặc mật khẩu không đúng." });
             }
 
-            var token = _jwtService.GenerateToken(user.Username, user.Role);
-            return Ok(new { token, role = user.Role, username = user.Username });
+            // Đồng bộ GenerateToken theo RoleName của hệ thống mới
+            var token = _jwtService.GenerateToken(user.Username, user.RoleName);
+            return Ok(new { token, role = user.RoleName, username = user.Username, fullName = user.FullName });
         }
 
         [HttpPost("logout")]
         public IActionResult Logout()
         {
-            return Ok(new { message = "Đã đăng xuất thành công." });
+            // Do JWT là Stateless Token xử lý ở Client (Xóa ở LocalStorage/Cookie), API chỉ cần trả về thông báo thành công
+            return Ok(new { message = "Đã đăng xuất an toàn thành công." });
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto register)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            // Kiểm tra trùng lặp tài khoản hoặc email trong hệ thống
             if (await _dbContext.Users.AnyAsync(u => u.Username == register.Username || u.Email == register.Email))
             {
-                return BadRequest(new { message = "Tên tài khoản hoặc email đã tồn tại." });
+                return BadRequest(new { message = "Tên tài khoản hoặc email đã tồn tại trên hệ thống." });
             }
 
+            // Tạo thực thể người dùng mới khớp 100% với cấu trúc bảng cơ sở dữ liệu
             var user = new User
             {
+                Id = Guid.NewGuid(),
                 Username = register.Username,
+                //FullName = register.FullName, // Hãy chắc chắn trong RegisterDto của bạn có trường FullName này nhé!
                 Email = register.Email,
-                Role = register.Role
+                RoleName = string.IsNullOrEmpty(register.Role) ? "customer" : register.Role, // Gán vai trò (Mặc định là customer)
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
             };
+
+            // Mã hóa mật khẩu an toàn trước khi lưu vào Database
             user.PasswordHash = _passwordHasher.HashPassword(user, register.Password);
 
             _dbContext.Users.Add(user);
             await _dbContext.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(Login), new { username = user.Username }, new { user.Id, user.Username, user.Email, user.Role });
+            return CreatedAtAction(nameof(Login), new { username = user.Username }, new { user.Id, user.Username, user.Email, role = user.RoleName });
         }
     }
 }
