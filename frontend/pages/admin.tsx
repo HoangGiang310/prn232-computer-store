@@ -49,15 +49,31 @@ export default function AdminPage() {
         <ul>
           <li>Quản lý sản phẩm</li>
           <li>Quản lý đơn hàng</li>
-          <li>Quản lý người dùng</li>
+          <li>Quản lý kho</li>
           <li>Báo cáo và thống kê</li>
         </ul>
-        <button className="button" onClick={handleLogout}>
-          Đăng xuất
-        </button>
-        <Link href="/" className="button">
-          Quay lại trang chủ
-        </Link>
+        <div className="buttons-group">
+          <Link href="/products" className="button">
+            Quản lý sản phẩm
+          </Link>
+          <Link href="/orders" className="button">
+            Quản lý đơn hàng
+          </Link>
+          <Link href="/create-order" className="button">
+            Tạo đơn hàng mới
+          </Link>
+          <Link href="/inventory" className="button">
+            Quản lý kho
+          </Link>
+        </div>
+        <div className="buttons-group" style={{ marginTop: "16px" }}>
+          <button className="button" onClick={handleLogout}>
+            Đăng xuất
+          </button>
+          <Link href="/" className="button">
+            Quay lại trang chủ
+          </Link>
+        </div>
       </section>
     </main>
   );

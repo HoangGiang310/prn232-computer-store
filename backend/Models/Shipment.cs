@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ComputerStoreApi.Models
 {
@@ -10,6 +11,7 @@ namespace ComputerStoreApi.Models
         [Key]
         public Guid OrderId { get; set; }
         [ForeignKey("OrderId")]
+        [JsonIgnore]
         public virtual Order Order { get; set; }
 
         public string Carrier { get; set; } // Đơn vị vận chuyển (GHTK, ViettelPost...)

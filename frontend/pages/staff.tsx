@@ -54,12 +54,25 @@ export default function StaffPage() {
           <li>Kiểm tra tồn kho</li>
           <li>Quản lý đơn hàng offline</li>
         </ul>
-        <button className="button" onClick={handleLogout}>
-          Đăng xuất
-        </button>
-        <Link href="/" className="button">
-          Quay lại trang chủ
-        </Link>
+        <div className="buttons-group">
+          <Link href="/create-order" className="button">
+            Tạo đơn hàng mới
+          </Link>
+          <Link href="/orders" className="button">
+            Danh sách đơn hàng
+          </Link>
+          <Link href="/inventory" className="button">
+            Quản lý kho
+          </Link>
+        </div>
+        <div className="buttons-group" style={{ marginTop: "16px" }}>
+          <button className="button" onClick={handleLogout}>
+            Đăng xuất
+          </button>
+          <Link href="/" className="button">
+            Quay lại trang chủ
+          </Link>
+        </div>
       </section>
     </main>
   );

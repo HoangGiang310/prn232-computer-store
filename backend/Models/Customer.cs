@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ComputerStoreApi.Models
 {
@@ -19,9 +20,11 @@ namespace ComputerStoreApi.Models
 
         // Dành cho khách hàng có tài khoản Online đăng nhập bằng App/Web
         public string WebUsername { get; set; }
+        [JsonIgnore]
         public string WebPasswordHash { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public virtual ICollection<Order> Orders { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }

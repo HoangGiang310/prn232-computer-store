@@ -25,6 +25,7 @@ namespace ComputerStoreApi.Controllers
             var orders = await _dbContext.Orders
                 .Include(o => o.OrderItems)
                 .Include(o => o.Shipment)
+                .Include(o => o.Customer)
                 .ToListAsync();
             return Ok(orders);
         }
@@ -38,6 +39,7 @@ namespace ComputerStoreApi.Controllers
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Product)
                 .Include(o => o.Shipment)
+                .Include(o => o.Customer)
                 .FirstOrDefaultAsync(o => o.Id == id);
 
             if (order == null) return NotFound();
@@ -54,19 +56,22 @@ namespace ComputerStoreApi.Controllers
                 return BadRequest("Đơn hàng phải có ít nhất một sản phẩm.");
             }
 
-            // Sử dụng Database Transaction để đảm bảo nếu trừ kho lỗi thì hủy toàn bộ đơn hàng
             using var transaction = await _dbContext.Database.BeginTransactionAsync();
             try
             {
+                order.Id = Guid.NewGuid();
                 order.CreatedAt = DateTime.UtcNow;
+                order.OrderStatus = string.IsNullOrEmpty(order.OrderStatus)
+                    ? order.OrderChannel == "Offline"
+                        ? "Delivered"
+                        : "New"
+                    : order.OrderStatus;
 
-                // Mặc định trạng thái đơn tùy theo kênh bán
-                if (string.IsNullOrEmpty(order.OrderStatus))
-                {
-                    order.OrderStatus = order.OrderChannel == "Offline" ? "Delivered" : "New";
-                }
+                order.TotalAmount = 0;
+                order.DiscountAmount = 0;
+                order.ShippingFee = order.ShippingFee;
+                order.FinalAmount = 0;
 
-                // Vòng lặp kiểm tra tồn kho của từng laptop trong đơn hàng
                 foreach (var item in order.OrderItems)
                 {
                     var product = await _dbContext.Products.FindAsync(item.ProductId);
@@ -80,10 +85,11 @@ namespace ComputerStoreApi.Controllers
                         return BadRequest($"Sản phẩm '{product.Name}' không đủ hàng trong kho (Còn lại: {product.StockQuantity}).");
                     }
 
-                    // Thực hiện trừ kho thực tế của Laptop
-                    product.StockQuantity -= item.Quantity;
+                    item.OrderId = order.Id;
+                    item.UnitPrice = product.Price;
+                    order.TotalAmount += item.UnitPrice * item.Quantity;
 
-                    // Ghi nhận nhật ký thay đổi kho để quản lý kho đối soát
+                    product.StockQuantity -= item.Quantity;
                     var inventoryLog = new InventoryHistory
                     {
                         Id = Guid.NewGuid(),
@@ -98,12 +104,47 @@ namespace ComputerStoreApi.Controllers
                     _dbContext.InventoryHistories.Add(inventoryLog);
                 }
 
+                if (!string.IsNullOrEmpty(order.VoucherCode))
+                {
+                    var voucher = await _dbContext.Vouchers.FirstOrDefaultAsync(v => v.Code == order.VoucherCode);
+                    if (voucher == null)
+                    {
+                        return BadRequest("Voucher không tồn tại hoặc đã hết hạn.");
+                    }
+
+                    if (DateTime.UtcNow < voucher.StartDate || DateTime.UtcNow > voucher.EndDate)
+                    {
+                        return BadRequest("Voucher không nằm trong thời gian áp dụng.");
+                    }
+
+                    if (voucher.UsedCount >= voucher.TotalUsageLimit)
+                    {
+                        return BadRequest("Voucher đã đạt giới hạn số lần sử dụng.");
+                    }
+
+                    if (order.TotalAmount < voucher.MinOrderValue)
+                    {
+                        return BadRequest($"Đơn hàng phải đạt tối thiểu {voucher.MinOrderValue:N0} để áp dụng voucher.");
+                    }
+
+                    order.DiscountAmount = voucher.DiscountType switch
+                    {
+                        "Percentage" => Math.Round(order.TotalAmount * voucher.DiscountValue / 100, 2),
+                        "FixedAmount" => voucher.DiscountValue,
+                        _ => 0
+                    };
+
+                    order.DiscountAmount = Math.Min(order.DiscountAmount, order.TotalAmount);
+                    voucher.UsedCount += 1;
+                    _dbContext.Vouchers.Update(voucher);
+                }
+
+                order.FinalAmount = Math.Max(order.TotalAmount - order.DiscountAmount + order.ShippingFee, 0);
+
                 _dbContext.Orders.Add(order);
                 await _dbContext.SaveChangesAsync();
 
-                // Xác nhận giao dịch thành công hoàn toàn
                 await transaction.CommitAsync();
-
                 return CreatedAtAction(nameof(GetById), new { id = order.Id }, order);
             }
             catch (Exception ex)
@@ -121,17 +162,97 @@ namespace ComputerStoreApi.Controllers
             var existing = await _dbContext.Orders.FindAsync(id);
             if (existing == null) return NotFound();
 
-            // Cập nhật các trường trạng thái, thông tin giao nhận
-            existing.OrderStatus = orderUpdate.OrderStatus;
-            existing.OrderChannel = orderUpdate.OrderChannel;
+            var previousStatus = existing.OrderStatus;
+            existing.OrderStatus = orderUpdate.OrderStatus ?? existing.OrderStatus;
+            existing.OrderChannel = orderUpdate.OrderChannel ?? existing.OrderChannel;
             existing.TotalAmount = orderUpdate.TotalAmount;
             existing.DiscountAmount = orderUpdate.DiscountAmount;
             existing.ShippingFee = orderUpdate.ShippingFee;
             existing.FinalAmount = orderUpdate.FinalAmount;
             existing.IsPaid = orderUpdate.IsPaid;
+            existing.ShippingName = orderUpdate.ShippingName ?? existing.ShippingName;
+            existing.ShippingPhone = orderUpdate.ShippingPhone ?? existing.ShippingPhone;
+            existing.ShippingAddress = orderUpdate.ShippingAddress ?? existing.ShippingAddress;
+
+            if ((existing.OrderStatus == "Cancelled" || existing.OrderStatus == "Returned") &&
+                previousStatus != "Cancelled" && previousStatus != "Returned")
+            {
+                var orderItems = await _dbContext.OrderItems
+                    .Where(oi => oi.OrderId == id)
+                    .ToListAsync();
+
+                foreach (var item in orderItems)
+                {
+                    var product = await _dbContext.Products.FindAsync(item.ProductId);
+                    if (product == null) continue;
+
+                    product.StockQuantity += item.Quantity;
+                    var history = new InventoryHistory
+                    {
+                        Id = Guid.NewGuid(),
+                        ProductId = product.Id,
+                        ChangeType = existing.OrderStatus == "Returned" ? "Return" : "Adjustment",
+                        QuantityChanged = item.Quantity,
+                        NewStock = product.StockQuantity,
+                        Note = $"Hoàn tồn kho do đơn {existing.OrderStatus}. ID Đơn: {existing.Id}",
+                        ChangeDate = DateTime.UtcNow,
+                        ChangedById = existing.CreatedById
+                    };
+                    _dbContext.InventoryHistories.Add(history);
+                }
+            }
 
             await _dbContext.SaveChangesAsync();
             return NoContent();
+        }
+
+        [Authorize(Roles = "admin,sales,warehouse")]
+        [HttpPut("{id}/shipment")]
+        public async Task<IActionResult> UpdateShipment(Guid id, [FromBody] ShipmentUpdateRequest request)
+        {
+            var order = await _dbContext.Orders
+                .Include(o => o.Shipment)
+                .FirstOrDefaultAsync(o => o.Id == id);
+
+            if (order == null) return NotFound();
+
+            if (order.Shipment == null)
+            {
+                order.Shipment = new Shipment
+                {
+                    OrderId = order.Id,
+                    Carrier = request.Carrier,
+                    TrackingNumber = request.TrackingNumber,
+                    ShipmentStatus = request.ShipmentStatus,
+                    ShippedAt = request.ShipmentStatus == "Shipping" ? DateTime.UtcNow : null,
+                    DeliveredAt = request.ShipmentStatus == "Delivered" ? DateTime.UtcNow : null
+                };
+                _dbContext.Shipments.Add(order.Shipment);
+            }
+            else
+            {
+                order.Shipment.Carrier = request.Carrier ?? order.Shipment.Carrier;
+                order.Shipment.TrackingNumber = request.TrackingNumber ?? order.Shipment.TrackingNumber;
+                order.Shipment.ShipmentStatus = request.ShipmentStatus ?? order.Shipment.ShipmentStatus;
+                if (request.ShipmentStatus == "Shipping" && order.Shipment.ShippedAt == null)
+                {
+                    order.Shipment.ShippedAt = DateTime.UtcNow;
+                }
+                if (request.ShipmentStatus == "Delivered")
+                {
+                    order.Shipment.DeliveredAt = DateTime.UtcNow;
+                }
+            }
+
+            await _dbContext.SaveChangesAsync();
+            return NoContent();
+        }
+
+        public class ShipmentUpdateRequest
+        {
+            public string Carrier { get; set; }
+            public string TrackingNumber { get; set; }
+            public string ShipmentStatus { get; set; }
         }
     }
 }
