@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ComputerStoreApi.Models
 {
@@ -9,6 +10,7 @@ namespace ComputerStoreApi.Models
         public Guid Id { get; set; } = Guid.NewGuid();
         public Guid OrderId { get; set; }
         [ForeignKey("OrderId")]
+        [JsonIgnore]
         public virtual Order Order { get; set; }
 
         public Guid ProductId { get; set; }

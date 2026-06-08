@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/router";
 
@@ -76,6 +77,21 @@ export default function Home() {
           </div>
         </section>
       </div>
+
+      <section className="card">
+        <h2>Truy cập nhanh</h2>
+        <div className="buttons-group" style={{ justifyContent: "center" }}>
+          <Link href="/products" className="button">
+            Quản lý sản phẩm
+          </Link>
+          <Link href="/orders" className="button">
+            Quản lý đơn hàng
+          </Link>
+          <Link href="/inventory" className="button">
+            Quản lý kho
+          </Link>
+        </div>
+      </section>
 
       <div className="copyright-row">
         <span className="copyright-line" />

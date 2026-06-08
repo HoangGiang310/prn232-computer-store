@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using System.Text.Json.Serialization;
 
 namespace ComputerStoreApi.Models
 {
@@ -12,6 +12,7 @@ namespace ComputerStoreApi.Models
         [Key]
         public string RoleName { get; set; } // admin, sales, accountant, warehouse, customer
         public string Description { get; set; }
-        public virtual ICollection<User> Users { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<User> Users { get; set; } = new List<User>();
     }
 }

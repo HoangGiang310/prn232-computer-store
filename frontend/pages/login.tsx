@@ -10,17 +10,24 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [selectedRole, setSelectedRole] = useState("");
   const redirectQuery = Array.isArray(router.query.redirect)
     ? router.query.redirect[0]
     : router.query.redirect;
 
-  const roleMap: Record<
-    string,
-    { label: string; className: string }
-  > = {
+  useEffect(() => {
+    if (typeof redirectQuery === "string") {
+      setSelectedRole(redirectQuery);
+    }
+  }, [redirectQuery]);
+
+  const roleMap: Record<string, { label: string; className: string }> = {
     admin: { label: "Admin", className: "button role-button admin" },
     manager: { label: "Quản lý kho", className: "button role-button manager" },
-    bookkeeper: { label: "Kế toán", className: "button role-button bookkeeper" },
+    bookkeeper: {
+      label: "Kế toán",
+      className: "button role-button bookkeeper",
+    },
     staff: { label: "Nhân viên", className: "button role-button staff" },
     customer: { label: "Khách hàng", className: "button role-button customer" },
   };
@@ -66,7 +73,10 @@ export default function LoginPage() {
           <span className="colored-letter letter-6">O</span>
           <span className="colored-letter letter-7">P</span>
         </h1>
-        <p>Nhập tên đăng nhập và mật khẩu để truy cập hệ thống.</p>
+        <p>
+          Đăng nhập cho vai trò: {roleMap[selectedRole]?.label ?? "Người dùng"}.
+          Vui lòng nhập tên đăng nhập và mật khẩu để truy cập.
+        </p>
       </section>
 
       <section className="card login-card">
@@ -97,7 +107,11 @@ export default function LoginPage() {
           {error ? <p className="error">{error}</p> : null}
 
           <div className="buttons-group">
-            <button type="submit" className="button login-button" disabled={loading}>
+            <button
+              type="submit"
+              className="button login-button"
+              disabled={loading}
+            >
               {loading ? "Đang đăng nhập..." : "Đăng nhập"}
             </button>
             <button type="button" className={roleButton.className} disabled>
