@@ -1,6 +1,5 @@
 import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
-import { getAuth } from "../lib/auth";
 import {
   adjustInventory,
   fetchInventoryHistory,
@@ -51,8 +50,6 @@ export default function InventoryPage() {
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
 
-  const token = getAuth()?.token;
-
   useEffect(() => {
     loadInventory();
   }, []);
@@ -95,7 +92,7 @@ export default function InventoryPage() {
     };
 
     try {
-      await adjustInventory(payload, token);
+      await adjustInventory(payload);
       await loadInventory();
       setSelectedProductId("");
       setQuantityChanged(0);

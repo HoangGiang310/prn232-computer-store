@@ -1,6 +1,5 @@
 import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
-import { getAuth } from "../lib/auth";
 import { fetchOrders, updateOrderStatus } from "../lib/api";
 
 type OrderItem = {
@@ -53,8 +52,6 @@ export default function OrdersPage() {
   );
   const [savingId, setSavingId] = useState<string | null>(null);
 
-  const token = getAuth()?.token;
-
   useEffect(() => {
     loadOrders();
   }, []);
@@ -80,7 +77,7 @@ export default function OrdersPage() {
     setError("");
 
     try {
-      await updateOrderStatus(order.id, { orderStatus: nextStatus }, token);
+      await updateOrderStatus(order.id, { orderStatus: nextStatus });
       await loadOrders();
       setExpandedOrderId(order.id);
     } catch (err) {

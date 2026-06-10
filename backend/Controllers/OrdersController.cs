@@ -17,8 +17,7 @@ namespace ComputerStoreApi.Controllers
             _dbContext = dbContext;
         }
 
-        // Lấy danh sách toàn bộ đơn hàng kèm theo chi tiết sản phẩm mua
-        [Authorize(Roles = "admin,sales,accountant,warehouse,customer")]
+        // Public access during development phase
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -30,8 +29,7 @@ namespace ComputerStoreApi.Controllers
             return Ok(orders);
         }
 
-        // Xem chi tiết một đơn hàng cụ thể
-        [Authorize(Roles = "admin,sales,accountant,warehouse,customer")]
+        // Public access during development phase
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
@@ -46,8 +44,7 @@ namespace ComputerStoreApi.Controllers
             return Ok(order);
         }
 
-        // Tạo đơn hàng mới + Kiểm tra và trừ kho thời gian thực + Ghi lịch sử kho
-        [Authorize(Roles = "admin,sales,customer")]
+        // Public access during development phase
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Order order)
         {
@@ -155,7 +152,6 @@ namespace ComputerStoreApi.Controllers
         }
 
         // Cập nhật trạng thái đơn hàng (Dành cho Admin, nhân viên POS hoặc thủ kho giao vận)
-        [Authorize(Roles = "admin,sales,warehouse")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] Order orderUpdate)
         {
@@ -206,7 +202,6 @@ namespace ComputerStoreApi.Controllers
             return NoContent();
         }
 
-        [Authorize(Roles = "admin,sales,warehouse")]
         [HttpPut("{id}/shipment")]
         public async Task<IActionResult> UpdateShipment(Guid id, [FromBody] ShipmentUpdateRequest request)
         {

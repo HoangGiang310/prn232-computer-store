@@ -1,6 +1,5 @@
 import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
-import { getAuth } from "../lib/auth";
 import {
   createProduct,
   deleteProduct,
@@ -33,8 +32,6 @@ export default function ProductsPage() {
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<ProductPayload>(initialProductForm);
   const [editingId, setEditingId] = useState<string | null>(null);
-
-  const token = getAuth()?.token;
 
   useEffect(() => {
     loadProducts();
@@ -92,9 +89,9 @@ export default function ProductsPage() {
       };
 
       if (editingId) {
-        await updateProduct(editingId, payload, token);
+        await updateProduct(editingId, payload);
       } else {
-        await createProduct(payload, token);
+        await createProduct(payload);
       }
 
       await loadProducts();
@@ -112,7 +109,7 @@ export default function ProductsPage() {
     setLoading(true);
 
     try {
-      await deleteProduct(id, token);
+      await deleteProduct(id);
       await loadProducts();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Lỗi khi xóa sản phẩm.");

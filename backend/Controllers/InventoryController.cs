@@ -47,7 +47,6 @@ namespace ComputerStoreApi.Controllers
             return Ok(history);
         }
 
-        [Authorize(Roles = "admin,sales,warehouse")]
         [HttpPost("adjust")]
         public async Task<IActionResult> AdjustInventory([FromBody] InventoryAdjustmentRequest request)
         {

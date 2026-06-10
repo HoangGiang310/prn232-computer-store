@@ -3,6 +3,9 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/": "pages/index.js",
-  "/login": "pages/login.js",
-  "/products": "pages/products.js"
+  "/products": "pages/products.js",
+  "/admin": "pages/admin.js",
+  "/create-order": "pages/create-order.js",
+  "/inventory": "pages/inventory.js",
+  "/orders": "pages/orders.js"
 }

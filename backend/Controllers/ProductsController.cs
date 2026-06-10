@@ -39,8 +39,7 @@ namespace ComputerStoreApi.Controllers
             return Ok(product);
         }
 
-        // Chỉ Admin, nhân viên kho (warehouse) hoặc bán hàng (sales) mới được tạo sản phẩm
-        [Authorize(Roles = "admin,sales,warehouse")]
+        // Public access during development phase
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Product product)
         {
@@ -51,8 +50,7 @@ namespace ComputerStoreApi.Controllers
             return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
         }
 
-        // Chỉ Admin hoặc các bộ phận quản lý liên quan mới được sửa thông tin laptop
-        [Authorize(Roles = "admin,sales,warehouse")]
+        // Public access during development phase
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] Product product)
         {
@@ -73,8 +71,7 @@ namespace ComputerStoreApi.Controllers
             return NoContent();
         }
 
-        // Nghiêm cấm nhân viên tự ý xóa sản phẩm - Chỉ cấu hình cho quyền tối cao (Admin)
-        [Authorize(Roles = "admin")]
+        // Public access during development phase
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
