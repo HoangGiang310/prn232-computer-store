@@ -419,8 +419,3 @@ D:\prn232-computer-store\backend\temp_build_output\ru\Microsoft.CodeAnalysis.Wor
 D:\prn232-computer-store\backend\temp_build_output\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
 D:\prn232-computer-store\backend\temp_build_output\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
 D:\prn232-computer-store\backend\temp_build_output\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\prn232-computer-store\backend\bin\Debug\net8.0\temp_build_output\appsettings.json
-D:\prn232-computer-store\backend\bin\Debug\net8.0\temp_build_output\backend.deps.json
-D:\prn232-computer-store\backend\bin\Debug\net8.0\temp_build_output\backend.runtimeconfig.json
-D:\prn232-computer-store\backend\bin\Debug\net8.0\temp_build_output\backend.staticwebassets.endpoints.json
-D:\prn232-computer-store\backend\bin\Debug\net8.0\temp_build_output\package-lock.json
