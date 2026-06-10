@@ -1,17 +1,6 @@
 import Link from "next/link";
-import { useState } from "react";
-import { useRouter } from "next/router";
 
 export default function Home() {
-  const [selectedRole, setSelectedRole] = useState("");
-  const router = useRouter();
-
-  const handleAccess = () => {
-    if (selectedRole) {
-      router.push(`/login?redirect=${selectedRole}`);
-    }
-  };
-
   return (
     <main className="main">
       <section className="card header">
@@ -25,7 +14,7 @@ export default function Home() {
           <span className="colored-letter letter-6">O</span>
           <span className="colored-letter letter-7">P</span>
         </h1>
-        <p>Cửa Hàng Laptop, Linh Kiện Điện Tử</p>
+        <p>Giao diện shop bán laptop và quản lý bán hàng cho giai đoạn phát triển.</p>
       </section>
 
       <div className="hero-grid">
@@ -46,41 +35,33 @@ export default function Home() {
               </svg>
             </div>
             <div className="poster-copy">
-              <h3>Shop công nghệ hiện đại</h3>
-              <p>Chuyên laptop, linh kiện và phụ kiện chất lượng cao.</p>
+              <h3>Phiên bản phát triển</h3>
+              <p>Chức năng shop hoạt động công khai, login sẽ được bổ sung sau.</p>
             </div>
           </div>
         </section>
 
         <section className="card role-section">
-          <h2>Chọn vai trò để truy cập</h2>
-          <div className="role-selector-wrapper">
-            <select
-              className="role-selector"
-              value={selectedRole}
-              onChange={(e) => setSelectedRole(e.target.value)}
-            >
-              <option value="">-- Chọn vai trò --</option>
-              <option value="admin">Admin</option>
-              <option value="manager">Quản lý</option>
-              <option value="bookkeeper">Kế toán</option>
-              <option value="staff">Nhân viên</option>
-              <option value="customer">Khách</option>
-            </select>
-            <button
-              className="button access-button"
-              onClick={handleAccess}
-              disabled={!selectedRole}
-            >
-              Truy Cập
-            </button>
-          </div>
+          <h2>Giao diện và các tính năng chính</h2>
+          <p>
+            Truy cập nhanh các trang quản lý sản phẩm, đơn hàng, kho và tạo đơn hàng mà không yêu cầu đăng nhập.
+          </p>
+          <ul>
+            <li>Danh sách sản phẩm</li>
+            <li>Tạo, sửa, xóa sản phẩm</li>
+            <li>Danh sách đơn hàng và cập nhật trạng thái</li>
+            <li>Quản lý tồn kho và lịch sử điều chỉnh</li>
+            <li>Tạo đơn hàng mới</li>
+          </ul>
         </section>
       </div>
 
       <section className="card">
         <h2>Truy cập nhanh</h2>
-        <div className="buttons-group" style={{ justifyContent: "center" }}>
+        <div className="buttons-group" style={{ justifyContent: "center", flexWrap: "wrap" }}>
+          <Link href="/admin" className="button">
+            Bảng điều khiển
+          </Link>
           <Link href="/products" className="button">
             Quản lý sản phẩm
           </Link>
@@ -90,12 +71,15 @@ export default function Home() {
           <Link href="/inventory" className="button">
             Quản lý kho
           </Link>
+          <Link href="/create-order" className="button">
+            Tạo đơn hàng mới
+          </Link>
         </div>
       </section>
 
       <div className="copyright-row">
         <span className="copyright-line" />
-        <p>© Copyright by DevTeam - Do not reup</p>
+        <p>© 2026 TQG Shop - Giai đoạn phát triển giao diện</p>
         <span className="copyright-line" />
       </div>
     </main>

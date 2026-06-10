@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
-import { getAuth } from "../lib/auth";
 import {
   createOrder,
   fetchProducts,
@@ -48,17 +47,9 @@ export default function CreateOrderPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const auth = getAuth();
-  const token = auth?.token;
-
   useEffect(() => {
-    if (!token) {
-      router.replace("/login?redirect=create-order");
-      return;
-    }
-
     loadProducts();
-  }, [router, token]);
+  }, []);
 
   async function loadProducts() {
     try {
@@ -122,7 +113,6 @@ export default function CreateOrderPage() {
     event.preventDefault();
     setError("");
     setSuccess("");
-    if (!token) return;
 
     if (!shippingName || !shippingPhone || !shippingAddress) {
       setError("Vui lòng nhập đầy đủ thông tin giao nhận.");
@@ -136,7 +126,7 @@ export default function CreateOrderPage() {
 
     setLoading(true);
     try {
-      await createOrder(payload, token);
+      await createOrder(payload);
       setSuccess("Đơn hàng đã tạo thành công.");
       setItems([defaultLineItem()]);
       setVoucherCode("");
