@@ -90,6 +90,55 @@ Quản lý người dùng:
 - Phân quyền chức năng theo vai trò.
 - Quản lý danh sách nhân viên và lịch sử hoạt động nếu cần.
 
+Thông báo và Email:
+
+- Gửi email xác nhận đơn hàng cho khách hàng (customer, staff, admin).
+- Gửi email invoice/hoá đơn sau khi hoàn thành thanh toán.
+- Gửi thông báo cập nhật trạng thái giao hàng cho khách.
+- Gửi cảnh báo tồn kho thấp cho quản lý kho.
+- Gửi thông báo về đơn hàng mới cho nhân viên bán hàng/admin.
+- Hỗ trợ in/xuất đơn hàng dạng PDF.
+- In hoá đơn/receipt khi hoàn thành bán hàng offline.
+
+Hỗ trợ Khách hàng:
+
+- Trang FAQ (Frequently Asked Questions).
+- Biểu mẫu liên hệ/Feedback từ khách hàng.
+- Xem câu hỏi thường gặp về sản phẩm, đơn hàng, giao hàng, thanh toán.
+- Hỗ trợ live chat hoặc customer support (tùy chọn).
+- Theo dõi ticket/yêu cầu hỗ trợ từ khách.
+
+Đánh giá và Bình luận Sản phẩm:
+
+- Khách hàng có thể đánh giá sao (1-5) và viết bình luận cho sản phẩm sau khi mua.
+- Hiển thị trung bình đánh giá trên trang sản phẩm.
+- Admin có thể xóa/ẩn bình luận không phù hợp.
+- Sắp xếp bình luận theo độ hữu ích, ngày tạo.
+
+Import/Export Dữ liệu:
+
+- Xuất danh sách sản phẩm ra file Excel/CSV.
+- Xuất danh sách đơn hàng ra file Excel/CSV (kèm chi tiết đơn, ngày, trạng thái).
+- Xuất báo cáo doanh thu, lợi nhuận ra file Excel/CSV.
+- Xuất danh sách khách hàng ra file Excel/CSV.
+- Nhập danh sách sản phẩm từ file Excel (batch update giá, tồn kho).
+- Nhập danh sách khách hàng từ file Excel (migrate từ hệ thống cũ).
+
+Xác thực và Đăng ký Khách hàng:
+
+- Khách hàng đăng ký tài khoản bằng email/số điện thoại.
+- Gửi email xác nhận/OTP khi khách đăng ký tài khoản mới.
+- Hỗ trợ đặt lại mật khẩu qua email.
+- Tính năng "Đăng nhập bằng Google/Facebook" (tùy chọn).
+- Lưu múi giờ/vị trí người dùng cho cá nhân hóa trải nghiệm.
+
+Ghi chú và Lịch sử Tương tác:
+
+- Thêm ghi chú nội bộ (internal note) cho đơn hàng, khách hàng (chỉ nhân viên thấy).
+- Lưu lịch sử tương tác: khi nào tạo đơn, cập nhật, hủy, bổ sung.
+- Xem ai (nhân viên nào) thực hiện thay đổi và khi nào.
+- Audit log chi tiết cho các hành động quan trọng: tạo/xóa/sửa sản phẩm, quyền hạn người dùng, cấu hình hệ thống.
+
 2. Yêu cầu phi chức năng
 
 Giao diện:
@@ -97,32 +146,74 @@ Giao diện:
 - Giao diện thân thiện, dễ dùng, phù hợp trên desktop.
 - Responsive cơ bản cho tablet/mobile để quản trị và đặt hàng online.
 - Bố cục rõ ràng, menu điều hướng dễ tiếp cận.
+- Hỗ trợ trình duyệt: Chrome, Firefox, Safari, Edge (phiên bản cuối cùng).
+- Tải trang trong vòng 2-3 giây trên kết nối 3G/4G.
 
 Bảo mật:
 
-- Mật khẩu được mã hóa trước khi lưu.
+- Mật khẩu được mã hóa trước khi lưu (bcrypt hoặc tương đương).
 - Chỉ người dùng hợp lệ mới truy cập khu vực quản trị.
 - Bảo vệ chống truy cập trái phép và các API nhạy cảm.
 - Đảm bảo an toàn thanh toán online, mã hóa dữ liệu thanh toán và thông tin khách hàng.
 - Hạn chế truy cập và bảo mật dữ liệu khách hàng.
+- HTTPS (SSL/TLS) bắt buộc cho tất cả giao tiếp.
+- Implement rate limiting trên API để chống brute force và DDoS.
+- CORS policy cấu hình chặt chẽ, chỉ cho phép origin được phép.
+- Input validation và SQL injection protection.
+- XSS protection và CSRF token cho form submission.
+- Đặt hạn thời gian phiên (session timeout) sau 30 phút không hoạt động.
+- Two-factor authentication (2FA) tùy chọn cho admin.
+- Log all security events (login attempts, permission changes, data access).
 
 Hiệu năng:
 
 - Tải trang nhanh với số lượng sản phẩm và đơn hàng vừa phải.
-- Tìm kiếm, lọc dữ liệu phản hồi nhanh.
+- Tìm kiếm, lọc dữ liệu phản hồi nhanh (< 1 giây).
 - Các tác vụ quản trị như tạo đơn, cập nhật kho phải xử lý mượt mà.
+- API response time < 500ms ở điều kiện bình thường.
+- Hỗ trợ tối thiểu 100 người dùng đồng thời (concurrent users).
+- Caching strategy cho danh sách sản phẩm, tổng hợp thống kê.
+- Pagination cho danh sách (20-50 item/trang tùy loại).
+- Lazy loading cho hình ảnh sản phẩm.
+- Database indexing trên các trường tìm kiếm/lọc chính.
+- CDN cho hình ảnh sản phẩm nếu có.
 
 Tính mở rộng:
 
 - Dễ dàng bổ sung sản phẩm mới, thêm tính năng báo cáo.
 - Dễ nâng cấp để hỗ trợ nhiều loại sản phẩm khác ngoài laptop.
 - Cấu trúc dữ liệu và module phải dễ bảo trì, mở rộng.
+- Modular architecture: từng tính năng (auth, product, order, etc.) tách biệt.
+- Dễ thêm phương thức thanh toán mới.
+- Dễ tích hợp thêm đơn vị vận chuyển.
+- API versioning (v1, v2, v3...) để support backward compatibility.
 
 Dữ liệu:
 
 - Lưu trữ an toàn, tránh mất mát khi thao tác xóa/sửa.
-- Hỗ trợ sao lưu cơ bản nếu cần.
+- Hỗ trợ sao lưu cơ bản nếu cần (daily backup, 7 ngày lưu trữ).
 - Có cơ chế ghi nhật ký hoạt động quan trọng và lịch sử dữ liệu nếu cần.
+- Soft delete cho các bản ghi quan trọng (sản phẩm, khách hàng, đơn hàng).
+- Recovery point objective (RPO): tối đa mất 1 ngày dữ liệu.
+- Recovery time objective (RTO): phục hồi trong 4 giờ.
+- Database encryption for sensitive data (password, payment info).
+- GDPR compliance: hỗ trợ xóa dữ liệu khách hàng (right to be forgotten).
+- Data retention policy: xóa tự động dữ liệu cũ sau 2-3 năm (ngoại trừ giao dịch tài chính).
+
+Uptime và SLA:
+
+- Uptime mục tiêu: 99.5% (ngừng hoạt động tối đa 3.6 giờ/tháng).
+- Monitoring 24/7 và alert khi hệ thống gặp sự cố.
+- Có kế hoạch backup server và failover.
+
+API và Documentation:
+
+- Cung cấp tài liệu API đầy đủ (Swagger/OpenAPI).
+- Versioning API, deprecated endpoints có thông báo.
+- Clear error messages và error codes trong response.
+- Rate limit info trong response header.
+- Support pagination, filtering, sorting standardized.
+- Webhook support cho thanh toán, shipping status update.
 
 4. Công nghệ đề xuất
 
@@ -156,3 +247,63 @@ Dữ liệu:
 - Hoàn tiền / trả hàng.
 - Quản lý khuyến mãi, voucher, mã giảm giá.
 - Tài khoản khách hàng và lịch sử mua hàng cá nhân.
+- Danh mục sản phẩm phân cấp (Brand, Category, Subcategory).
+- Kiểm soát hàng tồn: báo cáo hàng chậm tiêu thụ, hàng cũ.
+- Tính năng "Wish list" cho khách hàng online.
+- So sánh sản phẩm (compare 2-4 sản phẩm cùng lúc).
+- Gợi ý sản phẩm liên quan (related products) trên trang chi tiết.
+- Real-time notification: socket.io/SignalR để cập nhật trạng thái đơn, tồn kho.
+- Analytics: Google Analytics hoặc tương đương để theo dõi hành vi khách.
+- SEO optimization: sitemap, meta tags, structured data cho sản phẩm.
+- Multi-currency support (nếu bán quốc tế).
+- Loyalty program: điểm thưởng, hạng VIP, discount tiered.
+
+6. Quy trình và Timeline
+
+Giai đoạn 1 (MVP - 3 tháng):
+
+- Đăng nhập, quản lý sản phẩm, quản lý đơn hàng (offline POS + online).
+- Báo cáo cơ bản.
+- UI admin + customer web cơ bản.
+
+Giai đoạn 2 (3-6 tháng):
+
+- Mobile app Flutter.
+- Email notifications.
+- Import/Export dữ liệu.
+- Tracking shipment.
+- Ratings/Reviews sản phẩm.
+
+Giai đoạn 3 (6-9 tháng):
+
+- Real-time notification.
+- Analytics nâng cao.
+- Loyalty program.
+- Tối ưu hóa performance.
+
+7. Hạn chế và Giả định
+
+Hạn chế:
+
+- Hệ thống ban đầu phục vụ 1 cửa hàng, có thể mở rộng multi-store sau.
+- Thanh toán online chỉ hỗ trợ ví điện tử, chuyển khoản (khác với thanh toán POS).
+- Hỗ trợ bước đầu 1-2 đơn vị vận chuyển.
+- Dữ liệu khách cũ không migrate tự động (cần manual hoặc import).
+
+Giả định:
+
+- Khách hàng đều có kết nối internet tốt (3G/4G hoặc WiFi).
+- Nhân viên sử dụng desktop/laptop để quản trị.
+- Khách hàng sử dụng điện thoại di động chủ yếu.
+- Doanh số bán hàng trung bình 50-100 đơn/ngày.
+- Số sản phẩm dự kiến: 200-500 mẫu laptop.
+- Nhân viên: 2-3 nhân viên bán hàng, 1 kế toán, 1 quản lý kho, 1 admin.
+
+8. Tiêu chí Chấp nhận (Acceptance Criteria)
+
+- Tất cả chức năng MVP hoạt động đúng theo use case.
+- API response time < 500ms (95th percentile).
+- Không crash khi 100 người dùng đồng thời.
+- Thông báo email gửi trong vòng 5 phút.
+- Tồn kho cập nhật thực tế trong vòng 1 phút sau hành động (bán, nhập).
+- Báo cáo tạo trong vòng 30 giây với dữ liệu 1 năm.
