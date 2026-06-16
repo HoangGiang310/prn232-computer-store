@@ -140,90 +140,110 @@ export default function CreateOrderPage() {
   return (
     <main className="main">
       <section className="card header">
-        <h1>Tạo đơn hàng</h1>
+        <h1>Tạo Đơn Hàng Mới</h1>
         <p>
           Khởi tạo đơn hàng mới theo kênh online/offline và kiểm tra tồn kho.
         </p>
       </section>
 
       <section className="card">
-        <div className="buttons-group" style={{ justifyContent: "flex-start" }}>
-          <button className="button" onClick={() => router.back()}>
-            Quay lại
-          </button>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
+          <div>
+            <p style={{ margin: 0, color: "#4b5563" }}>
+              Điền thông tin khách hàng, chọn sản phẩm và tạo đơn hàng mới.
+            </p>
+          </div>
+          <div className="buttons-group" style={{ justifyContent: "flex-start" }}>
+            <button className="button" onClick={() => router.back()}>
+              Quay lại
+            </button>
+          </div>
         </div>
 
         {error ? <p className="error">{error}</p> : null}
         {success ? <p className="success">{success}</p> : null}
 
         <form onSubmit={handleSubmit} className="login-form">
-          <div className="input-group">
-            <label>
-              Kênh bán
-              <select
-                value={orderChannel}
-                onChange={(e) => setOrderChannel(e.target.value)}
-              >
-                {orderChannels.map((channel) => (
-                  <option key={channel} value={channel}>
-                    {channel}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Phương thức thanh toán
-              <select
-                value={paymentMethod}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-              >
-                {paymentMethods.map((method) => (
-                  <option key={method} value={method}>
-                    {method}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Đã thanh toán
-              <select
-                value={isPaid ? "yes" : "no"}
-                onChange={(e) => setIsPaid(e.target.value === "yes")}
-              >
-                <option value="no">Chưa</option>
-                <option value="yes">Đã thanh toán</option>
-              </select>
-            </label>
-          </div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+              gap: "16px",
+            }}
+          >
+            <div style={{ padding: "20px", borderRadius: "14px", background: "#f8fafc" }}>
+              <h3 style={{ marginTop: 0 }}>Thông tin đơn</h3>
+              <label style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "16px" }}>
+                <span>Kênh bán</span>
+                <select
+                  value={orderChannel}
+                  onChange={(e) => setOrderChannel(e.target.value)}
+                  style={{ width: "100%" }}
+                >
+                  {orderChannels.map((channel) => (
+                    <option key={channel} value={channel}>
+                      {channel}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "16px" }}>
+                <span>Phương thức thanh toán</span>
+                <select
+                  value={paymentMethod}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                  style={{ width: "100%" }}
+                >
+                  {paymentMethods.map((method) => (
+                    <option key={method} value={method}>
+                      {method}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "0" }}>
+                <span>Đã thanh toán</span>
+                <select
+                  value={isPaid ? "yes" : "no"}
+                  onChange={(e) => setIsPaid(e.target.value === "yes")}
+                  style={{ width: "100%" }}
+                >
+                  <option value="no">Chưa</option>
+                  <option value="yes">Đã thanh toán</option>
+                </select>
+              </label>
+            </div>
 
-          <div className="card" style={{ marginTop: "16px" }}>
-            <h2>Thông tin giao nhận</h2>
-            <div className="input-group">
-              <label>
-                Tên người nhận
+            <div style={{ padding: "20px", borderRadius: "14px", background: "#f8fafc" }}>
+              <h3 style={{ marginTop: 0 }}>Khách hàng & giao nhận</h3>
+              <label style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "16px" }}>
+                <span>Tên người nhận</span>
                 <input
                   type="text"
                   value={shippingName}
                   onChange={(e) => setShippingName(e.target.value)}
                   required
+                  style={{ width: "100%" }}
                 />
               </label>
-              <label>
-                Số điện thoại
+              <label style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "16px" }}>
+                <span>Số điện thoại</span>
                 <input
                   type="text"
                   value={shippingPhone}
                   onChange={(e) => setShippingPhone(e.target.value)}
                   required
+                  style={{ width: "100%" }}
                 />
               </label>
-              <label>
-                Địa chỉ giao hàng
+              <label style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "0" }}>
+                <span>Địa chỉ giao hàng</span>
                 <textarea
                   value={shippingAddress}
                   onChange={(e) => setShippingAddress(e.target.value)}
                   rows={3}
                   required
+                  style={{ width: "100%", resize: "vertical" }}
                 />
               </label>
             </div>
@@ -234,10 +254,15 @@ export default function CreateOrderPage() {
             {items.map((item) => (
               <div
                 key={item.id}
-                className="input-group"
-                style={{ gap: "12px" }}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "2fr 1fr 1fr auto",
+                  gap: "12px",
+                  alignItems: "end",
+                  marginBottom: "16px",
+                }}
               >
-                <label style={{ flex: 2 }}>
+                <label style={{ display: "flex", flexDirection: "column" }}>
                   Sản phẩm
                   <select
                     value={item.productId}
@@ -261,7 +286,7 @@ export default function CreateOrderPage() {
                     ))}
                   </select>
                 </label>
-                <label style={{ flex: 1 }}>
+                <label style={{ display: "flex", flexDirection: "column" }}>
                   Số lượng
                   <input
                     type="number"
@@ -275,7 +300,7 @@ export default function CreateOrderPage() {
                     required
                   />
                 </label>
-                <label style={{ flex: 1 }}>
+                <label style={{ display: "flex", flexDirection: "column" }}>
                   Giá bán
                   <input type="number" value={item.unitPrice} readOnly />
                 </label>
@@ -283,7 +308,7 @@ export default function CreateOrderPage() {
                   type="button"
                   className="button"
                   onClick={() => removeLineItem(item.id)}
-                  style={{ alignSelf: "flex-end", marginTop: "24px" }}
+                  style={{ padding: "8px 14px", minHeight: "40px" }}
                 >
                   Xóa
                 </button>

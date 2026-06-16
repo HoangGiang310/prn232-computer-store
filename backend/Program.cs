@@ -31,6 +31,17 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Cấu hình CORS để frontend Next.js có thể gọi API backend từ localhost
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:3001", "http://127.0.0.1:3001", "http://localhost:3000", "http://127.0.0.1:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 // Đăng ký các Service xử lý Logic/Nghiệp vụ
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<DatabaseSeeder>(); // Đăng ký bộ gieo dữ liệu mẫu ở đây
@@ -77,6 +88,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowFrontend");
 
 // Kích hoạt Middleware xác thực quyền truy cập
 app.UseAuthentication();

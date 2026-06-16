@@ -131,14 +131,47 @@ export default function ProductsPage() {
     });
   }, [products, searchTerm]);
 
+  const lowStockCount = useMemo(
+    () => products.filter((product) => product.stockQuantity <= product.lowStockThreshold).length,
+    [products],
+  );
+
   return (
     <main className="main">
       <section className="card header">
-        <h1>Quản lý sản phẩm</h1>
-        <p>
-          Quản lý danh sách sản phẩm, tạo mới, sửa thông tin và theo dõi tồn
-          kho.
-        </p>
+        <h1>Quản Lý Sản Phẩm</h1>
+        <p>Quản lý danh sách sản phẩm, tạo mới, sửa thông tin và theo dõi tồn kho.</p>
+      </section>
+
+      <section className="card" style={{ marginBottom: "24px" }}>
+        <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+          <div
+            style={{
+              flex: 1,
+              minWidth: "220px",
+              padding: "16px",
+              background: "#f8fafc",
+              borderRadius: "12px",
+            }}
+          >
+            <h3>Tổng sản phẩm</h3>
+            <p style={{ fontSize: "32px", margin: "12px 0 0" }}>{products.length}</p>
+          </div>
+          <div
+            style={{
+              flex: 1,
+              minWidth: "220px",
+              padding: "16px",
+              background: "#f8fafc",
+              borderRadius: "12px",
+            }}
+          >
+            <h3>Sản phẩm cảnh báo</h3>
+            <p style={{ fontSize: "32px", margin: "12px 0 0", color: "#b91c1c" }}>
+              {lowStockCount}
+            </p>
+          </div>
+        </div>
       </section>
 
       <section className="card">
@@ -167,11 +200,19 @@ export default function ProductsPage() {
 
       {showForm ? (
         <section className="card">
-          <h2>{editingId ? "Cập nhật sản phẩm" : "Thêm sản phẩm mới"}</h2>
-          <form onSubmit={handleSave} className="login-form">
-            <div className="input-group">
-              <label>
-                Mã sản phẩm
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
+            <div>
+              <h2>{editingId ? "Cập nhật sản phẩm" : "Thêm sản phẩm mới"}</h2>
+              <p style={{ marginTop: "8px", maxWidth: "560px", color: "#4b5563" }}>
+                Nhập thông tin chi tiết sản phẩm, bao gồm mã, tên, hãng, cấu hình và số lượng tồn kho.
+              </p>
+            </div>
+          </div>
+
+          <form onSubmit={handleSave} className="login-form" style={{ marginTop: "24px" }}>
+            <div style={{ display: "grid", gap: "18px", width: "100%", maxWidth: "780px" }}>
+              <label style={{ display: "flex", alignItems: "center", gap: "18px", justifyContent: "space-between" }}>
+                <span style={{ minWidth: "180px", fontWeight: 600 }}>Mã sản phẩm</span>
                 <input
                   type="text"
                   value={formData.productCode}
@@ -182,10 +223,11 @@ export default function ProductsPage() {
                     }))
                   }
                   required
+                  style={{ flex: 1, minWidth: "280px" }}
                 />
               </label>
-              <label>
-                Tên sản phẩm
+              <label style={{ display: "flex", alignItems: "center", gap: "18px", justifyContent: "space-between" }}>
+                <span style={{ minWidth: "180px", fontWeight: 600 }}>Tên sản phẩm</span>
                 <input
                   type="text"
                   value={formData.name}
@@ -193,10 +235,11 @@ export default function ProductsPage() {
                     setFormData((prev) => ({ ...prev, name: e.target.value }))
                   }
                   required
+                  style={{ flex: 1, minWidth: "280px" }}
                 />
               </label>
-              <label>
-                Hãng
+              <label style={{ display: "flex", alignItems: "center", gap: "18px", justifyContent: "space-between" }}>
+                <span style={{ minWidth: "180px", fontWeight: 600 }}>Hãng</span>
                 <input
                   type="text"
                   value={formData.brand}
@@ -204,10 +247,11 @@ export default function ProductsPage() {
                     setFormData((prev) => ({ ...prev, brand: e.target.value }))
                   }
                   required
+                  style={{ flex: 1, minWidth: "280px" }}
                 />
               </label>
-              <label>
-                Cấu hình
+              <label style={{ display: "grid", gap: "10px", maxWidth: "50%" }}>
+                <span style={{ fontWeight: 600 }}>Cấu hình</span>
                 <textarea
                   value={formData.specifications}
                   onChange={(e) =>
@@ -218,10 +262,11 @@ export default function ProductsPage() {
                   }
                   rows={4}
                   required
+                  style={{ width: "100%", minHeight: "110px" }}
                 />
               </label>
-              <label>
-                Giá nhập
+              <label style={{ display: "flex", alignItems: "center", gap: "18px", justifyContent: "space-between" }}>
+                <span style={{ minWidth: "180px", fontWeight: 600 }}>Giá nhập</span>
                 <input
                   type="number"
                   step="0.01"
@@ -233,10 +278,11 @@ export default function ProductsPage() {
                     }))
                   }
                   required
+                  style={{ flex: 1, minWidth: "280px" }}
                 />
               </label>
-              <label>
-                Giá bán
+              <label style={{ display: "flex", alignItems: "center", gap: "18px", justifyContent: "space-between" }}>
+                <span style={{ minWidth: "180px", fontWeight: 600 }}>Giá bán</span>
                 <input
                   type="number"
                   step="0.01"
@@ -248,10 +294,11 @@ export default function ProductsPage() {
                     }))
                   }
                   required
+                  style={{ flex: 1, minWidth: "280px" }}
                 />
               </label>
-              <label>
-                Tồn kho
+              <label style={{ display: "flex", alignItems: "center", gap: "18px", justifyContent: "space-between" }}>
+                <span style={{ minWidth: "180px", fontWeight: 600 }}>Tồn kho</span>
                 <input
                   type="number"
                   value={formData.stockQuantity}
@@ -262,10 +309,11 @@ export default function ProductsPage() {
                     }))
                   }
                   required
+                  style={{ flex: 1, minWidth: "280px" }}
                 />
               </label>
-              <label>
-                Ngưỡng cảnh báo tồn kho
+              <label style={{ display: "flex", alignItems: "center", gap: "18px", justifyContent: "space-between" }}>
+                <span style={{ minWidth: "180px", fontWeight: 600 }}>Ngưỡng cảnh báo tồn kho</span>
                 <input
                   type="number"
                   value={formData.lowStockThreshold}
@@ -276,17 +324,19 @@ export default function ProductsPage() {
                     }))
                   }
                   required
+                  style={{ flex: 1, minWidth: "280px" }}
                 />
               </label>
             </div>
 
             {error ? <p className="error">{error}</p> : null}
 
-            <div className="buttons-group">
+            <div className="buttons-group" style={{ justifyContent: "center", marginTop: "16px" }}>
               <button
                 type="submit"
                 className="button login-button"
                 disabled={loading}
+                style={{ minWidth: "140px" }}
               >
                 {loading ? "Đang lưu..." : editingId ? "Cập nhật" : "Lưu"}
               </button>
@@ -294,6 +344,7 @@ export default function ProductsPage() {
                 type="button"
                 className="button register-button"
                 onClick={resetForm}
+                style={{ minWidth: "140px" }}
               >
                 Hủy
               </button>

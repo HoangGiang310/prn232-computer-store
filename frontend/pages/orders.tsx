@@ -148,14 +148,71 @@ export default function OrdersPage() {
     });
   }, [orders, selectedStatus, selectedChannel]);
 
+  const totalOrders = orders.length;
+  const pendingOrders = orders.filter(
+    (order) =>
+      order.orderStatus !== "Delivered" &&
+      order.orderStatus !== "Cancelled" &&
+      order.orderStatus !== "Returned"
+  ).length;
+  const totalRevenue = orders.reduce((acc, order) => acc + order.finalAmount, 0);
+
   return (
     <main className="main">
       <section className="card header">
-        <h1>Quản lý đơn hàng</h1>
+        <h1>Quản Lý Đơn Hàng</h1>
         <p>
           Xem danh sách đơn, theo dõi trạng thái và cập nhật đơn hàng cho kênh
           online/offline.
         </p>
+      </section>
+
+      <section className="card" style={{ marginBottom: "24px" }}>
+        <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+          <div
+            style={{
+              flex: 1,
+              minWidth: "220px",
+              padding: "16px",
+              background: "#f8fafc",
+              borderRadius: "12px",
+            }}
+          >
+            <h3>Tổng đơn hàng</h3>
+            <p style={{ fontSize: "32px", margin: "12px 0 0" }}>{totalOrders}</p>
+          </div>
+          <div
+            style={{
+              flex: 1,
+              minWidth: "220px",
+              padding: "16px",
+              background: "#f8fafc",
+              borderRadius: "12px",
+            }}
+          >
+            <h3>Đơn hàng đang xử lý</h3>
+            <p style={{ fontSize: "32px", margin: "12px 0 0", color: "#d97706" }}>
+              {pendingOrders}
+            </p>
+          </div>
+          <div
+            style={{
+              flex: 1,
+              minWidth: "220px",
+              padding: "16px",
+              background: "#f8fafc",
+              borderRadius: "12px",
+            }}
+          >
+            <h3>Doanh thu</h3>
+            <p style={{ fontSize: "32px", margin: "12px 0 0" }}>
+              {totalRevenue.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
+            </p>
+          </div>
+        </div>
       </section>
 
       <section className="card">

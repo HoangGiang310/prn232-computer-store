@@ -4,53 +4,46 @@ export default function AdminPage() {
   return (
     <main className="main">
       <section className="card header">
-        <h1>Bảng điều khiển Shop</h1>
-        <p>Truy cập nhanh các chức năng quản lý chính của hệ thống.</p>
+        <h1>Bảng Điều Khiển Shop</h1>
       </section>
 
       <section className="card">
-        <h2>Chức năng chính</h2>
-        <div style={{ display: "flex", gap: "40px" }}>
-          <ul>
-            <li>Quản lý sản phẩm</li>
-            <li>Quản lý đơn hàng</li>
-            <li>Quản lý kho</li>
-            <li>Tạo đơn hàng mới</li>
-          </ul>
-          <ul>
-            <li>Quản lý khách hàng</li>
-            <li>Quản lý voucher khuyến mãi</li>
-            <li>Quản lý tài khoản nhân viên</li>
-            <li>Xem báo cáo tài chính & doanh số</li>
-          </ul>
-        </div>
-        <div className="buttons-group" style={{ flexWrap: "wrap", marginTop: "16px" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+            gap: "16px",
+            alignItems: "stretch",
+          }}
+        >
           <Link href="/products" className="button">
-            Quản lý sản phẩm
+            Quản Lý Sản Phẩm
           </Link>
           <Link href="/orders" className="button">
-            Quản lý đơn hàng
+            Quản Lý Đơn Hàng
           </Link>
           <Link href="/create-order" className="button">
-            Tạo đơn hàng mới
+            Tạo Đơn Hàng Mới
           </Link>
           <Link href="/inventory" className="button">
-            Quản lý kho
+            Quản Lý Kho
           </Link>
           <Link href="/customers" className="button">
-            Quản lý khách hàng
+            Quản Lý Khách Hàng
           </Link>
           <Link href="/vouchers" className="button">
-            Quản lý voucher
+            Quản Lý Voucher
           </Link>
           <Link href="/users" className="button">
-            Quản lý nhân viên
+            Quản Lý Nhân Viên
           </Link>
           <Link href="/reports" className="button">
-            Báo cáo & Thống kê
+            Báo Cáo & Thống Kê
           </Link>
-          <Link href="/" className="button">
-            Về trang chủ
+        </div>
+        <div style={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
+          <Link href="/" className="button" style={{ minWidth: "220px" }}>
+            Trở Về Trang Chủ
           </Link>
         </div>
       </section>
