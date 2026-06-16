@@ -72,7 +72,7 @@ namespace ComputerStoreApi.Controllers
             {
                 Id = Guid.NewGuid(),
                 Username = register.Username,
-                //FullName = register.FullName, // Hãy chắc chắn trong RegisterDto của bạn có trường FullName này nhé!
+                FullName = string.IsNullOrEmpty(register.FullName) ? register.Username : register.FullName,
                 Email = register.Email,
                 RoleName = string.IsNullOrEmpty(register.Role) ? "customer" : register.Role, // Gán vai trò (Mặc định là customer)
                 IsActive = true,

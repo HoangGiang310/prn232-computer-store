@@ -10,13 +10,21 @@ export default function AdminPage() {
 
       <section className="card">
         <h2>Chức năng chính</h2>
-        <ul>
-          <li>Quản lý sản phẩm</li>
-          <li>Quản lý đơn hàng</li>
-          <li>Quản lý kho</li>
-          <li>Tạo đơn hàng mới</li>
-        </ul>
-        <div className="buttons-group" style={{ flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: "40px" }}>
+          <ul>
+            <li>Quản lý sản phẩm</li>
+            <li>Quản lý đơn hàng</li>
+            <li>Quản lý kho</li>
+            <li>Tạo đơn hàng mới</li>
+          </ul>
+          <ul>
+            <li>Quản lý khách hàng</li>
+            <li>Quản lý voucher khuyến mãi</li>
+            <li>Quản lý tài khoản nhân viên</li>
+            <li>Xem báo cáo tài chính & doanh số</li>
+          </ul>
+        </div>
+        <div className="buttons-group" style={{ flexWrap: "wrap", marginTop: "16px" }}>
           <Link href="/products" className="button">
             Quản lý sản phẩm
           </Link>
@@ -28,6 +36,18 @@ export default function AdminPage() {
           </Link>
           <Link href="/inventory" className="button">
             Quản lý kho
+          </Link>
+          <Link href="/customers" className="button">
+            Quản lý khách hàng
+          </Link>
+          <Link href="/vouchers" className="button">
+            Quản lý voucher
+          </Link>
+          <Link href="/users" className="button">
+            Quản lý nhân viên
+          </Link>
+          <Link href="/reports" className="button">
+            Báo cáo & Thống kê
           </Link>
           <Link href="/" className="button">
             Về trang chủ

@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { getAuth, logout } from "../lib/auth";
 
-const allowedRoles = ["bookkeeper"];
+const allowedRoles = ["bookkeeper", "accountant"];
 
 export default function BookkeeperPage() {
   const router = useRouter();
@@ -51,12 +51,19 @@ export default function BookkeeperPage() {
           <li>Kiểm tra doanh thu và chi phí</li>
           <li>Quản lý hóa đơn và thu chi</li>
         </ul>
-        <button className="button" onClick={handleLogout}>
-          Đăng xuất
-        </button>
-        <Link href="/" className="button">
-          Quay lại trang chủ
-        </Link>
+        <div className="buttons-group" style={{ marginBottom: "16px" }}>
+          <Link href="/reports" className="button">
+            Xem báo cáo doanh số & tài chính
+          </Link>
+        </div>
+        <div className="buttons-group">
+          <button className="button" onClick={handleLogout}>
+            Đăng xuất
+          </button>
+          <Link href="/" className="button">
+            Quay lại trang chủ
+          </Link>
+        </div>
       </section>
     </main>
   );

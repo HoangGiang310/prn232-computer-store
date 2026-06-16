@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
-import { fetchOrders, updateOrderStatus } from "../lib/api";
+import { fetchOrders, updateOrderStatus, fetchReturns, createReturn, processReturn } from "../lib/api";
+import { getAuth } from "../lib/auth";
 
 type OrderItem = {
   id: string;
@@ -42,6 +43,8 @@ const statusOptions = [
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
+  const [returns, setReturns] = useState<any[]>([]);
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
@@ -54,6 +57,8 @@ export default function OrdersPage() {
 
   useEffect(() => {
     loadOrders();
+    loadReturns();
+    setCurrentUser(getAuth());
   }, []);
 
   async function loadOrders() {
@@ -70,6 +75,15 @@ export default function OrdersPage() {
     }
   }
 
+  async function loadReturns() {
+    try {
+      const result = await fetchReturns();
+      setReturns(result);
+    } catch (err) {
+      console.error("Không thể tải danh sách trả hàng", err);
+    }
+  }
+
   async function handleSaveStatus(order: Order) {
     const nextStatus = statusUpdates[order.id] || order.orderStatus;
     if (!nextStatus || nextStatus === order.orderStatus) return;
@@ -77,7 +91,8 @@ export default function OrdersPage() {
     setError("");
 
     try {
-      await updateOrderStatus(order.id, { orderStatus: nextStatus });
+      const token = currentUser?.token;
+      await updateOrderStatus(order.id, { orderStatus: nextStatus }, token);
       await loadOrders();
       setExpandedOrderId(order.id);
     } catch (err) {
@@ -88,6 +103,39 @@ export default function OrdersPage() {
       );
     } finally {
       setSavingId(null);
+    }
+  }
+
+  async function handleRequestReturn(orderId: string) {
+    const reason = prompt("Nhập lý do trả hàng / hoàn tiền:");
+    if (!reason || !reason.trim()) return;
+
+    try {
+      const token = currentUser?.token;
+      await createReturn(orderId, reason.trim(), token);
+      alert("Đã tạo yêu cầu hoàn trả thành công. Vui lòng chờ bộ phận quản lý duyệt.");
+      await loadOrders();
+      await loadReturns();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Lỗi tạo yêu cầu hoàn trả.");
+    }
+  }
+
+  async function handleProcessReturn(returnId: string, status: string) {
+    const confirmMsg = status === "Refunded"
+      ? "Đồng ý hoàn tiền đơn hàng này và tự động CỘNG lại số lượng tồn kho sản phẩm?"
+      : "Từ chối yêu cầu hoàn trả này?";
+
+    if (!confirm(confirmMsg)) return;
+
+    try {
+      const token = currentUser?.token;
+      await processReturn(returnId, status, currentUser?.id, token);
+      alert("Xử lý phiếu trả hàng thành công.");
+      await loadOrders();
+      await loadReturns();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Lỗi xử lý hoàn trả.");
     }
   }
 
@@ -268,6 +316,45 @@ export default function OrdersPage() {
                                   : "Cập nhật trạng thái"}
                               </button>
                             </div>
+
+                            {/* Section: Đổi trả / Hoàn tiền */}
+                            {(() => {
+                              const activeReturn = returns.find(r => r.orderId === order.id);
+                              if (activeReturn) {
+                                return (
+                                  <div style={{ padding: "12px", border: "1px dashed #D1D5DB", borderRadius: "6px", background: "#FFFBEB", marginTop: "8px" }}>
+                                    <h4 style={{ margin: "0 0 8px 0", color: "#B45309" }}>Yêu cầu trả hàng & hoàn tiền:</h4>
+                                    <p style={{ margin: "0 0 4px 0" }}><strong>Lý do:</strong> {activeReturn.reason}</p>
+                                    <p style={{ margin: "0 0 4px 0" }}><strong>Tiền hoàn lại:</strong> {activeReturn.refundAmount.toLocaleString("vi-VN")} ₫</p>
+                                    <p style={{ margin: "0 0 8px 0" }}>
+                                      <strong>Trạng thái phiếu:</strong>{" "}
+                                      <span style={{ fontWeight: "bold", color: activeReturn.status === "Refunded" ? "#10B981" : activeReturn.status === "Rejected" ? "#EF4444" : "#F59E0B" }}>
+                                        {activeReturn.status === "Requested" ? "Chờ duyệt" : activeReturn.status === "Refunded" ? "Đã hoàn tiền" : "Bị từ chối"}
+                                      </span>
+                                    </p>
+                                    {activeReturn.status === "Requested" && (currentUser?.role === "admin" || currentUser?.role === "sales" || currentUser?.role === "staff") && (
+                                      <div style={{ display: "flex", gap: "8px" }}>
+                                        <button className="button" style={{ padding: "4px 8px", fontSize: "12px", backgroundColor: "#10B981" }} onClick={() => handleProcessReturn(activeReturn.id, "Refunded")}>
+                                          Đồng ý & Hoàn kho
+                                        </button>
+                                        <button className="button" style={{ padding: "4px 8px", fontSize: "12px", backgroundColor: "#EF4444" }} onClick={() => handleProcessReturn(activeReturn.id, "Rejected")}>
+                                          Từ chối yêu cầu
+                                        </button>
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              } else if (order.orderStatus === "Delivered") {
+                                return (
+                                  <div style={{ marginTop: "8px" }}>
+                                    <button className="button" style={{ backgroundColor: "#F59E0B" }} onClick={() => handleRequestReturn(order.id)}>
+                                      Yêu cầu trả hàng / Hoàn tiền
+                                    </button>
+                                  </div>
+                                );
+                              }
+                              return null;
+                            })()}
                           </div>
                         </td>
                       </tr>

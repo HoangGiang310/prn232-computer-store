@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { getAuth, logout } from "../lib/auth";
 
-const allowedRoles = ["staff"];
+const allowedRoles = ["staff", "sales"];
 
 export default function StaffPage() {
   const router = useRouter();
@@ -63,6 +63,9 @@ export default function StaffPage() {
           </Link>
           <Link href="/inventory" className="button">
             Quản lý kho
+          </Link>
+          <Link href="/customers" className="button">
+            Quản lý khách hàng
           </Link>
         </div>
         <div className="buttons-group" style={{ marginTop: "16px" }}>

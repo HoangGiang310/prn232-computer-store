@@ -178,3 +178,222 @@ export async function adjustInventory(
 
   return body;
 }
+
+// ==========================================
+// CUSTOMERS API WRAPPERS
+// ==========================================
+export async function fetchCustomers(search?: string) {
+  const query = search ? `?search=${encodeURIComponent(search)}` : "";
+  const res = await fetch(`${apiBaseUrl}/api/customers${query}`);
+  if (!res.ok) throw new Error("Không thể tải danh sách khách hàng");
+  return res.json();
+}
+
+export async function fetchCustomerById(id: string) {
+  const res = await fetch(`${apiBaseUrl}/api/customers/${id}`);
+  if (!res.ok) throw new Error("Không thể tải thông tin khách hàng");
+  return res.json();
+}
+
+export async function fetchCustomerOrders(id: string) {
+  const res = await fetch(`${apiBaseUrl}/api/customers/${id}/orders`);
+  if (!res.ok) throw new Error("Không thể tải lịch sử mua hàng");
+  return res.json();
+}
+
+export async function createCustomer(customer: any, token?: string) {
+  const res = await fetch(`${apiBaseUrl}/api/customers`, {
+    method: "POST",
+    headers: authHeaders(token),
+    body: JSON.stringify(customer),
+  });
+  const body = await res.json().catch(() => null);
+  if (!res.ok) throw new Error(body?.message || "Không thể tạo khách hàng.");
+  return body;
+}
+
+export async function updateCustomer(id: string, customer: any, token?: string) {
+  const res = await fetch(`${apiBaseUrl}/api/customers/${id}`, {
+    method: "PUT",
+    headers: authHeaders(token),
+    body: JSON.stringify(customer),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    throw new Error(body?.message || "Không thể cập nhật khách hàng.");
+  }
+}
+
+export async function deleteCustomer(id: string, token?: string) {
+  const res = await fetch(`${apiBaseUrl}/api/customers/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(token),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    throw new Error(body?.message || "Không thể xóa khách hàng.");
+  }
+}
+
+// ==========================================
+// VOUCHERS API WRAPPERS
+// ==========================================
+export async function fetchVouchers() {
+  const res = await fetch(`${apiBaseUrl}/api/vouchers`);
+  if (!res.ok) throw new Error("Không thể tải danh sách voucher");
+  return res.json();
+}
+
+export async function fetchVoucherByCode(code: string) {
+  const res = await fetch(`${apiBaseUrl}/api/vouchers/${code}`);
+  if (!res.ok) throw new Error("Không thể kiểm tra voucher");
+  return res.json();
+}
+
+export async function createVoucher(voucher: any, token?: string) {
+  const res = await fetch(`${apiBaseUrl}/api/vouchers`, {
+    method: "POST",
+    headers: authHeaders(token),
+    body: JSON.stringify(voucher),
+  });
+  const body = await res.json().catch(() => null);
+  if (!res.ok) throw new Error(body?.message || "Không thể tạo voucher.");
+  return body;
+}
+
+export async function updateVoucher(code: string, voucher: any, token?: string) {
+  const res = await fetch(`${apiBaseUrl}/api/vouchers/${code}`, {
+    method: "PUT",
+    headers: authHeaders(token),
+    body: JSON.stringify(voucher),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    throw new Error(body?.message || "Không thể cập nhật voucher.");
+  }
+}
+
+export async function deleteVoucher(code: string, token?: string) {
+  const res = await fetch(`${apiBaseUrl}/api/vouchers/${code}`, {
+    method: "DELETE",
+    headers: authHeaders(token),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    throw new Error(body?.message || "Không thể xóa voucher.");
+  }
+}
+
+// ==========================================
+// USERS / EMPLOYEES API WRAPPERS
+// ==========================================
+export async function fetchUsers() {
+  const res = await fetch(`${apiBaseUrl}/api/users`);
+  if (!res.ok) throw new Error("Không thể tải danh sách nhân viên");
+  return res.json();
+}
+
+export async function fetchUserById(id: string) {
+  const res = await fetch(`${apiBaseUrl}/api/users/${id}`);
+  if (!res.ok) throw new Error("Không thể tải thông tin nhân viên");
+  return res.json();
+}
+
+export async function createUser(user: any, token?: string) {
+  const res = await fetch(`${apiBaseUrl}/api/users`, {
+    method: "POST",
+    headers: authHeaders(token),
+    body: JSON.stringify(user),
+  });
+  const body = await res.json().catch(() => null);
+  if (!res.ok) throw new Error(body?.message || "Không thể tạo nhân viên.");
+  return body;
+}
+
+export async function updateUser(id: string, user: any, token?: string) {
+  const res = await fetch(`${apiBaseUrl}/api/users/${id}`, {
+    method: "PUT",
+    headers: authHeaders(token),
+    body: JSON.stringify(user),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    throw new Error(body?.message || "Không thể cập nhật nhân viên.");
+  }
+}
+
+export async function resetUserPassword(id: string, newPassword?: string, token?: string) {
+  const res = await fetch(`${apiBaseUrl}/api/users/${id}/reset-password`, {
+    method: "PUT",
+    headers: authHeaders(token),
+    body: JSON.stringify({ newPassword }),
+  });
+  const body = await res.json().catch(() => null);
+  if (!res.ok) throw new Error(body?.message || "Không thể đặt lại mật khẩu.");
+  return body;
+}
+
+export async function deleteUser(id: string, token?: string) {
+  const res = await fetch(`${apiBaseUrl}/api/users/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(token),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    throw new Error(body?.message || "Không thể vô hiệu hóa nhân viên.");
+  }
+}
+
+// ==========================================
+// REPORTS API WRAPPERS
+// ==========================================
+export async function fetchSalesReport(startDate?: string, endDate?: string) {
+  const query = `?startDate=${startDate || ""}&endDate=${endDate || ""}`;
+  const res = await fetch(`${apiBaseUrl}/api/reports/sales${query}`);
+  if (!res.ok) throw new Error("Không thể tải báo cáo doanh thu");
+  return res.json();
+}
+
+export async function fetchTopSellingProducts(limit?: number) {
+  const query = limit ? `?limit=${limit}` : "";
+  const res = await fetch(`${apiBaseUrl}/api/reports/top-selling${query}`);
+  if (!res.ok) throw new Error("Không thể tải sản phẩm bán chạy");
+  return res.json();
+}
+
+export async function fetchInventoryStatusReport() {
+  const res = await fetch(`${apiBaseUrl}/api/reports/inventory-status`);
+  if (!res.ok) throw new Error("Không thể tải trạng thái kho");
+  return res.json();
+}
+
+// ==========================================
+// RETURNS API WRAPPERS
+// ==========================================
+export async function fetchReturns() {
+  const res = await fetch(`${apiBaseUrl}/api/returns`);
+  if (!res.ok) throw new Error("Không thể tải danh sách phiếu trả hàng");
+  return res.json();
+}
+
+export async function createReturn(orderId: string, reason: string, token?: string) {
+  const res = await fetch(`${apiBaseUrl}/api/returns`, {
+    method: "POST",
+    headers: authHeaders(token),
+    body: JSON.stringify({ orderId, reason }),
+  });
+  const body = await res.json().catch(() => null);
+  if (!res.ok) throw new Error(body?.message || "Không thể tạo phiếu trả hàng.");
+  return body;
+}
+
+export async function processReturn(id: string, status: string, processedById?: string, token?: string) {
+  const res = await fetch(`${apiBaseUrl}/api/returns/${id}/process`, {
+    method: "PUT",
+    headers: authHeaders(token),
+    body: JSON.stringify({ status, processedById }),
+  });
+  const body = await res.json().catch(() => null);
+  if (!res.ok) throw new Error(body?.message || "Không thể duyệt trả hàng.");
+  return body;
+}
