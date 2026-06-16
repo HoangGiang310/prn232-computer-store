@@ -172,7 +172,7 @@ export default function CreateOrderPage() {
             }}
           >
             <div style={{ padding: "20px", borderRadius: "14px", background: "#f8fafc" }}>
-              <h3 style={{ marginTop: 0 }}>Thông tin đơn</h3>
+              <h3 className="section-title-center">Thông Tin Đơn</h3>
               <label style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "16px" }}>
                 <span>Kênh bán</span>
                 <select
@@ -215,7 +215,7 @@ export default function CreateOrderPage() {
             </div>
 
             <div style={{ padding: "20px", borderRadius: "14px", background: "#f8fafc" }}>
-              <h3 style={{ marginTop: 0 }}>Khách hàng & giao nhận</h3>
+              <h3 className="section-title-center">Thông Tin Khách Hàng</h3>
               <label style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "16px" }}>
                 <span>Tên người nhận</span>
                 <input
@@ -250,13 +250,13 @@ export default function CreateOrderPage() {
           </div>
 
           <div className="card" style={{ marginTop: "16px" }}>
-            <h2>Chi tiết sản phẩm</h2>
+            <h2 className="section-title-center">Chi Tiết Sản Phẩm</h2>
             {items.map((item) => (
               <div
                 key={item.id}
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "2fr 1fr 1fr auto",
+                  gridTemplateColumns: "2fr 1fr 1fr",
                   gap: "12px",
                   alignItems: "end",
                   marginBottom: "16px",
@@ -304,25 +304,34 @@ export default function CreateOrderPage() {
                   Giá bán
                   <input type="number" value={item.unitPrice} readOnly />
                 </label>
+              </div>
+            ))}
+            <div className="product-actions-row" style={{ marginTop: "16px" }}>
+              <div>
+                <button type="button" className="button" onClick={addLineItem}>
+                  Thêm sản phẩm
+                </button>
+              </div>
+              <div>
                 <button
                   type="button"
                   className="button"
-                  onClick={() => removeLineItem(item.id)}
-                  style={{ padding: "8px 14px", minHeight: "40px" }}
+                  onClick={() => {
+                    // remove last item
+                    setItems((current) =>
+                      current.length <= 1 ? [defaultLineItem()] : current.slice(0, -1),
+                    );
+                  }}
+                  style={{ marginLeft: "12px", background: "#ef4444" }}
                 >
                   Xóa
                 </button>
               </div>
-            ))}
-            <div style={{ marginTop: "16px" }}>
-              <button type="button" className="button" onClick={addLineItem}>
-                Thêm sản phẩm
-              </button>
             </div>
           </div>
 
           <div className="card" style={{ marginTop: "16px" }}>
-            <h2>Voucher</h2>
+            <h2 className="section-title-center">Voucher</h2>
             <div className="input-group">
               <label>
                 Mã voucher
@@ -336,7 +345,7 @@ export default function CreateOrderPage() {
           </div>
 
           <section className="card" style={{ marginTop: "16px" }}>
-            <h2>Tóm tắt đơn hàng</h2>
+            <h2 className="section-title-center">Tóm Tắt Thông Tin Đơn Hàng</h2>
             <p>
               Tổng tiền hàng:{" "}
               {totalAmount.toLocaleString("vi-VN", {

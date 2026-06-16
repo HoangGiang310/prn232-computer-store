@@ -47,7 +47,7 @@ export default function Home() {
 
       <div className="copyright-row">
         <span className="copyright-line" />
-        <p>© 2026 TQG Shop - Giai đoạn phát triển giao diện</p>
+        <p>© Copyright by DevTeam - Do Not Reup</p>
         <span className="copyright-line" />
       </div>
     </main>
