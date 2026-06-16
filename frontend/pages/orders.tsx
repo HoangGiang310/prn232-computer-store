@@ -252,6 +252,7 @@ export default function OrdersPage() {
       </section>
 
       <section className="card">
+        <h2 className="product-list-title">Danh Sách Đơn Hàng</h2>
         {error ? <p className="error">{error}</p> : null}
         {loading ? (
           <p>Đang tải đơn hàng...</p>
@@ -259,7 +260,7 @@ export default function OrdersPage() {
           <p>Không có đơn hàng để hiển thị.</p>
         ) : (
           <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <table className="order-list-table">
               <thead>
                 <tr>
                   <th>Đơn hàng</th>
@@ -312,22 +313,21 @@ export default function OrdersPage() {
                       <tr key={`${order.id}-details`}>
                         <td
                           colSpan={8}
-                          style={{ padding: "16px", background: "#f9fafb" }}
+                          style={{ padding: "16px", background: "#f3f4f6" }}
                         >
-                          <div style={{ display: "grid", gap: "12px" }}>
-                            <div>
-                              <strong>Địa chỉ giao nhận:</strong>{" "}
-                              {order.shippingName} | {order.shippingPhone} |{" "}
-                              {order.shippingAddress}
+                          <div className="order-detail-grid">
+                            <div className="order-detail-card">
+                              <strong>Địa chỉ giao nhận:</strong>
+                              <div style={{ marginTop: "8px", color: "#374151" }}>
+                                {order.shippingName} | {order.shippingPhone} | {order.shippingAddress}
+                              </div>
                             </div>
-                            <div>
+                            <div className="order-detail-card">
                               <strong>Chi tiết sản phẩm:</strong>
-                              <ul>
+                              <ul style={{ marginTop: "8px" }}>
                                 {order.orderItems?.map((item) => (
                                   <li key={item.id}>
-                                    {item.product?.name ?? item.productId} x{" "}
-                                    {item.quantity} @{" "}
-                                    {item.unitPrice.toLocaleString("vi-VN", {
+                                    {item.product?.name ?? item.productId} x {item.quantity} @ {item.unitPrice.toLocaleString("vi-VN", {
                                       style: "currency",
                                       currency: "VND",
                                     })}
@@ -335,43 +335,45 @@ export default function OrdersPage() {
                                 ))}
                               </ul>
                             </div>
-                            <div
-                              style={{
-                                display: "flex",
-                                gap: "12px",
-                                flexWrap: "wrap",
-                                alignItems: "center",
-                              }}
-                            >
-                              <label>
-                                Trạng thái mới
-                                <select
-                                  value={
-                                    statusUpdates[order.id] ?? order.orderStatus
-                                  }
-                                  onChange={(e) =>
-                                    setStatusUpdates((prev) => ({
-                                      ...prev,
-                                      [order.id]: e.target.value,
-                                    }))
-                                  }
-                                >
-                                  {statusOptions.map((status) => (
-                                    <option key={status} value={status}>
-                                      {status}
-                                    </option>
-                                  ))}
-                                </select>
-                              </label>
-                              <button
-                                className="button"
-                                disabled={savingId === order.id}
-                                onClick={() => handleSaveStatus(order)}
+                            <div className="order-detail-card">
+                              <div
+                                style={{
+                                  display: "flex",
+                                  gap: "12px",
+                                  flexWrap: "wrap",
+                                  alignItems: "center",
+                                }}
                               >
-                                {savingId === order.id
-                                  ? "Đang lưu..."
-                                  : "Cập nhật trạng thái"}
-                              </button>
+                                <label>
+                                  Trạng thái mới
+                                  <select
+                                    value={
+                                      statusUpdates[order.id] ?? order.orderStatus
+                                    }
+                                    onChange={(e) =>
+                                      setStatusUpdates((prev) => ({
+                                        ...prev,
+                                        [order.id]: e.target.value,
+                                      }))
+                                    }
+                                  >
+                                    {statusOptions.map((status) => (
+                                      <option key={status} value={status}>
+                                        {status}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </label>
+                                <button
+                                  className="button"
+                                  disabled={savingId === order.id}
+                                  onClick={() => handleSaveStatus(order)}
+                                >
+                                  {savingId === order.id
+                                    ? "Đang lưu..."
+                                    : "Cập nhật trạng thái"}
+                                </button>
+                              </div>
                             </div>
 
                             {/* Section: Đổi trả / Hoàn tiền */}
@@ -379,7 +381,7 @@ export default function OrdersPage() {
                               const activeReturn = returns.find(r => r.orderId === order.id);
                               if (activeReturn) {
                                 return (
-                                  <div style={{ padding: "12px", border: "1px dashed #D1D5DB", borderRadius: "6px", background: "#FFFBEB", marginTop: "8px" }}>
+                                  <div className="order-detail-card order-detail-return-card">
                                     <h4 style={{ margin: "0 0 8px 0", color: "#B45309" }}>Yêu cầu trả hàng & hoàn tiền:</h4>
                                     <p style={{ margin: "0 0 4px 0" }}><strong>Lý do:</strong> {activeReturn.reason}</p>
                                     <p style={{ margin: "0 0 4px 0" }}><strong>Tiền hoàn lại:</strong> {activeReturn.refundAmount.toLocaleString("vi-VN")} ₫</p>
@@ -403,7 +405,7 @@ export default function OrdersPage() {
                                 );
                               } else if (order.orderStatus === "Delivered") {
                                 return (
-                                  <div style={{ marginTop: "8px" }}>
+                                  <div className="order-detail-card">
                                     <button className="button" style={{ backgroundColor: "#F59E0B" }} onClick={() => handleRequestReturn(order.id)}>
                                       Yêu cầu trả hàng / Hoàn tiền
                                     </button>

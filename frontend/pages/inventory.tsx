@@ -128,7 +128,7 @@ export default function InventoryPage() {
   return (
     <main className="main">
       <section className="card header">
-        <h1>Quản lý kho</h1>
+        <h1>Quản Lý Kho Hàng</h1>
         <p>Quản lý tồn kho, điều chỉnh xuất nhập và xem lịch sử thay đổi.</p>
       </section>
 
@@ -184,7 +184,7 @@ export default function InventoryPage() {
           <div style={{ flex: 2, minWidth: "320px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div>
-                <h2>Tồn kho hiện tại</h2>
+                <h2 className="section-title-center">Kho Hàng Hiện Tại</h2>
                 <p>Hiển thị tất cả sản phẩm đang quản lý trong kho.</p>
               </div>
             </div>
@@ -208,38 +208,29 @@ export default function InventoryPage() {
               <p>Đang tải dữ liệu kho...</p>
             ) : (
               <div style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                <table className="inventory-table">
                   <thead>
                     <tr>
-                      <th style={{ textAlign: "left", padding: "12px" }}>Mã SP</th>
-                      <th style={{ textAlign: "left", padding: "12px" }}>Tên</th>
-                      <th style={{ textAlign: "left", padding: "12px" }}>Hãng</th>
-                      <th style={{ textAlign: "right", padding: "12px" }}>Giá</th>
-                      <th style={{ textAlign: "right", padding: "12px" }}>Tồn kho</th>
-                      <th style={{ textAlign: "right", padding: "12px" }}>Ngưỡng</th>
+                      <th>Mã SP</th>
+                      <th>Tên</th>
+                      <th>Hãng</th>
+                      <th style={{ textAlign: "right" }}>Giá</th>
+                      <th style={{ textAlign: "right" }}>Tồn kho</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredProducts.map((product) => (
-                      <tr
-                        key={product.id}
-                        style={
-                          product.stockQuantity <= product.lowStockThreshold
-                            ? { background: "#fef2f2" }
-                            : {}
-                        }
-                      >
-                        <td style={{ padding: "12px" }}>{product.productCode}</td>
-                        <td style={{ padding: "12px" }}>{product.name}</td>
-                        <td style={{ padding: "12px" }}>{product.brand}</td>
-                        <td style={{ padding: "12px", textAlign: "right" }}>
+                      <tr key={product.id} className={product.stockQuantity <= product.lowStockThreshold ? 'low-stock' : ''}>
+                        <td>{product.productCode}</td>
+                        <td>{product.name}</td>
+                        <td>{product.brand}</td>
+                        <td className="price-cell" style={{ textAlign: "right" }}>
                           {product.price.toLocaleString("vi-VN", {
                             style: "currency",
                             currency: "VND",
                           })}
                         </td>
-                        <td style={{ padding: "12px", textAlign: "right" }}>{product.stockQuantity}</td>
-                        <td style={{ padding: "12px", textAlign: "right" }}>{product.lowStockThreshold}</td>
+                        <td style={{ textAlign: "right" }}>{product.stockQuantity}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -251,7 +242,7 @@ export default function InventoryPage() {
           <div style={{ flex: 1, minWidth: "320px", display: "flex", flexDirection: "column" }}>
             <div style={{ padding: "16px", borderRadius: "16px", background: "#f8fafc", flex: 1, display: "flex", flexDirection: "column" }}>
               <div style={{ flex: 1 }}>
-                <h2>Điều chỉnh tồn kho</h2>
+                <h2 className="section-title-center">Chỉnh Sửa Kho Hàng</h2>
                 <p>Chọn sản phẩm, khai báo số lượng và lưu thay đổi.</p>
 
                 <form onSubmit={handleSubmit} className="login-form" style={{ marginTop: "16px" }}>
@@ -305,13 +296,13 @@ export default function InventoryPage() {
                   </div>
 
                   {selectedProduct ? (
-                    <div style={{ marginBottom: "16px", padding: "12px", background: "#ffffff", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
+                    <div className="inventory-selected-card">
                       <strong>Thông tin sản phẩm:</strong>
                       <p style={{ margin: "8px 0 0" }}>
                         {selectedProduct.productCode} - {selectedProduct.name}
                       </p>
                       <p style={{ margin: "8px 0 0" }}>
-                        Tồn kho hiện tại: {selectedProduct.stockQuantity}
+                        Kho Hàng Hiện Tại: {selectedProduct.stockQuantity}
                       </p>
                     </div>
                   ) : null}
@@ -336,7 +327,7 @@ export default function InventoryPage() {
       <section className="card">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
-            <h2>Lịch sử điều chỉnh kho</h2>
+            <h2 className="section-title-center">Lịch Sử Chỉnh Sửa</h2>
             <p>Xem lại các thao tác nhập, xuất và điều chỉnh tồn kho.</p>
           </div>
         </div>
@@ -344,35 +335,44 @@ export default function InventoryPage() {
         {history.length === 0 ? (
           <p>Chưa có lịch sử điều chỉnh.</p>
         ) : (
-          <div style={{ overflowX: "auto", marginTop: "16px" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
-              <thead>
-                <tr>
-                  <th style={{ padding: "12px", textAlign: "left" }}>Ngày</th>
-                  <th style={{ padding: "12px", textAlign: "left" }}>Sản phẩm</th>
-                  <th style={{ padding: "12px", textAlign: "left" }}>Loại</th>
-                  <th style={{ padding: "12px", textAlign: "right" }}>Thay đổi</th>
-                  <th style={{ padding: "12px", textAlign: "right" }}>Tồn mới</th>
-                  <th style={{ padding: "12px", textAlign: "left" }}>Ghi chú</th>
-                </tr>
-              </thead>
-              <tbody>
-                {history.map((item) => (
-                  <tr key={item.id}>
-                    <td style={{ padding: "12px" }}>
-                      {new Date(item.changeDate).toLocaleString("vi-VN")}
-                    </td>
-                    <td style={{ padding: "12px" }}>
-                      {item.product ? `${item.product.productCode} - ${item.product.name}` : "N/A"}
-                    </td>
-                    <td style={{ padding: "12px" }}>{item.changeType}</td>
-                    <td style={{ padding: "12px", textAlign: "right" }}>{item.quantityChanged}</td>
-                    <td style={{ padding: "12px", textAlign: "right" }}>{item.newStock}</td>
-                    <td style={{ padding: "12px" }}>{item.note}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div style={{ display: "grid", gap: "12px", marginTop: "16px" }}>
+            {history.map((item) => (
+              <div key={item.id} className="history-item-card">
+                <div className="history-item-grid">
+                  <div className="history-field-box">
+                    <div className="history-field-label">Thời gian</div>
+                    <div className="history-field-value">{new Date(item.changeDate).toLocaleString("vi-VN")}</div>
+                  </div>
+
+                  <div className="history-field-box">
+                    <div className="history-field-label">Sản phẩm</div>
+                    <div className="history-field-value">{item.product ? `${item.product.productCode} - ${item.product.name}` : "N/A"}</div>
+                  </div>
+
+                  <div className="history-field-box">
+                    <div className="history-field-label">Loại</div>
+                    <div className="history-field-value">{item.changeType}</div>
+                  </div>
+
+                  <div className="history-field-box">
+                    <div className="history-field-label">Thay đổi</div>
+                    <div className="history-field-value">{item.quantityChanged}</div>
+                  </div>
+
+                  <div className="history-field-box">
+                    <div className="history-field-label">Tồn mới</div>
+                    <div className="history-field-value">{item.newStock}</div>
+                  </div>
+
+                  {item.note ? (
+                    <div className="history-field-box">
+                      <div className="history-field-label">Ghi chú</div>
+                      <div className="history-field-value">{item.note}</div>
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </section>

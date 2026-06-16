@@ -211,7 +211,7 @@ export default function ProductsPage() {
 
           <form onSubmit={handleSave} className="login-form" style={{ marginTop: "24px" }}>
             <div style={{ display: "grid", gap: "18px", width: "100%", maxWidth: "780px" }}>
-              <label style={{ display: "flex", alignItems: "center", gap: "18px", justifyContent: "space-between" }}>
+              <label className="product-field-card" style={{ display: "flex", alignItems: "center", gap: "18px", justifyContent: "space-between" }}>
                 <span style={{ minWidth: "180px", fontWeight: 600 }}>Mã sản phẩm</span>
                 <input
                   type="text"
@@ -226,7 +226,7 @@ export default function ProductsPage() {
                   style={{ flex: 1, minWidth: "280px" }}
                 />
               </label>
-              <label style={{ display: "flex", alignItems: "center", gap: "18px", justifyContent: "space-between" }}>
+              <label className="product-field-card" style={{ display: "flex", alignItems: "center", gap: "18px", justifyContent: "space-between" }}>
                 <span style={{ minWidth: "180px", fontWeight: 600 }}>Tên sản phẩm</span>
                 <input
                   type="text"
@@ -238,7 +238,7 @@ export default function ProductsPage() {
                   style={{ flex: 1, minWidth: "280px" }}
                 />
               </label>
-              <label style={{ display: "flex", alignItems: "center", gap: "18px", justifyContent: "space-between" }}>
+              <label className="product-field-card" style={{ display: "flex", alignItems: "center", gap: "18px", justifyContent: "space-between" }}>
                 <span style={{ minWidth: "180px", fontWeight: 600 }}>Hãng</span>
                 <input
                   type="text"
@@ -250,7 +250,7 @@ export default function ProductsPage() {
                   style={{ flex: 1, minWidth: "280px" }}
                 />
               </label>
-              <label style={{ display: "grid", gap: "10px", maxWidth: "50%" }}>
+              <label className="product-field-card" style={{ display: "grid", gap: "10px", maxWidth: "50%" }}>
                 <span style={{ fontWeight: 600 }}>Cấu hình</span>
                 <textarea
                   value={formData.specifications}
@@ -265,7 +265,7 @@ export default function ProductsPage() {
                   style={{ width: "100%", minHeight: "110px" }}
                 />
               </label>
-              <label style={{ display: "flex", alignItems: "center", gap: "18px", justifyContent: "space-between" }}>
+              <label className="product-field-card" style={{ display: "flex", alignItems: "center", gap: "18px", justifyContent: "space-between" }}>
                 <span style={{ minWidth: "180px", fontWeight: 600 }}>Giá nhập</span>
                 <input
                   type="number"
@@ -278,10 +278,10 @@ export default function ProductsPage() {
                     }))
                   }
                   required
-                  style={{ flex: 1, minWidth: "280px" }}
+                  style={{ flex: 1, minWidth: "280px", textAlign: "center" }}
                 />
               </label>
-              <label style={{ display: "flex", alignItems: "center", gap: "18px", justifyContent: "space-between" }}>
+              <label className="product-field-card" style={{ display: "flex", alignItems: "center", gap: "18px", justifyContent: "space-between" }}>
                 <span style={{ minWidth: "180px", fontWeight: 600 }}>Giá bán</span>
                 <input
                   type="number"
@@ -294,10 +294,10 @@ export default function ProductsPage() {
                     }))
                   }
                   required
-                  style={{ flex: 1, minWidth: "280px" }}
+                  style={{ flex: 1, minWidth: "280px", textAlign: "center" }}
                 />
               </label>
-              <label style={{ display: "flex", alignItems: "center", gap: "18px", justifyContent: "space-between" }}>
+              <label className="product-field-card" style={{ display: "flex", alignItems: "center", gap: "18px", justifyContent: "space-between" }}>
                 <span style={{ minWidth: "180px", fontWeight: 600 }}>Tồn kho</span>
                 <input
                   type="number"
@@ -309,10 +309,10 @@ export default function ProductsPage() {
                     }))
                   }
                   required
-                  style={{ flex: 1, minWidth: "280px" }}
+                  style={{ flex: 1, minWidth: "280px", textAlign: "center" }}
                 />
               </label>
-              <label style={{ display: "flex", alignItems: "center", gap: "18px", justifyContent: "space-between" }}>
+              <label className="product-field-card" style={{ display: "flex", alignItems: "center", gap: "18px", justifyContent: "space-between" }}>
                 <span style={{ minWidth: "180px", fontWeight: 600 }}>Ngưỡng cảnh báo tồn kho</span>
                 <input
                   type="number"
@@ -324,7 +324,7 @@ export default function ProductsPage() {
                     }))
                   }
                   required
-                  style={{ flex: 1, minWidth: "280px" }}
+                  style={{ flex: 1, minWidth: "280px", textAlign: "center" }}
                 />
               </label>
             </div>
@@ -354,7 +354,7 @@ export default function ProductsPage() {
       ) : null}
 
       <section className="card">
-        <h2>Danh sách sản phẩm</h2>
+        <h2 className="product-list-title">Danh Sách Sản Phẩm</h2>
         {error ? <p className="error">{error}</p> : null}
         {loading ? (
           <p>Đang tải dữ liệu...</p>
@@ -362,7 +362,7 @@ export default function ProductsPage() {
           <p>Không có sản phẩm để hiển thị.</p>
         ) : (
           <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <table className="product-list-table">
               <thead>
                 <tr>
                   <th>Mã SP</th>
@@ -388,19 +388,21 @@ export default function ProductsPage() {
                     </td>
                     <td>{product.stockQuantity}</td>
                     <td>{product.lowStockThreshold}</td>
-                    <td>
-                      <button
-                        className="button"
-                        onClick={() => handleEdit(product)}
-                      >
-                        Sửa
-                      </button>
-                      <button
-                        className="button register-button"
-                        onClick={() => handleDelete(product.id)}
-                      >
-                        Xóa
-                      </button>
+                    <td className="action-buttons-cell">
+                      <div className="action-buttons-column">
+                        <button
+                          className="button product-action-button"
+                          onClick={() => handleEdit(product)}
+                        >
+                          Sửa
+                        </button>
+                        <button
+                          className="button register-button product-action-button"
+                          onClick={() => handleDelete(product.id)}
+                        >
+                          Xóa
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
