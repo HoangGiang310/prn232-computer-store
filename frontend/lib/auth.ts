@@ -35,15 +35,18 @@ export function isLoggedIn(): boolean {
 }
 
 export function getRedirectFromRole(role: string) {
-  switch (role) {
+  switch (role?.toLowerCase()) {
     case "admin":
       return "/admin";
+    case "sales":
     case "staff":
       return "/staff";
     case "customer":
       return "/customer";
+    case "accountant":
     case "bookkeeper":
       return "/bookkeeper";
+    case "warehouse":
     case "manager":
       return "/manager";
     default:

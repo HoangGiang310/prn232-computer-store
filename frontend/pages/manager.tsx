@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { getAuth, logout } from "../lib/auth";
 
-const allowedRoles = ["manager"];
+const allowedRoles = ["manager", "warehouse"];
 
 export default function ManagerPage() {
   const router = useRouter();

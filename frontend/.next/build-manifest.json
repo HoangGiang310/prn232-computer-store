@@ -32,15 +32,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/admin.js"
     ],
-    "/create-order": [
+    "/login": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/create-order.js"
-    ],
-    "/inventory": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/inventory.js"
+      "static/chunks/pages/login.js"
     ],
     "/orders": [
       "static/chunks/webpack.js",
@@ -51,6 +46,11 @@
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/products.js"
+    ],
+    "/reports": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/reports.js"
     ]
   },
   "ampFirstPages": []
