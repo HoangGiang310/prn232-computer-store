@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ namespace ComputerStoreApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "admin,warehouse,sales")]
     public class InventoryController : ControllerBase
     {
         private readonly AppDbContext _dbContext;
@@ -44,7 +46,33 @@ namespace ComputerStoreApi.Controllers
                 .OrderByDescending(h => h.ChangeDate)
                 .ToListAsync();
 
-            return Ok(history);
+            var userIds = history
+                .Where(h => h.ChangedById.HasValue)
+                .Select(h => h.ChangedById!.Value)
+                .Distinct()
+                .ToList();
+
+            var userNames = await _dbContext.Users
+                .Where(u => userIds.Contains(u.Id))
+                .ToDictionaryAsync(u => u.Id, u => u.Username);
+
+            var result = history.Select(h => new
+            {
+                h.Id,
+                h.ProductId,
+                Product = h.Product == null ? null : new { h.Product.Name, h.Product.ProductCode },
+                h.ChangeType,
+                h.QuantityChanged,
+                h.NewStock,
+                h.Note,
+                h.ChangedById,
+                ChangedByUsername = h.ChangedById.HasValue && userNames.TryGetValue(h.ChangedById.Value, out var username)
+                    ? username
+                    : null,
+                h.ChangeDate
+            });
+
+            return Ok(result);
         }
 
         [HttpPost("adjust")]
@@ -53,6 +81,11 @@ namespace ComputerStoreApi.Controllers
             if (request == null || request.ProductId == Guid.Empty)
             {
                 return BadRequest("Dữ liệu điều chỉnh tồn kho không hợp lệ.");
+            }
+
+            if (request.QuantityChanged == 0)
+            {
+                return BadRequest("Số lượng thay đổi phải khác 0.");
             }
 
             var product = await _dbContext.Products.FindAsync(request.ProductId);
@@ -65,6 +98,29 @@ namespace ComputerStoreApi.Controllers
             if (newStock < 0)
             {
                 return BadRequest("Số lượng tồn kho không thể âm.");
+            }
+
+            if (string.IsNullOrWhiteSpace(request.ChangeType))
+            {
+                request.ChangeType = "Adjustment";
+            }
+
+            if (string.IsNullOrWhiteSpace(request.Note))
+            {
+                request.Note = "Điều chỉnh kho thủ công";
+            }
+
+            if (!request.ChangedById.HasValue)
+            {
+                var username = User.FindFirstValue(ClaimTypes.Name);
+                if (!string.IsNullOrWhiteSpace(username))
+                {
+                    var currentUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
+                    if (currentUser != null)
+                    {
+                        request.ChangedById = currentUser.Id;
+                    }
+                }
             }
 
             product.StockQuantity = newStock;

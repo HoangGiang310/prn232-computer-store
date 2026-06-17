@@ -61,7 +61,7 @@ export default function ReportsPage() {
   useEffect(() => {
     const auth = getAuth();
     if (!auth || (auth.role !== "admin" && auth.role !== "accountant" && auth.role !== "bookkeeper")) {
-      router.replace("/login?redirect=admin");
+      router.replace("/login?redirect=bookkeeper");
       return;
     }
 
@@ -73,10 +73,10 @@ export default function ReportsPage() {
     setStartDate(start.toISOString().split("T")[0]);
     setEndDate(end.toISOString().split("T")[0]);
 
-    loadReports(start.toISOString().split("T")[0], end.toISOString().split("T")[0]);
+    loadReports(start.toISOString().split("T")[0], end.toISOString().split("T")[0], auth.token);
   }, []);
 
-  async function loadReports(start?: string, end?: string) {
+  async function loadReports(start?: string, end?: string, token?: string) {
     setLoading(true);
     setError("");
     try {
@@ -84,9 +84,9 @@ export default function ReportsPage() {
       const endParam = end || endDate;
 
       const [salesData, topData, invData] = await Promise.all([
-        fetchSalesReport(startParam, endParam),
-        fetchTopSellingProducts(5),
-        fetchInventoryStatusReport(),
+        fetchSalesReport(startParam, endParam, token),
+        fetchTopSellingProducts(5, token),
+        fetchInventoryStatusReport(token),
       ]);
 
       setSalesReport(salesData);
@@ -101,7 +101,8 @@ export default function ReportsPage() {
 
   function handleFilterSubmit(e: React.FormEvent) {
     e.preventDefault();
-    loadReports();
+    const auth = getAuth();
+    loadReports(undefined, undefined, auth?.token);
   }
 
   return (

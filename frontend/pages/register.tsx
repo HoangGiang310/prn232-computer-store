@@ -130,9 +130,9 @@ export default function RegisterPage() {
               <select value={role} onChange={(e) => setRole(e.target.value)}>
                 <option value="customer">Khách hàng</option>
                 <option value="admin">Admin</option>
-                <option value="staff">Nhân viên bán hàng</option>
+                <option value="sales">Nhân viên bán hàng</option>
                 <option value="accountant">Kế toán</option>
-                <option value="manager">Quản lý kho</option>
+                <option value="warehouse">Quản lý kho</option>
               </select>
             </label>
           </div>
