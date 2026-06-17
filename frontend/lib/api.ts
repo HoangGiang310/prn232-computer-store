@@ -149,14 +149,18 @@ export type InventoryAdjustmentPayload = {
   changedById?: string | null;
 };
 
-export async function fetchInventoryProducts() {
-  const res = await fetch(`${apiBaseUrl}/api/inventory/products`);
+export async function fetchInventoryProducts(token?: string) {
+  const res = await fetch(`${apiBaseUrl}/api/inventory/products`, {
+    headers: authHeaders(token),
+  });
   if (!res.ok) throw new Error("Không thể tải danh sách tồn kho");
   return res.json();
 }
 
-export async function fetchInventoryHistory() {
-  const res = await fetch(`${apiBaseUrl}/api/inventory/history`);
+export async function fetchInventoryHistory(token?: string) {
+  const res = await fetch(`${apiBaseUrl}/api/inventory/history`, {
+    headers: authHeaders(token),
+  });
   if (!res.ok) throw new Error("Không thể tải lịch sử kho");
   return res.json();
 }
@@ -347,22 +351,28 @@ export async function deleteUser(id: string, token?: string) {
 // ==========================================
 // REPORTS API WRAPPERS
 // ==========================================
-export async function fetchSalesReport(startDate?: string, endDate?: string) {
+export async function fetchSalesReport(startDate?: string, endDate?: string, token?: string) {
   const query = `?startDate=${startDate || ""}&endDate=${endDate || ""}`;
-  const res = await fetch(`${apiBaseUrl}/api/reports/sales${query}`);
+  const res = await fetch(`${apiBaseUrl}/api/reports/sales${query}`, {
+    headers: authHeaders(token),
+  });
   if (!res.ok) throw new Error("Không thể tải báo cáo doanh thu");
   return res.json();
 }
 
-export async function fetchTopSellingProducts(limit?: number) {
+export async function fetchTopSellingProducts(limit?: number, token?: string) {
   const query = limit ? `?limit=${limit}` : "";
-  const res = await fetch(`${apiBaseUrl}/api/reports/top-selling${query}`);
+  const res = await fetch(`${apiBaseUrl}/api/reports/top-selling${query}`, {
+    headers: authHeaders(token),
+  });
   if (!res.ok) throw new Error("Không thể tải sản phẩm bán chạy");
   return res.json();
 }
 
-export async function fetchInventoryStatusReport() {
-  const res = await fetch(`${apiBaseUrl}/api/reports/inventory-status`);
+export async function fetchInventoryStatusReport(token?: string) {
+  const res = await fetch(`${apiBaseUrl}/api/reports/inventory-status`, {
+    headers: authHeaders(token),
+  });
   if (!res.ok) throw new Error("Không thể tải trạng thái kho");
   return res.json();
 }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ComputerStoreApi.Data;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 namespace ComputerStoreApi.Controllers
 {
     [ApiController]
+    [Authorize(Roles = "admin,accountant,bookkeeper")]
     [Route("api/[controller]")]
     public class ReportsController : ControllerBase
     {

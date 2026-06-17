@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getAuth } from "../lib/auth";
+import { getAuth, getRedirectFromRole, logout } from "../lib/auth";
 
 export default function Home() {
-  const [dashboardHref, setDashboardHref] = useState("/login?redirect=admin");
+  const [auth, setAuth] = useState<{ token: string; role: string; username: string } | null>(null);
 
   useEffect(() => {
-    const auth = getAuth();
-    setDashboardHref(auth?.token ? "/admin" : "/login?redirect=admin");
+    setAuth(getAuth());
   }, []);
+
+  function handleLogout() {
+    logout();
+    setAuth(null);
+  }
 
   return (
     <main className="main">
@@ -50,15 +54,28 @@ export default function Home() {
 
       <section className="card home-action-card">
         <div className="home-action-buttons">
-          <Link href={dashboardHref} className="button home-primary-button">
-            Bảng Điều Khiển
-          </Link>
-          <Link href="/register" className="button home-secondary-button">
-            Đăng Ký Tài Khoản
-          </Link>
-          <Link href="/login" className="button home-secondary-button">
-            Đăng Nhập
-          </Link>
+          {auth ? (
+            <>
+              <Link href={getRedirectFromRole(auth.role)} className="button home-primary-button">
+                Giao Diện Chính
+              </Link>
+              <button className="button home-secondary-button" onClick={handleLogout}>
+                Đăng Xuất
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/login?redirect=admin" className="button home-primary-button">
+                Bảng Điều Khiển
+              </Link>
+              <Link href="/register" className="button home-secondary-button">
+                Đăng Ký Tài Khoản
+              </Link>
+              <Link href="/login" className="button home-secondary-button">
+                Đăng Nhập
+              </Link>
+            </>
+          )}
         </div>
       </section>
 

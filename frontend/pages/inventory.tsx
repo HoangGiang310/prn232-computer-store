@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
+import { getAuth } from "../lib/auth";
 import {
   adjustInventory,
   fetchInventoryHistory,
@@ -52,17 +53,23 @@ export default function InventoryPage() {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    loadInventory();
+    const auth = getAuth();
+    if (!auth?.token || !["admin", "warehouse", "sales"].includes(auth.role)) {
+      window.location.href = "/login?redirect=manager";
+      return;
+    }
+
+    loadInventory(auth.token);
   }, []);
 
-  async function loadInventory() {
+  async function loadInventory(token: string) {
     setLoading(true);
     setError("");
 
     try {
       const [productsData, historyData] = await Promise.all([
-        fetchInventoryProducts(),
-        fetchInventoryHistory(),
+        fetchInventoryProducts(token),
+        fetchInventoryHistory(token),
       ]);
       setProducts(productsData);
       setHistory(historyData);
@@ -83,6 +90,7 @@ export default function InventoryPage() {
     setBusy(true);
     setError("");
 
+    const auth = getAuth();
     const payload: InventoryAdjustmentPayload = {
       productId: selectedProductId,
       quantityChanged,
@@ -91,7 +99,7 @@ export default function InventoryPage() {
     };
 
     try {
-      await adjustInventory(payload);
+      await adjustInventory(payload, auth?.token);
       await loadInventory();
       setSelectedProductId("");
       setQuantityChanged(0);
