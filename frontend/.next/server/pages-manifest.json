@@ -2,9 +2,7 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/orders": "pages/orders.js",
-  "/inventory": "pages/inventory.js",
-  "/admin": "pages/admin.js",
-  "/create-order": "pages/create-order.js",
-  "/products": "pages/products.js"
+  "/login": "pages/login.js",
+  "/register": "pages/register.js",
+  "/": "pages/index.js"
 }

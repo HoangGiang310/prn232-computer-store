@@ -78,6 +78,38 @@ export async function login(username: string, password: string) {
   return authData;
 }
 
+export type RegisterData = {
+  username: string;
+  email: string;
+  password: string;
+  fullName?: string;
+  role?: string;
+};
+
+export async function register(data: RegisterData) {
+  const response = await fetch(`${apiBaseUrl}/api/auth/register`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  const body = await response.json().catch(() => null);
+  if (!response.ok) {
+    throw new Error(body?.message || "Đăng ký thất bại. Vui lòng thử lại.");
+  }
+
+  const authData = {
+    token: body.token,
+    username: body.username,
+    role: body.role,
+  } as AuthData;
+
+  saveAuth(authData);
+  return authData;
+}
+
 export function logout() {
   clearAuth();
 }
