@@ -83,6 +83,24 @@ namespace ComputerStoreApi.Controllers
             user.PasswordHash = _passwordHasher.HashPassword(user, register.Password);
 
             _dbContext.Users.Add(user);
+
+            if (user.RoleName.ToLower() == "customer")
+            {
+                var customer = new Customer
+                {
+                    Id = Guid.NewGuid(),
+                    FullName = user.FullName,
+                    PhoneNumber = string.IsNullOrEmpty(register.PhoneNumber) ? "0000000000" : register.PhoneNumber,
+                    Email = user.Email,
+                    Address = register.Address,
+                    Notes = "Khách hàng online tự tạo tài khoản.",
+                    WebUsername = user.Username,
+                    WebPasswordHash = user.PasswordHash,
+                    CreatedAt = DateTime.UtcNow
+                };
+                _dbContext.Customers.Add(customer);
+            }
+
             await _dbContext.SaveChangesAsync();
 
             var token = _jwtService.GenerateToken(user.Username, user.RoleName);

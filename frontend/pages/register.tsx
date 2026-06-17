@@ -9,6 +9,8 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [role, setRole] = useState("customer");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [address, setAddress] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
@@ -41,6 +43,8 @@ export default function RegisterPage() {
         password,
         fullName: fullName.trim(),
         role,
+        phoneNumber: phoneNumber.trim(),
+        address: address.trim(),
       });
 
       setSuccess("Đăng ký thành công. Đang chuyển hướng...");
@@ -102,6 +106,24 @@ export default function RegisterPage() {
                 type="text"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
+              />
+            </label>
+
+            <label>
+              Số điện thoại
+              <input
+                type="text"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+              />
+            </label>
+
+            <label>
+              Địa chỉ
+              <input
+                type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
               />
             </label>
 

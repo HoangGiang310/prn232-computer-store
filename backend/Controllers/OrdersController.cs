@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -51,6 +52,41 @@ namespace ComputerStoreApi.Controllers
             if (order.OrderItems == null || !order.OrderItems.Any())
             {
                 return BadRequest("Đơn hàng phải có ít nhất một sản phẩm.");
+            }
+
+            if (!order.CustomerId.HasValue && User.Identity?.IsAuthenticated == true)
+            {
+                var username = User.FindFirstValue(ClaimTypes.Name);
+                if (!string.IsNullOrEmpty(username))
+                {
+                    var customer = await _dbContext.Customers.FirstOrDefaultAsync(c => c.WebUsername == username);
+                    if (customer == null)
+                    {
+                        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
+                        if (user != null)
+                        {
+                            customer = new Customer
+                            {
+                                Id = Guid.NewGuid(),
+                                FullName = user.FullName,
+                                PhoneNumber = string.IsNullOrEmpty(user.Email) ? "0000000000" : "0000000000",
+                                Email = user.Email,
+                                Address = string.Empty,
+                                Notes = "Tự động tạo khách hàng từ tài khoản web.",
+                                WebUsername = username,
+                                WebPasswordHash = user.PasswordHash,
+                                CreatedAt = DateTime.UtcNow
+                            };
+                            _dbContext.Customers.Add(customer);
+                            await _dbContext.SaveChangesAsync();
+                        }
+                    }
+
+                    if (customer != null)
+                    {
+                        order.CustomerId = customer.Id;
+                    }
+                }
             }
 
             using var transaction = await _dbContext.Database.BeginTransactionAsync();

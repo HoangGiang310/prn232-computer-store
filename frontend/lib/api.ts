@@ -199,9 +199,25 @@ export async function fetchCustomerById(id: string) {
   return res.json();
 }
 
+export async function fetchCurrentCustomer(token?: string) {
+  const res = await fetch(`${apiBaseUrl}/api/customers/me`, {
+    headers: authHeaders(token),
+  });
+  if (!res.ok) throw new Error("Không thể tải thông tin khách hàng hiện tại");
+  return res.json();
+}
+
 export async function fetchCustomerOrders(id: string) {
   const res = await fetch(`${apiBaseUrl}/api/customers/${id}/orders`);
   if (!res.ok) throw new Error("Không thể tải lịch sử mua hàng");
+  return res.json();
+}
+
+export async function fetchCurrentCustomerOrders(token?: string) {
+  const res = await fetch(`${apiBaseUrl}/api/customers/me/orders`, {
+    headers: authHeaders(token),
+  });
+  if (!res.ok) throw new Error("Không thể tải lịch sử đơn hàng của bạn");
   return res.json();
 }
 
