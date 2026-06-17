@@ -1,6 +1,15 @@
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { getAuth } from "../lib/auth";
 
 export default function Home() {
+  const [dashboardHref, setDashboardHref] = useState("/login?redirect=admin");
+
+  useEffect(() => {
+    const auth = getAuth();
+    setDashboardHref(auth?.token ? "/admin" : "/login?redirect=admin");
+  }, []);
+
   return (
     <main className="main">
       <section className="card header">
@@ -40,9 +49,17 @@ export default function Home() {
       </section>
 
       <section className="card home-action-card">
-        <Link href="/admin" className="button home-primary-button">
-          Bảng Điều Khiển
-        </Link>
+        <div className="home-action-buttons">
+          <Link href={dashboardHref} className="button home-primary-button">
+            Bảng Điều Khiển
+          </Link>
+          <Link href="/register" className="button home-secondary-button">
+            Đăng Ký Tài Khoản
+          </Link>
+          <Link href="/login" className="button home-secondary-button">
+            Đăng Nhập
+          </Link>
+        </div>
       </section>
 
       <div className="copyright-row">

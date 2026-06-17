@@ -114,14 +114,13 @@ export default function LoginPage() {
             >
               {loading ? "Đang đăng nhập..." : "Đăng nhập"}
             </button>
-            <button type="button" className={roleButton.className} disabled>
+            <Link href="/register" className={roleButton.className}>
               {roleButton.label}
-            </button>
+            </Link>
           </div>
 
           <p className="signup-note">
-            Nếu bạn chưa có tài khoản, vui lòng liên hệ quản trị viên để được
-            cấp quyền.
+            Nếu bạn chưa có tài khoản, bạn có thể đăng ký ngay để sử dụng hệ thống.
           </p>
 
           <Link href="/" className="button back-button">

@@ -85,7 +85,14 @@ namespace ComputerStoreApi.Controllers
             _dbContext.Users.Add(user);
             await _dbContext.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(Login), new { username = user.Username }, new { user.Id, user.Username, user.Email, role = user.RoleName });
+            var token = _jwtService.GenerateToken(user.Username, user.RoleName);
+            return CreatedAtAction(nameof(Login), new { username = user.Username }, new
+            {
+                token,
+                role = user.RoleName,
+                username = user.Username,
+                fullName = user.FullName
+            });
         }
     }
 }
