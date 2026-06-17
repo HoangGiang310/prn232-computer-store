@@ -208,7 +208,6 @@ D:\prn232-computer-store\backend\obj\build\zh-Hant\Microsoft.CodeAnalysis.Worksp
 D:\Disk E\University FPT\PRN232 Project\prn232-computer-store\backend\bin\Debug\net8.0\appsettings.json
 D:\Disk E\University FPT\PRN232 Project\prn232-computer-store\backend\bin\Debug\net8.0\package-lock.json
 D:\Disk E\University FPT\PRN232 Project\prn232-computer-store\backend\bin\Debug\net8.0\backend.staticwebassets.endpoints.json
-D:\Disk E\University FPT\PRN232 Project\prn232-computer-store\backend\bin\Debug\net8.0\backend.exe
 D:\Disk E\University FPT\PRN232 Project\prn232-computer-store\backend\bin\Debug\net8.0\backend.deps.json
 D:\Disk E\University FPT\PRN232 Project\prn232-computer-store\backend\bin\Debug\net8.0\backend.runtimeconfig.json
 D:\Disk E\University FPT\PRN232 Project\prn232-computer-store\backend\bin\Debug\net8.0\backend.dll

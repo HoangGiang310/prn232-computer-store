@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ComputerStoreApi.Data;
 using ComputerStoreApi.Models;
+using System.Security.Claims;
 
 namespace ComputerStoreApi.Controllers
 {
@@ -44,6 +46,38 @@ namespace ComputerStoreApi.Controllers
             var customer = await _dbContext.Customers.FindAsync(id);
             if (customer == null) return NotFound();
             return Ok(customer);
+        }
+
+        [Authorize(Roles = "customer")]
+        [HttpGet("me")]
+        public async Task<IActionResult> GetCurrentCustomer()
+        {
+            var username = User.FindFirstValue(ClaimTypes.Name);
+            if (string.IsNullOrEmpty(username)) return Unauthorized();
+
+            var customer = await _dbContext.Customers.FirstOrDefaultAsync(c => c.WebUsername == username);
+            if (customer == null) return NotFound();
+            return Ok(customer);
+        }
+
+        [Authorize(Roles = "customer")]
+        [HttpGet("me/orders")]
+        public async Task<IActionResult> GetCurrentCustomerOrders()
+        {
+            var username = User.FindFirstValue(ClaimTypes.Name);
+            if (string.IsNullOrEmpty(username)) return Unauthorized();
+
+            var customer = await _dbContext.Customers.FirstOrDefaultAsync(c => c.WebUsername == username);
+            if (customer == null) return NotFound();
+
+            var orders = await _dbContext.Orders
+                .Where(o => o.CustomerId == customer.Id)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+                .OrderByDescending(o => o.CreatedAt)
+                .ToListAsync();
+
+            return Ok(orders);
         }
 
         // Xem lịch sử mua hàng của khách

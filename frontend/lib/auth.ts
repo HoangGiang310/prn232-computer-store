@@ -84,6 +84,8 @@ export type RegisterData = {
   password: string;
   fullName?: string;
   role?: string;
+  phoneNumber?: string;
+  address?: string;
 };
 
 export async function register(data: RegisterData) {

@@ -100,7 +100,9 @@ export default function InventoryPage() {
 
     try {
       await adjustInventory(payload, auth?.token);
-      await loadInventory();
+      if (auth?.token) {
+        await loadInventory(auth.token);
+      }
       setSelectedProductId("");
       setQuantityChanged(0);
       setChangeType("Import");

@@ -32,15 +32,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/login.js"
     ],
-    "/manager": [
+    "/register": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/manager.js"
-    ],
-    "/staff": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/staff.js"
+      "static/chunks/pages/register.js"
     ]
   },
   "ampFirstPages": []
