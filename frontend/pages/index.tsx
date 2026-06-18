@@ -2,6 +2,55 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getAuth, getRedirectFromRole, logout } from "../lib/auth";
 
+const featuredProducts = [
+  {
+    name: "LAPTOP GAMING RTX",
+    price: "24.990.000Đ",
+    tag: "BÁN CHẠY",
+    spec: "INTEL I7, RTX 4060, 16GB RAM",
+  },
+  {
+    name: "PC ĐỒ HỌA CREATOR",
+    price: "31.500.000Đ",
+    tag: "MỚI",
+    spec: "RYZEN 7, RTX 4070, SSD 1TB",
+  },
+  {
+    name: "MÀN HÌNH 27 INCH",
+    price: "4.790.000Đ",
+    tag: "GIẢM 12%",
+    spec: "2K, 165HZ, IPS",
+  },
+];
+
+const roleLabels: Record<string, string> = {
+  admin: "ADMIN",
+  manager: "QUẢN LÝ KHO",
+  warehouse: "QUẢN LÝ KHO",
+  staff: "NHÂN VIÊN",
+  sales: "NHÂN VIÊN BÁN HÀNG",
+  bookkeeper: "KẾ TOÁN",
+  accountant: "KẾ TOÁN",
+  customer: "KHÁCH HÀNG",
+};
+
+const quickLinks = [
+  { target: "/products", loginRole: "manager", roles: ["manager", "warehouse", "admin"], label: "SẢN PHẨM" },
+  { target: "/create-order", loginRole: "staff", roles: ["staff", "sales", "admin"], label: "TẠO ĐƠN" },
+  { target: "/orders", loginRole: "staff", roles: ["staff", "sales", "admin"], label: "ĐƠN HÀNG" },
+  { target: "/inventory", loginRole: "manager", roles: ["manager", "warehouse", "admin"], label: "KHO HÀNG" },
+];
+
+const homeProtectedLinks = {
+  products: { target: "/products", loginRole: "manager", roles: ["manager", "warehouse", "admin"] },
+  orders: { target: "/orders", loginRole: "staff", roles: ["staff", "sales", "admin"] },
+  reports: { target: "/reports", loginRole: "bookkeeper", roles: ["bookkeeper", "accountant", "admin"] },
+  inventory: { target: "/inventory", loginRole: "manager", roles: ["manager", "warehouse", "admin"] },
+  customers: { target: "/customers", loginRole: "staff", roles: ["staff", "sales", "admin"] },
+  vouchers: { target: "/vouchers", loginRole: "admin", roles: ["admin"] },
+  staff: { target: "/staff", loginRole: "staff", roles: ["staff", "sales"] },
+};
+
 export default function Home() {
   const [auth, setAuth] = useState<{ token: string; role: string; username: string } | null>(null);
 
@@ -14,126 +63,188 @@ export default function Home() {
     setAuth(null);
   }
 
+  function protectedHref(config: { target: string; loginRole: string; roles: string[] }) {
+    const currentRole = auth?.role?.toLowerCase();
+    if (auth?.token && currentRole && config.roles.includes(currentRole)) {
+      return config.target;
+    }
+
+    return `/login?redirect=${config.loginRole}`;
+  }
+
+  function getRoleLabel(role: string) {
+    return roleLabels[role?.toLowerCase()] ?? role.toUpperCase();
+  }
+
   return (
-    <main className="main">
-      <header className="site-header card header hero-card">
-        <div className="site-branding">
-          <div className="brand-mark">TQG</div>
-          <div>
-            <p className="brand-label">TQG Computer Store</p>
-            <p className="brand-note">Máy tính - Laptop - Phụ kiện | Quản lý bán hàng thông minh</p>
-          </div>
+    <main className="store-home">
+      <nav className="store-nav">
+        <Link href="/" className="store-logo" aria-label="TQG Computer Store">
+          <span className="store-logo-chip">TQG</span>
+          <span>
+            <strong>CỬA HÀNG MÁY TÍNH</strong>
+            <small>LAPTOP - PC - LINH KIỆN</small>
+          </span>
+        </Link>
+
+        <div className="store-nav-links">
+          <Link href="/">TRANG CHỦ</Link>
+          <Link href={protectedHref(homeProtectedLinks.products)}>SẢN PHẨM</Link>
+          <Link href={protectedHref(homeProtectedLinks.orders)}>ĐƠN HÀNG</Link>
+          <Link href={protectedHref(homeProtectedLinks.reports)}>BÁO CÁO</Link>
         </div>
 
-        <div className="hero-top">
-          <div className="hero-copy">
-            <p className="eyebrow">Chuyển đổi bán hàng máy tính</p>
-            <h1>Hệ thống quản lý và bán hàng máy tính chuyên nghiệp</h1>
-            <p className="hero-subtitle">
-              TQG Computer Store mang đến giải pháp mua sắm trực tuyến và quản lý kho hàng cho cửa hàng máy tính của bạn.
-              Quản lý sản phẩm, tạo đơn hàng nhanh và theo dõi doanh thu một cách trực quan.
+        {auth ? (
+          <button className="store-nav-button" onClick={handleLogout}>
+            ĐĂNG XUẤT
+          </button>
+        ) : (
+          <Link href="/login" className="store-nav-button">
+            ĐĂNG NHẬP
+          </Link>
+        )}
+      </nav>
+
+      <section className="store-hero" aria-label="KHUYẾN MÃI MÁY TÍNH">
+        <div className="hero-scene">
+          <div className="scene-sign">
+            <span>SIÊU ƯU ĐÃI</span>
+            <strong>CÔNG NGHỆ</strong>
+          </div>
+          <div className="scene-lights">
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+          </div>
+          <div className="scene-shelf scene-shelf-left">
+            <span className="box box-red" />
+            <span className="box box-green" />
+            <span className="box box-gold" />
+          </div>
+          <div className="scene-shelf scene-shelf-right">
+            <span className="box box-blue" />
+            <span className="box box-red" />
+            <span className="box box-green" />
+          </div>
+          <div className="scene-desk">
+            <div className="scene-monitor">
+              <span className="screen-line wide" />
+              <span className="screen-line" />
+              <span className="screen-line short" />
+            </div>
+            <div className="scene-keyboard" />
+            <div className="scene-tower">
+              <span />
+              <span />
+            </div>
+          </div>
+          <div className="hero-badge">
+            <span>GIẢM ĐẾN</span>
+            <strong>30%</strong>
+          </div>
+          <div className="scene-plants left" />
+          <div className="scene-plants right" />
+        </div>
+      </section>
+
+      <section className="store-tabs" aria-label="ĐIỀU HƯỚNG NHANH">
+        <Link href={protectedHref(homeProtectedLinks.products)} className="active">
+          HÀNG MỚI
+        </Link>
+        <Link href={protectedHref(homeProtectedLinks.inventory)}>TỒN KHO</Link>
+        <Link href={protectedHref(homeProtectedLinks.customers)}>KHÁCH HÀNG</Link>
+        <Link href={protectedHref(homeProtectedLinks.vouchers)}>VOUCHER</Link>
+      </section>
+
+      <div className="store-layout">
+        <section className="store-feed">
+          <div className="feed-filter">
+            <div>
+              <span>TẤT CẢ SẢN PHẨM</span>
+              <span>BÁN CHẠY</span>
+              <span>ƯU ĐÃI</span>
+            </div>
+            <Link href={protectedHref(homeProtectedLinks.products)}>XEM TẤT CẢ</Link>
+          </div>
+
+          <article className="promo-post">
+            <div className="post-author">
+              <div className="avatar">T</div>
+              <div>
+                <strong>CỬA HÀNG TQG</strong>
+                <small>CẬP NHẬT HÔM NAY</small>
+              </div>
+              <span className="pin-label">NỔI BẬT</span>
+            </div>
+
+            <h1>TRANG CHỦ CỬA HÀNG MÁY TÍNH</h1>
+            <p>
+              HỆ THỐNG BÁN HÀNG MÁY TÍNH VỚI GIAO DIỆN NHANH, RÕ RÀNG VÀ DỄ THAO TÁC CHO NHÂN VIÊN CỬA HÀNG.
             </p>
 
-            <div className="home-action-buttons">
-              {auth ? (
-                <>
-                  <Link href={getRedirectFromRole(auth.role)} className="button home-primary-button">
-                    Vào Bảng Điều Khiển
-                  </Link>
-                  <button className="button home-secondary-button" onClick={handleLogout}>
-                    Đăng Xuất
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link href="/register" className="button home-primary-button">
-                    Đăng Ký Ngay
-                  </Link>
-                  <Link href="/login" className="button home-secondary-button">
-                    Đăng Nhập
-                  </Link>
-                </>
-              )}
+            <div className="product-showcase">
+              {featuredProducts.map((product) => (
+                <div className="product-tile" key={product.name}>
+                  <span className="product-tag">{product.tag}</span>
+                  <div className="product-device">
+                    <span className="device-screen" />
+                    <span className="device-base" />
+                  </div>
+                  <h2>{product.name}</h2>
+                  <p>{product.spec}</p>
+                  <strong>{product.price}</strong>
+                </div>
+              ))}
             </div>
-          </div>
+          </article>
+        </section>
 
-          <div className="hero-panel">
-            <div className="hero-card-panel">
-              <div className="hero-panel-header">
-                <span className="panel-title">TQG COMPUTER</span>
-                <span className="panel-status">Mới</span>
-              </div>
-              <div className="panel-metrics">
-                <div>
-                  <strong>250+</strong>
-                  <span>Sản phẩm</span>
+        <aside className="store-sidebar">
+          <section className="side-panel">
+            <h2>ĐĂNG NHẬP HỆ THỐNG</h2>
+            {auth ? (
+              <>
+                <p>
+                  XIN CHÀO <strong>{auth.username.toUpperCase()}</strong>. BẠN ĐANG Ở VAI TRÒ <strong>{getRoleLabel(auth.role)}</strong>.
+                </p>
+                <Link href={getRedirectFromRole(auth.role)} className="side-primary">
+                  VÀO BẢNG ĐIỀU KHIỂN
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="/login" className="side-primary">
+                  ĐĂNG NHẬP
+                </Link>
+                <div className="side-actions">
+                  <Link href="/register">ĐĂNG KÝ</Link>
+                  <Link href="/login">QUÊN MẬT KHẨU</Link>
                 </div>
-                <div>
-                  <strong>1.200</strong>
-                  <span>Đơn hàng</span>
-                </div>
-                <div>
-                  <strong>98%</strong>
-                  <span>Khách hàng hài lòng</span>
-                </div>
-              </div>
-              <div className="panel-details">
-                <p>Trang quản lý giúp bạn kiểm soát số lượng sản phẩm, theo dõi hóa đơn và xử lý trả hàng rõ ràng.</p>
-              </div>
+              </>
+            )}
+          </section>
+
+          <section className="side-panel">
+            <h2>TRUY CẬP NHANH</h2>
+            <div className="quick-grid">
+              {quickLinks.map((item) => (
+                <Link href={protectedHref(item)} key={item.target}>
+                  {item.label}
+                </Link>
+              ))}
             </div>
-          </div>
-        </div>
-      </header>
+          </section>
 
-      <section className="card feature-section">
-        <div className="section-header">
-          <h2>Những gì TQG Computer Store hỗ trợ</h2>
-          <p>Giao diện trực quan, thao tác nhanh, phù hợp cho cửa hàng máy tính, laptop và phụ kiện.</p>
-        </div>
-        <div className="feature-grid">
-          <div className="feature-card">
-            <h3>Quản lý sản phẩm</h3>
-            <p>Thêm, sửa, xóa và điều chỉnh tồn kho cho sản phẩm nhanh chóng trong một nơi duy nhất.</p>
-          </div>
-          <div className="feature-card">
-            <h3>Đơn hàng trực tuyến</h3>
-            <p>Nhận đơn nhanh, theo dõi trạng thái và xử lý trả hàng ngay trên hệ thống.</p>
-          </div>
-          <div className="feature-card">
-            <h3>Quản trị cho admin</h3>
-            <p>Phân quyền rõ ràng, chức năng báo cáo và quản lý khách hàng chuyên nghiệp.</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="card about-section">
-        <div>
-          <h2>Về cửa hàng của chúng tôi</h2>
-          <p>
-            TQG Computer Store là cửa hàng máy tính chuyên cung cấp laptop, linh kiện và dịch vụ bán hàng toàn diện.
-            Hệ thống này được xây dựng để hỗ trợ bán hàng tại quầy và quản lý kho hiệu quả cho doanh nghiệp nhỏ.
-          </p>
-        </div>
-        <div className="about-stats">
-          <div>
-            <strong>4.9/5</strong>
-            <span>Đánh giá khách hàng</span>
-          </div>
-          <div>
-            <strong>30+</strong>
-            <span>Loại sản phẩm</span>
-          </div>
-          <div>
-            <strong>7</strong>
-            <span>Ngày đổi trả</span>
-          </div>
-        </div>
-      </section>
-
-      <div className="copyright-row">
-        <span className="copyright-line" />
-        <p>© 2026 TQG Computer Store</p>
-        <span className="copyright-line" />
+          <section className="side-panel support-panel">
+            <h2>HỖ TRỢ CỬA HÀNG</h2>
+            <p>CẦN KIỂM TRA ĐƠN, SẢN PHẨM HOẶC TỒN KHO? MỞ NHANH KHU VỰC QUẢN LÝ PHÙ HỢP.</p>
+            <Link href={protectedHref(homeProtectedLinks.staff)} className="side-primary">
+              ĐẾN KHU NHÂN VIÊN
+            </Link>
+          </section>
+        </aside>
       </div>
     </main>
   );

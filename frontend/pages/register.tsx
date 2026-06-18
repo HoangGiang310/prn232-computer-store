@@ -57,127 +57,141 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="main">
-      <section className="card header register-header">
-        <div className="register-title-group">
-          <h1 className="shop-title">
-            <span className="colored-letter letter-1">T</span>
-            <span className="colored-letter letter-2">Q</span>
-            <span className="colored-letter letter-3">G</span>
-            <span className="colored-letter letter-space"> </span>
-            <span className="colored-letter letter-4">S</span>
-            <span className="colored-letter letter-5">H</span>
-            <span className="colored-letter letter-6">O</span>
-            <span className="colored-letter letter-7">P</span>
-          </h1>
-          <p className="register-subtitle">
-            Tạo tài khoản hệ thống với vai trò phù hợp. Chọn role trước khi hoàn tất đăng ký.
-          </p>
+    <main className="auth-screen auth-register-screen">
+      <header className="auth-topbar">
+        <Link href="/" className="auth-back" aria-label="Quay lại trang chủ">
+          ←
+        </Link>
+        <div className="auth-brand">
+          <span className="auth-brand-mark">TQG</span>
+          <span>COMPUTER STORE</span>
         </div>
-      </section>
+      </header>
 
-      <section className="card login-card register-card">
-        <form onSubmit={handleSubmit} className="login-form">
-          <div className="input-group">
-            <label>
-              Tên đăng nhập
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                autoFocus
-              />
-            </label>
+      <section className="auth-panel auth-register-panel">
+        <div className="auth-heading">
+          <h1>Đăng ký tài khoản</h1>
+          <p>Tạo tài khoản mới để sử dụng hệ thống</p>
+        </div>
 
-            <label>
-              Email
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </label>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <label className="auth-field">
+            <span className="auth-icon">⌕</span>
+            <span className="auth-sr">Tên đăng nhập</span>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Tên đăng nhập"
+              required
+              autoFocus
+            />
+          </label>
 
-            <label>
-              Họ và tên
-              <input
-                type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-              />
-            </label>
+          <label className="auth-field">
+            <span className="auth-icon">@</span>
+            <span className="auth-sr">Email</span>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              required
+            />
+          </label>
 
-            <label>
-              Số điện thoại
+          <label className="auth-field">
+            <span className="auth-icon">◇</span>
+            <span className="auth-sr">Họ và tên</span>
+            <input
+              type="text"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder="Họ và tên"
+            />
+          </label>
+
+          <div className="auth-two-columns">
+            <label className="auth-field">
+              <span className="auth-icon">☎</span>
+              <span className="auth-sr">Số điện thoại</span>
               <input
                 type="text"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
+                placeholder="Số điện thoại"
               />
             </label>
 
-            <label>
-              Địa chỉ
+            <label className="auth-field">
+              <span className="auth-icon">⌂</span>
+              <span className="auth-sr">Địa chỉ</span>
               <input
                 type="text"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
+                placeholder="Địa chỉ"
               />
-            </label>
-
-            <label>
-              Mật khẩu
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </label>
-
-            <label>
-              Xác nhận mật khẩu
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-            </label>
-
-            <label>
-              Vai trò tài khoản
-              <select value={role} onChange={(e) => setRole(e.target.value)}>
-                <option value="customer">Khách hàng</option>
-                <option value="admin">Admin</option>
-                <option value="sales">Nhân viên bán hàng</option>
-                <option value="accountant">Kế toán</option>
-                <option value="warehouse">Quản lý kho</option>
-              </select>
             </label>
           </div>
 
-          {error ? <p className="error">{error}</p> : null}
-          {success ? <p className="success">{success}</p> : null}
+          <label className="auth-field">
+            <span className="auth-icon">▣</span>
+            <span className="auth-sr">Mật khẩu</span>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Mật khẩu"
+              required
+            />
+          </label>
 
-          <div className="buttons-group register-buttons">
-            <button type="submit" className="button login-button" disabled={loading}>
-              {loading ? "Đang đăng ký..." : "Đăng ký"}
-            </button>
-            <Link href="/" className="button back-button">
-              Trở Về Trang Chủ
-            </Link>
+          <label className="auth-field">
+            <span className="auth-icon">▣</span>
+            <span className="auth-sr">Xác nhận mật khẩu</span>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Xác nhận mật khẩu"
+              required
+            />
+          </label>
+
+          <label className="auth-field auth-select-field">
+            <span className="auth-icon">♢</span>
+            <span className="auth-sr">Vai trò tài khoản</span>
+            <select value={role} onChange={(e) => setRole(e.target.value)}>
+              <option value="customer">Khách hàng</option>
+              <option value="admin">Admin</option>
+              <option value="sales">Nhân viên bán hàng</option>
+              <option value="accountant">Kế toán</option>
+              <option value="warehouse">Quản lý kho</option>
+            </select>
+          </label>
+
+          {error ? <p className="auth-message auth-error">{error}</p> : null}
+          {success ? <p className="auth-message auth-success">{success}</p> : null}
+
+          <button type="submit" className="auth-primary" disabled={loading}>
+            {loading ? "Đang đăng ký..." : "Đăng ký ngay"}
+          </button>
+
+          <div className="auth-divider">
+            <span />
+            <em>Hoặc</em>
+            <span />
           </div>
+
+          <Link href="/login" className="auth-secondary">
+            <span>↪</span>
+            Đã có tài khoản
+          </Link>
         </form>
       </section>
 
-      <div className="copyright-row">
-        <span className="copyright-line" />
-        <p>© Copyright by DevTeam - Do not reup</p>
-        <span className="copyright-line" />
-      </div>
+      <footer className="auth-footer">© 2026 TQG Computer Store. All rights reserved.</footer>
     </main>
   );
 }

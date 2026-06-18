@@ -1,7 +1,27 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { getAuth, getRedirectFromRole, login } from "../lib/auth";
+import { getAuth, getRedirectFromRole, login, logout } from "../lib/auth";
+
+const redirectAccessMap: Record<string, { destination: string; roles: string[]; label: string }> = {
+  admin: { destination: "/admin", roles: ["admin"], label: "Admin" },
+  manager: {
+    destination: "/manager",
+    roles: ["manager", "warehouse", "admin"],
+    label: "Quản lý kho",
+  },
+  staff: {
+    destination: "/staff",
+    roles: ["staff", "sales", "admin"],
+    label: "Nhân viên",
+  },
+  bookkeeper: {
+    destination: "/bookkeeper",
+    roles: ["bookkeeper", "accountant", "admin"],
+    label: "Kế toán",
+  },
+  customer: { destination: "/customer", roles: ["customer"], label: "Khách hàng" },
+};
 
 export default function LoginPage() {
   const router = useRouter();
@@ -40,9 +60,20 @@ export default function LoginPage() {
   useEffect(() => {
     const auth = getAuth();
     if (auth?.token) {
+      if (typeof redirectQuery === "string" && redirectAccessMap[redirectQuery]) {
+        const requestedAccess = redirectAccessMap[redirectQuery];
+        if (requestedAccess.roles.includes(auth.role?.toLowerCase())) {
+          router.replace(requestedAccess.destination);
+        } else {
+          logout();
+          setError(`Chức năng này yêu cầu tài khoản ${requestedAccess.label}. Vui lòng đăng nhập đúng vai trò.`);
+        }
+        return;
+      }
+
       router.replace(getRedirectFromRole(auth.role));
     }
-  }, [router]);
+  }, [redirectQuery, router]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -51,7 +82,19 @@ export default function LoginPage() {
 
     try {
       const authData = await login(username.trim(), password);
-      const destination = redirectQuery || getRedirectFromRole(authData.role);
+      if (typeof redirectQuery === "string" && redirectAccessMap[redirectQuery]) {
+        const requestedAccess = redirectAccessMap[redirectQuery];
+        if (!requestedAccess.roles.includes(authData.role?.toLowerCase())) {
+          logout();
+          setError(`Tài khoản này không có quyền ${requestedAccess.label}. Vui lòng đăng nhập đúng vai trò.`);
+          return;
+        }
+
+        router.push(requestedAccess.destination);
+        return;
+      }
+
+      const destination = getRedirectFromRole(authData.role);
       router.push(destination);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Đăng nhập thất bại.");
@@ -61,79 +104,95 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="main">
-      <section className="card header">
-        <h1 className="shop-title">
-          <span className="colored-letter letter-1">T</span>
-          <span className="colored-letter letter-2">Q</span>
-          <span className="colored-letter letter-3">G</span>
-          <span className="colored-letter letter-space"> </span>
-          <span className="colored-letter letter-4">S</span>
-          <span className="colored-letter letter-5">H</span>
-          <span className="colored-letter letter-6">O</span>
-          <span className="colored-letter letter-7">P</span>
-        </h1>
-        <p>
-          Đăng nhập cho vai trò: {roleMap[selectedRole]?.label ?? "Người dùng"}.
-          Vui lòng nhập tên đăng nhập và mật khẩu để truy cập.
-        </p>
-      </section>
+    <main className="auth-screen">
+      <header className="auth-topbar">
+        <Link href="/" className="auth-back" aria-label="Quay lại trang chủ">
+          ←
+        </Link>
+        <div className="auth-brand">
+          <span className="auth-brand-mark">TQG</span>
+          <span>COMPUTER STORE</span>
+        </div>
+      </header>
 
-      <section className="card login-card">
-        <form onSubmit={handleSubmit} className="login-form">
-          <div className="input-group">
-            <label>
-              Tên đăng nhập
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                autoFocus
-              />
-            </label>
+      <section className="auth-panel">
+        <div className="auth-heading">
+          <h1>Đăng nhập tài khoản</h1>
+          <p>Sử dụng tài khoản hệ thống để tiếp tục</p>
+        </div>
 
-            <label>
-              Mật khẩu
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </label>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <label className="auth-field">
+            <span className="auth-icon">⌕</span>
+            <span className="auth-sr">Tên đăng nhập</span>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Tên đăng nhập hoặc Email"
+              required
+              autoFocus
+            />
+          </label>
+
+          <label className="auth-field">
+            <span className="auth-icon">▣</span>
+            <span className="auth-sr">Mật khẩu</span>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Mật khẩu"
+              required
+            />
+            <span className="auth-eye" aria-hidden="true">
+              ◉
+            </span>
+          </label>
+
+          <div className="auth-field auth-role-field">
+            <span className="auth-icon">♢</span>
+            <span>Vai Trò: {roleMap[selectedRole]?.label ?? "Người dùng hệ thống"}</span>
           </div>
 
-          {error ? <p className="error">{error}</p> : null}
-
-          <div className="buttons-group">
-            <button
-              type="submit"
-              className="button login-button"
-              disabled={loading}
-            >
-              {loading ? "Đang đăng nhập..." : "Đăng nhập"}
-            </button>
-            <Link href="/register" className={roleButton.className}>
-              {roleButton.label}
-            </Link>
+          <div className="auth-check-card">
+            <span className="auth-check-icon">✓</span>
+            <div>
+              <strong>Sẵn sàng!</strong>
+              <small>Thông tin được bảo mật trong hệ thống</small>
+            </div>
           </div>
 
-          <p className="signup-note">
-            Nếu bạn chưa có tài khoản, bạn có thể đăng ký ngay để sử dụng hệ thống.
-          </p>
+          {error ? <p className="auth-message auth-error">{error}</p> : null}
 
-          <Link href="/" className="button back-button">
-            Quay lại trang chủ
+          <div className="auth-row">
+            <label className="auth-remember">
+              <input type="checkbox" defaultChecked />
+              <span>Ghi nhớ đăng nhập</span>
+            </label>
+            <Link href="/login">Quên mật khẩu?</Link>
+          </div>
+
+          <button type="submit" className="auth-primary" disabled={loading}>
+            {loading ? "Đang đăng nhập..." : "Đăng nhập ngay"}
+          </button>
+
+          <div className="auth-divider">
+            <span />
+            <em>Hoặc</em>
+            <span />
+          </div>
+
+          <Link href="/register" className="auth-secondary">
+            <span>♧</span>
+            Đăng ký tài khoản mới
           </Link>
+
+          <p className="auth-role-note">Vai trò đang chọn: {roleButton.label}</p>
         </form>
       </section>
 
-      <div className="copyright-row">
-        <span className="copyright-line" />
-        <p>© Copyright by DevTeam - Do not reup</p>
-        <span className="copyright-line" />
-      </div>
+      <footer className="auth-footer">© 2026 TQG Computer Store. All rights reserved.</footer>
     </main>
   );
 }
