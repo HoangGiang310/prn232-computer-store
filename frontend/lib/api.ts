@@ -13,8 +13,23 @@ export type ProductPayload = {
   lowStockThreshold: number;
 };
 
-export async function fetchProducts() {
-  const res = await fetch(`${apiBaseUrl}/api/products`);
+export async function fetchProducts(params?: {
+  search?: string;
+  brand?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  stockStatus?: string;
+}) {
+  const query = new URLSearchParams();
+
+  if (params?.search) query.set("search", params.search);
+  if (params?.brand) query.set("brand", params.brand);
+  if (params?.minPrice !== undefined) query.set("minPrice", String(params.minPrice));
+  if (params?.maxPrice !== undefined) query.set("maxPrice", String(params.maxPrice));
+  if (params?.stockStatus) query.set("stockStatus", params.stockStatus);
+
+  const url = `${apiBaseUrl}/api/products${query.toString() ? `?${query.toString()}` : ""}`;
+  const res = await fetch(url);
   if (!res.ok) throw new Error("Không thể tải danh sách sản phẩm");
   return res.json();
 }

@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ComputerStoreApi.Data;
@@ -18,13 +17,80 @@ namespace ComputerStoreApi.Controllers
             _dbContext = dbContext;
         }
 
-        // Lấy danh sách sản phẩm kèm theo danh sách ảnh (hiển thị thumbnail)
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
+        private IQueryable<Product> ApplyFilters(
+            IQueryable<Product> query,
+            string? search,
+            string? brand,
+            decimal? minPrice,
+            decimal? maxPrice,
+            string? stockStatus)
         {
-            var products = await _dbContext.Products
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var term = search.Trim();
+                query = query.Where(p =>
+                    p.Name.Contains(term) ||
+                    p.ProductCode.Contains(term) ||
+                    p.Brand.Contains(term) ||
+                    p.Specifications.Contains(term));
+            }
+
+            if (!string.IsNullOrWhiteSpace(brand))
+            {
+                query = query.Where(p => p.Brand.ToLower() == brand.Trim().ToLower());
+            }
+
+            if (minPrice.HasValue)
+            {
+                query = query.Where(p => p.Price >= minPrice.Value);
+            }
+
+            if (maxPrice.HasValue)
+            {
+                query = query.Where(p => p.Price <= maxPrice.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(stockStatus))
+            {
+                switch (stockStatus.Trim().ToLower())
+                {
+                    case "instock":
+                    case "con-hang":
+                        query = query.Where(p => p.StockQuantity > 0);
+                        break;
+                    case "lowstock":
+                    case "gan-het":
+                        query = query.Where(p => p.StockQuantity > 0 && p.StockQuantity <= p.LowStockThreshold);
+                        break;
+                    case "outofstock":
+                    case "het-hang":
+                        query = query.Where(p => p.StockQuantity == 0);
+                        break;
+                }
+            }
+
+            return query;
+        }
+
+        // Lấy danh sách sản phẩm kèm theo danh sách ảnh, hỗ trợ tìm kiếm và lọc
+        [HttpGet]
+        public async Task<IActionResult> GetAll(
+            [FromQuery] string? search,
+            [FromQuery] string? brand,
+            [FromQuery] decimal? minPrice,
+            [FromQuery] decimal? maxPrice,
+            [FromQuery] string? stockStatus)
+        {
+            var query = _dbContext.Products
                 .Include(p => p.Images)
+                .AsQueryable();
+
+            query = ApplyFilters(query, search, brand, minPrice, maxPrice, stockStatus);
+
+            var products = await query
+                .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
+
             return Ok(products);
         }
 
@@ -113,7 +179,6 @@ namespace ComputerStoreApi.Controllers
             return NoContent();
         }
 
-        // Public access during development phase
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -123,6 +188,19 @@ namespace ComputerStoreApi.Controllers
             _dbContext.Products.Remove(existing);
             await _dbContext.SaveChangesAsync();
             return NoContent();
+        }
+
+        public class ProductCreateRequest
+        {
+            public string ProductCode { get; set; }
+            public string Name { get; set; }
+            public string Brand { get; set; }
+            public string Specifications { get; set; }
+            public decimal ImportPrice { get; set; }
+            public decimal Price { get; set; }
+            public int StockQuantity { get; set; }
+            public int LowStockThreshold { get; set; }
+            public List<string>? ImageUrls { get; set; }
         }
     }
 }

@@ -29,6 +29,10 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedBrand, setSelectedBrand] = useState("");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+  const [stockStatus, setStockStatus] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<ProductPayload>(initialProductForm);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -42,7 +46,13 @@ export default function ProductsPage() {
     setError("");
 
     try {
-      const productList = await fetchProducts();
+      const productList = await fetchProducts({
+        search: searchTerm,
+        brand: selectedBrand,
+        minPrice: minPrice ? Number(minPrice) : undefined,
+        maxPrice: maxPrice ? Number(maxPrice) : undefined,
+        stockStatus,
+      });
       setProducts(productList);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Không thể tải sản phẩm.");
@@ -146,18 +156,17 @@ export default function ProductsPage() {
     }
   }
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      loadProducts();
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [searchTerm, selectedBrand, minPrice, maxPrice, stockStatus]);
+
   const filteredProducts = useMemo(() => {
-    const query = searchTerm.trim().toLowerCase();
-    return products.filter((product) => {
-      if (!query) return true;
-      return (
-        product.name.toLowerCase().includes(query) ||
-        product.productCode.toLowerCase().includes(query) ||
-        product.brand.toLowerCase().includes(query) ||
-        product.specifications.toLowerCase().includes(query)
-      );
-    });
-  }, [products, searchTerm]);
+    return products;
+  }, [products]);
 
   const lowStockCount = useMemo(
     () => products.filter((product) => product.stockQuantity <= product.lowStockThreshold).length,
@@ -212,16 +221,62 @@ export default function ProductsPage() {
           </Link>
         </div>
 
-        <div style={{ marginTop: "20px" }}>
+        <div style={{ marginTop: "20px", display: "grid", gap: "12px", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr" }}>
           <label>
             Tìm kiếm sản phẩm
             <input
               type="text"
-              placeholder="Nhập tên, mã, hãng..."
+              placeholder="Tên, mã, hãng..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               style={{ width: "100%", marginTop: "8px", padding: "12px 16px" }}
             />
+          </label>
+          <label>
+            Hãng
+            <select
+              value={selectedBrand}
+              onChange={(e) => setSelectedBrand(e.target.value)}
+              style={{ width: "100%", marginTop: "8px", padding: "12px 16px" }}
+            >
+              <option value="">Tất cả</option>
+              {[...new Set(products.map((p) => p.brand))].sort().map((brand) => (
+                <option key={brand} value={brand}>{brand}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Giá tối thiểu
+            <input
+              type="number"
+              min={0}
+              value={minPrice}
+              onChange={(e) => setMinPrice(e.target.value)}
+              style={{ width: "100%", marginTop: "8px", padding: "12px 16px" }}
+            />
+          </label>
+          <label>
+            Giá tối đa
+            <input
+              type="number"
+              min={0}
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(e.target.value)}
+              style={{ width: "100%", marginTop: "8px", padding: "12px 16px" }}
+            />
+          </label>
+          <label>
+            Trạng thái kho
+            <select
+              value={stockStatus}
+              onChange={(e) => setStockStatus(e.target.value)}
+              style={{ width: "100%", marginTop: "8px", padding: "12px 16px" }}
+            >
+              <option value="">Tất cả</option>
+              <option value="instock">Còn hàng</option>
+              <option value="lowstock">Gần hết</option>
+              <option value="outofstock">Hết hàng</option>
+            </select>
           </label>
         </div>
       </section>
@@ -418,7 +473,11 @@ export default function ProductsPage() {
                       )}
                     </td>
                     <td>{product.productCode}</td>
-                    <td>{product.name}</td>
+                    <td>
+                      <Link href={`/products/${product.id}`} style={{ color: "#2563eb", fontWeight: 600 }}>
+                        {product.name}
+                      </Link>
+                    </td>
                     <td>{product.brand}</td>
                     <td>
                       {product.price.toLocaleString("vi-VN", {

@@ -30,7 +30,21 @@
     "/product/[id]": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
+<<<<<<< HEAD
       "static/chunks/pages/product/[id].js"
+=======
+      "static/chunks/pages/admin.js"
+    ],
+    "/products": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/products.js"
+    ],
+    "/register": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/register.js"
+>>>>>>> main
     ]
   },
   "ampFirstPages": []
