@@ -16,7 +16,15 @@ var builder = WebApplication.CreateBuilder(args);
 // ==========================================
 // 1. ĐĂNG KÝ CÁC SERVICES TRONG CONTAINER
 // ==========================================
-builder.Services.AddControllers().AddJsonOptions(options =>
+builder.Services.AddControllers(options =>
+{
+    // Khắc phục lỗi không tạo/sửa được dữ liệu:
+    // Mặc định ASP.NET Core (.NET 8, Nullable enabled) coi mọi thuộc tính reference không-nullable
+    // là [Required] khi validate model. Điều này khiến các navigation property (Images, OrderItems,
+    // Customer, Shipment...) bị bắt buộc trong payload và gây lỗi 400. Tắt hành vi này — chỉ những
+    // trường có [Required] tường minh hoặc validation trong DTO mới bị kiểm tra.
+    options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+}).AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;

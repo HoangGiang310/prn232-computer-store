@@ -22,8 +22,11 @@ type ProductOption = {
   id: string;
   productCode: string;
   name: string;
+  brand?: string;
+  specifications?: string;
   price: number;
   stockQuantity: number;
+  images?: Array<{ id: string; imageUrl: string; isMain?: boolean }>;
 };
 
 export default function CustomerPage() {
@@ -233,22 +236,49 @@ export default function CustomerPage() {
         <h2>Sản phẩm</h2>
         {error ? <p className="error">{error}</p> : null}
         {success ? <p className="success">{success}</p> : null}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "16px" }}>
-          {products.map((product) => (
-            <div key={product.id} className="product-card">
-              <h3>{product.name}</h3>
-              <p>{product.productCode}</p>
-              <p>Giá: {product.price.toLocaleString("vi-VN")} ₫</p>
-              <p>{product.stockQuantity > 0 ? `Còn ${product.stockQuantity}` : "Hết hàng"}</p>
-              <button
-                className="button"
-                onClick={() => addToCart(product)}
-                disabled={product.stockQuantity === 0}
-              >
-                Thêm vào giỏ
-              </button>
-            </div>
-          ))}
+        <div className="shop-grid">
+          {products.map((product) => {
+            const mainImage =
+              product.images?.find((img) => img.isMain)?.imageUrl ||
+              product.images?.[0]?.imageUrl;
+            const outOfStock = product.stockQuantity === 0;
+            return (
+              <article key={product.id} className="shop-card">
+                <Link href={`/product/${product.id}`} className="shop-card-media">
+                  {mainImage ? (
+                    <img src={mainImage} alt={product.name} loading="lazy" />
+                  ) : (
+                    <div className="shop-card-media-fallback">💻</div>
+                  )}
+                  {product.brand ? <span className="shop-card-brand">{product.brand}</span> : null}
+                  <span className={`shop-card-stock ${outOfStock ? "out" : "in"}`}>
+                    {outOfStock ? "Hết hàng" : `Còn ${product.stockQuantity}`}
+                  </span>
+                </Link>
+                <div className="shop-card-body">
+                  <Link href={`/product/${product.id}`} className="shop-card-title">
+                    {product.name}
+                  </Link>
+                  <p className="shop-card-code">{product.productCode}</p>
+                  <p className="shop-card-price">
+                    {product.price.toLocaleString("vi-VN")} ₫
+                  </p>
+                  <div className="shop-card-actions">
+                    <button
+                      className="btn-primary"
+                      onClick={() => addToCart(product)}
+                      disabled={outOfStock}
+                    >
+                      🛒 Thêm vào giỏ
+                    </button>
+                    <Link href={`/product/${product.id}`} className="btn-ghost">
+                      Chi tiết
+                    </Link>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </section>
 
@@ -367,6 +397,14 @@ export default function CustomerPage() {
                     {order.orderItems?.map((item: any) => (
                       <li key={item.productId}>
                         {item.product?.name ?? "Sản phẩm"} x{item.quantity}
+                        {(order.orderStatus === "Delivered" || order.orderStatus === "Confirmed") && item.productId ? (
+                          <>
+                            {" "}
+                            <Link href={`/product/${item.productId}`} style={{ color: "#2563eb" }}>
+                              [Đánh giá]
+                            </Link>
+                          </>
+                        ) : null}
                       </li>
                     ))}
                   </ul>

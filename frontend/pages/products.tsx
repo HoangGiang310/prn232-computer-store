@@ -87,11 +87,39 @@ export default function ProductsPage() {
   async function handleSave(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+
+    // Validation phía client trước khi gửi
+    const code = formData.productCode.trim();
+    const name = formData.name.trim();
+    const brand = formData.brand.trim();
+    const specs = formData.specifications.trim();
+
+    if (!code || !name || !brand || !specs) {
+      setError("Vui lòng nhập đầy đủ: mã, tên, hãng và cấu hình sản phẩm.");
+      return;
+    }
+    if (Number(formData.importPrice) < 0 || Number(formData.price) < 0) {
+      setError("Giá nhập và giá bán không được âm.");
+      return;
+    }
+    if (Number(formData.price) < Number(formData.importPrice)) {
+      setError("Giá bán không được nhỏ hơn giá nhập.");
+      return;
+    }
+    if (Number(formData.stockQuantity) < 0 || Number(formData.lowStockThreshold) < 0) {
+      setError("Tồn kho và ngưỡng cảnh báo không được âm.");
+      return;
+    }
+
     setLoading(true);
 
     try {
       const payload: ProductPayload = {
         ...formData,
+        productCode: code,
+        name,
+        brand,
+        specifications: specs,
         importPrice: Number(formData.importPrice),
         price: Number(formData.price),
         stockQuantity: Number(formData.stockQuantity),
@@ -420,6 +448,7 @@ export default function ProductsPage() {
             <table className="product-list-table">
               <thead>
                 <tr>
+                  <th>Ảnh</th>
                   <th>Mã SP</th>
                   <th>Tên</th>
                   <th>Hãng</th>
@@ -432,6 +461,17 @@ export default function ProductsPage() {
               <tbody>
                 {filteredProducts.map((product) => (
                   <tr key={product.id}>
+                    <td>
+                      {product.images && product.images[0] ? (
+                        <img
+                          src={product.images[0].imageUrl}
+                          alt={product.name}
+                          className="table-thumb"
+                        />
+                      ) : (
+                        <div className="table-thumb table-thumb-fallback">💻</div>
+                      )}
+                    </td>
                     <td>{product.productCode}</td>
                     <td>
                       <Link href={`/products/${product.id}`} style={{ color: "#2563eb", fontWeight: 600 }}>

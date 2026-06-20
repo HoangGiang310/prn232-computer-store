@@ -93,7 +93,7 @@
 
 - As a Customer, I want to manage my account profile, saved addresses, and password so that I can use the site easily and securely.
 - Acceptance Criteria:
-  - Customer can register, verify email, and log in.
+  - Customer can register and log in. (Email verification/OTP is planned for a later phase.)
   - Customer can add/edit/delete shipping addresses and choose a default address.
   - Customer can request password reset and change password securely.
   - Personal data is stored and transmitted securely.
@@ -124,3 +124,15 @@
   - Customer can submit star rating, comment, and optional images.
   - Reviews are displayed with average score and can be sorted/filtered.
   - Admin can moderate or hide inappropriate reviews.
+
+### User Story 15
+
+- As a new visitor, I want to register a customer account with my username, email, and password so that I can shop online, place orders, and track my purchases.
+- Acceptance Criteria:
+  - Registration form collects username, email, password, password confirmation, and optional full name, phone, and address.
+  - The system validates input: username 3-50 characters, valid email format, password at least 6 characters, and matching password confirmation.
+  - The system rejects registration if the username or email already exists, with a clear error message.
+  - Public self-registration creates only the `customer` role; internal staff roles are created by an Admin (UC-10).
+  - The password is hashed before storage and never stored as plaintext.
+  - On success, a User record and a matching Customer record are created, a JWT token is issued, and the customer is redirected to the customer area.
+  - The registration page is linked from both the login page and the home page.

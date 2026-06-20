@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ComputerStoreApi.Data;
+using ComputerStoreApi.DTOs;
 using ComputerStoreApi.Models;
 
 namespace ComputerStoreApi.Controllers
@@ -37,24 +38,50 @@ namespace ComputerStoreApi.Controllers
             return Ok(user);
         }
 
-        // Tạo tài khoản nhân viên mới
+        // Các vai trò hợp lệ trong hệ thống
+        private static readonly string[] ValidRoles = { "admin", "sales", "accountant", "warehouse", "customer" };
+
+        // Tạo tài khoản nhân viên mới (dùng DTO + validation)
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] User user)
+        public async Task<IActionResult> Create([FromBody] CreateUserDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var existing = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == user.Username);
-            if (existing != null)
+            var role = dto.RoleName.Trim().ToLower();
+            if (!ValidRoles.Contains(role))
+            {
+                return BadRequest(new { message = "Vai trò không hợp lệ. Chọn: admin, sales, accountant, warehouse." });
+            }
+
+            var usernameTaken = await _dbContext.Users.AnyAsync(u => u.Username == dto.Username);
+            if (usernameTaken)
             {
                 return BadRequest(new { message = "Tên tài khoản đã tồn tại." });
             }
 
-            user.Id = Guid.NewGuid();
-            user.CreatedAt = DateTime.UtcNow;
-            user.IsActive = true;
+            if (!string.IsNullOrEmpty(dto.Email))
+            {
+                var emailTaken = await _dbContext.Users.AnyAsync(u => u.Email == dto.Email);
+                if (emailTaken)
+                {
+                    return BadRequest(new { message = "Email đã được sử dụng." });
+                }
+            }
+
+            var user = new User
+            {
+                Id = Guid.NewGuid(),
+                Username = dto.Username.Trim(),
+                FullName = dto.FullName.Trim(),
+                Email = dto.Email ?? string.Empty,
+                RoleName = role,
+                IsActive = dto.IsActive,
+                CreatedAt = DateTime.UtcNow,
+                PasswordHash = string.Empty
+            };
 
             // Nếu mật khẩu trống, mặc định dùng "Staff@123"
-            var passwordToHash = string.IsNullOrEmpty(user.PasswordHash) ? "Staff@123" : user.PasswordHash;
+            var passwordToHash = string.IsNullOrEmpty(dto.Password) ? "Staff@123" : dto.Password;
             user.PasswordHash = _passwordHasher.HashPassword(user, passwordToHash);
 
             _dbContext.Users.Add(user);
@@ -63,17 +90,35 @@ namespace ComputerStoreApi.Controllers
             return CreatedAtAction(nameof(GetById), new { id = user.Id }, new { user.Id, user.Username, user.FullName, user.Email, user.RoleName, user.IsActive });
         }
 
-        // Cập nhật thông tin nhân viên
+        // Cập nhật thông tin nhân viên (dùng DTO + validation)
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] User userUpdate)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateUserDto dto)
         {
-            var existing = await _dbContext.Users.FindAsync(id);
-            if (existing == null) return NotFound();
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            existing.FullName = userUpdate.FullName;
-            existing.Email = userUpdate.Email;
-            existing.RoleName = userUpdate.RoleName;
-            existing.IsActive = userUpdate.IsActive;
+            var existing = await _dbContext.Users.FindAsync(id);
+            if (existing == null) return NotFound(new { message = "Không tìm thấy nhân viên." });
+
+            var role = dto.RoleName.Trim().ToLower();
+            if (!ValidRoles.Contains(role))
+            {
+                return BadRequest(new { message = "Vai trò không hợp lệ." });
+            }
+
+            // Kiểm tra email trùng với người khác
+            if (!string.IsNullOrEmpty(dto.Email))
+            {
+                var emailTaken = await _dbContext.Users.AnyAsync(u => u.Email == dto.Email && u.Id != id);
+                if (emailTaken)
+                {
+                    return BadRequest(new { message = "Email đã được sử dụng bởi tài khoản khác." });
+                }
+            }
+
+            existing.FullName = dto.FullName.Trim();
+            existing.Email = dto.Email ?? existing.Email;
+            existing.RoleName = role;
+            existing.IsActive = dto.IsActive;
 
             await _dbContext.SaveChangesAsync();
             return NoContent();

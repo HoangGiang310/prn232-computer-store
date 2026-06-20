@@ -20,6 +20,7 @@ namespace ComputerStoreApi.Data
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Shipment> Shipments { get; set; }
         public DbSet<OrderReturn> OrderReturns { get; set; }
+        public DbSet<ProductReview> ProductReviews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,6 +35,22 @@ namespace ComputerStoreApi.Data
             // Đảm bảo ProductCode và Username là Unique độc nhất
             modelBuilder.Entity<Product>().HasIndex(p => p.ProductCode).IsUnique();
             modelBuilder.Entity<User>().HasIndex(u => u.Username).IsUnique();
+
+            // Cấu hình quan hệ cho ProductReview (UC-15)
+            modelBuilder.Entity<ProductReview>()
+                .HasOne(r => r.Product)
+                .WithMany()
+                .HasForeignKey(r => r.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ProductReview>()
+                .HasOne(r => r.Customer)
+                .WithMany()
+                .HasForeignKey(r => r.CustomerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Index hỗ trợ truy vấn đánh giá theo sản phẩm nhanh chóng
+            modelBuilder.Entity<ProductReview>().HasIndex(r => r.ProductId);
         }
     }
 }

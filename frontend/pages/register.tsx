@@ -8,7 +8,7 @@ export default function RegisterPage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
-  const [role, setRole] = useState("customer");
+  const [role] = useState("customer");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
   const [password, setPassword] = useState("");
@@ -71,7 +71,7 @@ export default function RegisterPage() {
       <section className="auth-panel auth-register-panel">
         <div className="auth-heading">
           <h1>Đăng ký tài khoản</h1>
-          <p>Tạo tài khoản mới để sử dụng hệ thống</p>
+          <p>Tạo tài khoản khách hàng để mua sắm online</p>
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
@@ -159,17 +159,7 @@ export default function RegisterPage() {
             />
           </label>
 
-          <label className="auth-field auth-select-field">
-            <span className="auth-icon">♢</span>
-            <span className="auth-sr">Vai trò tài khoản</span>
-            <select value={role} onChange={(e) => setRole(e.target.value)}>
-              <option value="customer">Khách hàng</option>
-              <option value="admin">Admin</option>
-              <option value="sales">Nhân viên bán hàng</option>
-              <option value="accountant">Kế toán</option>
-              <option value="warehouse">Quản lý kho</option>
-            </select>
-          </label>
+          <input type="hidden" value={role} />
 
           {error ? <p className="auth-message auth-error">{error}</p> : null}
           {success ? <p className="auth-message auth-success">{success}</p> : null}

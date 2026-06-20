@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getAuth, getRedirectFromRole, logout } from "../lib/auth";
+import { fetchProducts } from "../lib/api";
 
 const featuredProducts = [
   {
@@ -53,9 +54,13 @@ const homeProtectedLinks = {
 
 export default function Home() {
   const [auth, setAuth] = useState<{ token: string; role: string; username: string } | null>(null);
+  const [liveProducts, setLiveProducts] = useState<any[]>([]);
 
   useEffect(() => {
     setAuth(getAuth());
+    fetchProducts()
+      .then((data) => setLiveProducts(Array.isArray(data) ? data.slice(0, 6) : []))
+      .catch(() => setLiveProducts([]));
   }, []);
 
   function handleLogout() {
@@ -184,19 +189,39 @@ export default function Home() {
               HỆ THỐNG BÁN HÀNG MÁY TÍNH VỚI GIAO DIỆN NHANH, RÕ RÀNG VÀ DỄ THAO TÁC CHO NHÂN VIÊN CỬA HÀNG.
             </p>
 
-            <div className="product-showcase">
-              {featuredProducts.map((product) => (
-                <div className="product-tile" key={product.name}>
-                  <span className="product-tag">{product.tag}</span>
-                  <div className="product-device">
-                    <span className="device-screen" />
-                    <span className="device-base" />
-                  </div>
-                  <h2>{product.name}</h2>
-                  <p>{product.spec}</p>
-                  <strong>{product.price}</strong>
-                </div>
-              ))}
+            <div className="home-product-grid">
+              {(liveProducts.length > 0 ? liveProducts : []).map((product) => {
+                const img =
+                  product.images?.find((i: any) => i.isMain)?.imageUrl ||
+                  product.images?.[0]?.imageUrl;
+                return (
+                  <Link href={`/product/${product.id}`} className="home-product-card" key={product.id}>
+                    <div className="home-product-media">
+                      {img ? <img src={img} alt={product.name} loading="lazy" /> : <span>💻</span>}
+                      {product.brand ? <span className="home-product-brand">{product.brand}</span> : null}
+                    </div>
+                    <div className="home-product-info">
+                      <h2>{product.name}</h2>
+                      <p>{product.specifications}</p>
+                      <strong>{Number(product.price).toLocaleString("vi-VN")} ₫</strong>
+                    </div>
+                  </Link>
+                );
+              })}
+              {liveProducts.length === 0
+                ? featuredProducts.map((product) => (
+                    <div className="product-tile" key={product.name}>
+                      <span className="product-tag">{product.tag}</span>
+                      <div className="product-device">
+                        <span className="device-screen" />
+                        <span className="device-base" />
+                      </div>
+                      <h2>{product.name}</h2>
+                      <p>{product.spec}</p>
+                      <strong>{product.price}</strong>
+                    </div>
+                  ))
+                : null}
             </div>
           </article>
         </section>

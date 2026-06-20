@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ComputerStoreApi.Data;
+using ComputerStoreApi.DTOs;
 using ComputerStoreApi.Models;
 
 namespace ComputerStoreApi.Controllers
@@ -105,27 +106,37 @@ namespace ComputerStoreApi.Controllers
             return Ok(product);
         }
 
+        // Tạo sản phẩm mới (dùng DTO + validation)
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ProductCreateRequest request)
+        public async Task<IActionResult> Create([FromBody] ProductDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
+            // Kiểm tra trùng mã sản phẩm
+            var codeExists = await _dbContext.Products.AnyAsync(p => p.ProductCode == dto.ProductCode);
+            if (codeExists)
+            {
+                return BadRequest(new { message = $"Mã sản phẩm '{dto.ProductCode}' đã tồn tại." });
+            }
+
+            // Quy tắc nghiệp vụ: giá bán không nên nhỏ hơn giá nhập
+            if (dto.Price < dto.ImportPrice)
+            {
+                return BadRequest(new { message = "Giá bán không được nhỏ hơn giá nhập." });
+            }
+
             var product = new Product
             {
-                ProductCode = request.ProductCode,
-                Name = request.Name,
-                Brand = request.Brand,
-                Specifications = request.Specifications,
-                ImportPrice = request.ImportPrice,
-                Price = request.Price,
-                StockQuantity = request.StockQuantity,
-                LowStockThreshold = request.LowStockThreshold,
-                CreatedAt = DateTime.UtcNow,
-                Images = request.ImageUrls?.Select((url, index) => new ProductImage
-                {
-                    ImageUrl = url,
-                    IsMain = index == 0
-                }).ToList() ?? new List<ProductImage>()
+                Id = Guid.NewGuid(),
+                ProductCode = dto.ProductCode.Trim(),
+                Name = dto.Name.Trim(),
+                Brand = dto.Brand.Trim(),
+                Specifications = dto.Specifications,
+                ImportPrice = dto.ImportPrice,
+                Price = dto.Price,
+                StockQuantity = dto.StockQuantity,
+                LowStockThreshold = dto.LowStockThreshold,
+                CreatedAt = DateTime.UtcNow
             };
 
             _dbContext.Products.Add(product);
@@ -133,33 +144,36 @@ namespace ComputerStoreApi.Controllers
             return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
         }
 
+        // Cập nhật sản phẩm (dùng DTO + validation)
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] ProductCreateRequest request)
+        public async Task<IActionResult> Update(Guid id, [FromBody] ProductDto dto)
         {
-            var existing = await _dbContext.Products
-                .Include(p => p.Images)
-                .FirstOrDefaultAsync(p => p.Id == id);
-            if (existing == null) return NotFound();
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            existing.ProductCode = request.ProductCode;
-            existing.Name = request.Name;
-            existing.Brand = request.Brand;
-            existing.Specifications = request.Specifications;
-            existing.ImportPrice = request.ImportPrice;
-            existing.Price = request.Price;
-            existing.StockQuantity = request.StockQuantity;
-            existing.LowStockThreshold = request.LowStockThreshold;
+            var existing = await _dbContext.Products.FindAsync(id);
+            if (existing == null) return NotFound(new { message = "Không tìm thấy sản phẩm." });
 
-            if (request.ImageUrls != null)
+            // Kiểm tra trùng mã với sản phẩm khác
+            var codeTaken = await _dbContext.Products
+                .AnyAsync(p => p.ProductCode == dto.ProductCode && p.Id != id);
+            if (codeTaken)
             {
-                _dbContext.ProductImages.RemoveRange(existing.Images ?? new List<ProductImage>());
-                existing.Images = request.ImageUrls.Select((url, index) => new ProductImage
-                {
-                    ProductId = existing.Id,
-                    ImageUrl = url,
-                    IsMain = index == 0
-                }).ToList();
+                return BadRequest(new { message = $"Mã sản phẩm '{dto.ProductCode}' đã được dùng cho sản phẩm khác." });
             }
+
+            if (dto.Price < dto.ImportPrice)
+            {
+                return BadRequest(new { message = "Giá bán không được nhỏ hơn giá nhập." });
+            }
+
+            existing.ProductCode = dto.ProductCode.Trim();
+            existing.Name = dto.Name.Trim();
+            existing.Brand = dto.Brand.Trim();
+            existing.Specifications = dto.Specifications;
+            existing.ImportPrice = dto.ImportPrice;
+            existing.Price = dto.Price;
+            existing.StockQuantity = dto.StockQuantity;
+            existing.LowStockThreshold = dto.LowStockThreshold;
 
             await _dbContext.SaveChangesAsync();
             return NoContent();

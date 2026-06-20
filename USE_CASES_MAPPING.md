@@ -218,7 +218,23 @@
   - Quản lý địa chỉ giao hàng
   - Đặt lại mật khẩu
   - Xem lịch sử mua hàng
-- **Trạng thái**: ❌ Chưa có
+- **Trạng thái**: ⚠️ Một phần (Đăng ký đã có — usecase12.md & usecase14.md; phần còn lại chưa có)
+
+---
+
+### UC-18: Đăng ký tài khoản khách hàng
+
+- **Vai trò sử dụng**: Customer
+- **Loại**: Authentication / Account Management
+- **Mô tả**: Khách hàng tự tạo tài khoản mới qua website, được cấp JWT và đăng nhập tự động
+- **Tính năng chính**:
+  - Form đăng ký (username, email, họ tên, SĐT, địa chỉ, mật khẩu)
+  - Validation đầu vào (username 3-50 ký tự, email hợp lệ, mật khẩu ≥ 6 ký tự)
+  - Kiểm tra trùng username/email
+  - Mã hóa mật khẩu, tạo bản ghi User + Customer
+  - Đăng ký công khai chỉ tạo vai trò customer
+  - Cấp JWT token và điều hướng vào trang khách hàng
+- **Trạng thái**: ✅ Đã có (usecase14.md) — backend `POST /api/auth/register`, frontend `pages/register.tsx`
 
 ---
 
@@ -316,4 +332,4 @@
 | **Sales**      | UC-01, UC-02, UC-03, UC-04, UC-05, UC-06, UC-08 |
 | **Accountant** | UC-01, UC-09, UC-17                             |
 | **Warehouse**  | UC-01, UC-04, UC-05, UC-08                      |
-| **Customer**   | UC-11, UC-12, UC-13, UC-14, UC-15               |
+| **Customer**   | UC-11, UC-12, UC-13, UC-14, UC-15, UC-18        |

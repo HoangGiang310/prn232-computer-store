@@ -67,6 +67,14 @@ namespace ComputerStoreApi.Controllers
                 return BadRequest(new { message = "Tên tài khoản hoặc email đã tồn tại trên hệ thống." });
             }
 
+            // Bảo mật: API đăng ký công khai CHỈ cho phép tạo tài khoản khách hàng (customer).
+            // Các vai trò nội bộ (admin, sales, accountant, warehouse) phải do Admin tạo qua UC-10.
+            var requestedRole = string.IsNullOrWhiteSpace(register.Role) ? "customer" : register.Role.Trim().ToLower();
+            if (requestedRole != "customer")
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, new { message = "Đăng ký công khai chỉ dành cho tài khoản khách hàng. Vui lòng liên hệ quản trị viên để tạo tài khoản nhân viên." });
+            }
+
             // Tạo thực thể người dùng mới khớp 100% với cấu trúc bảng cơ sở dữ liệu
             var user = new User
             {
@@ -74,7 +82,7 @@ namespace ComputerStoreApi.Controllers
                 Username = register.Username,
                 FullName = string.IsNullOrEmpty(register.FullName) ? register.Username : register.FullName,
                 Email = register.Email,
-                RoleName = string.IsNullOrEmpty(register.Role) ? "customer" : register.Role, // Gán vai trò (Mặc định là customer)
+                RoleName = requestedRole, // Luôn là customer cho đăng ký công khai
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow
             };

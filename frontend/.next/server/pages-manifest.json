@@ -3,8 +3,12 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/": "pages/index.js",
+<<<<<<< HEAD
+  "/product/[id]": "pages/product/[id].js"
+=======
   "/register": "pages/register.js",
   "/admin": "pages/admin.js",
   "/login": "pages/login.js",
   "/products": "pages/products.js"
+>>>>>>> main
 }

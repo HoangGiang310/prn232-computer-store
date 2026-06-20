@@ -50,6 +50,22 @@ const authHeaders = (token?: string) => {
   return headers;
 };
 
+// Trích xuất thông báo lỗi từ response, hỗ trợ cả lỗi validation của ASP.NET Core
+// ({ errors: { Field: ["msg"] } }) lẫn lỗi nghiệp vụ ({ message: "..." }).
+export function extractApiError(body: any, fallback: string): string {
+  if (!body) return fallback;
+  if (typeof body === "string") return body || fallback;
+  if (body.message) return body.message;
+  if (body.errors && typeof body.errors === "object") {
+    const messages = Object.values(body.errors)
+      .flat()
+      .filter(Boolean) as string[];
+    if (messages.length > 0) return messages.join(" ");
+  }
+  if (body.title) return body.title;
+  return fallback;
+}
+
 export async function createProduct(product: ProductPayload, token?: string) {
   const res = await fetch(`${apiBaseUrl}/api/products`, {
     method: "POST",
@@ -59,7 +75,7 @@ export async function createProduct(product: ProductPayload, token?: string) {
 
   const body = await res.json().catch(() => null);
   if (!res.ok) {
-    throw new Error(body?.message || "Không thể tạo sản phẩm.");
+    throw new Error(extractApiError(body, "Không thể tạo sản phẩm."));
   }
 
   return body;
@@ -78,7 +94,7 @@ export async function updateProduct(
 
   if (!res.ok) {
     const body = await res.json().catch(() => null);
-    throw new Error(body?.message || "Không thể cập nhật sản phẩm.");
+    throw new Error(extractApiError(body, "Không thể cập nhật sản phẩm."));
   }
 }
 
@@ -90,7 +106,7 @@ export async function deleteProduct(id: string, token?: string) {
 
   if (!res.ok) {
     const body = await res.json().catch(() => null);
-    throw new Error(body?.message || "Không thể xóa sản phẩm.");
+    throw new Error(extractApiError(body, "Không thể xóa sản phẩm."));
   }
 }
 
@@ -133,7 +149,7 @@ export async function createOrder(order: OrderPayload, token?: string) {
 
   const body = await res.json().catch(() => null);
   if (!res.ok) {
-    throw new Error(body?.message || "Không thể tạo đơn hàng.");
+    throw new Error(extractApiError(body, "Không thể tạo đơn hàng."));
   }
 
   return body;
@@ -152,7 +168,7 @@ export async function updateOrderStatus(
 
   if (!res.ok) {
     const body = await res.json().catch(() => null);
-    throw new Error(body?.message || "Không thể cập nhật đơn hàng.");
+    throw new Error(extractApiError(body, "Không thể cập nhật đơn hàng."));
   }
 }
 
@@ -192,7 +208,7 @@ export async function adjustInventory(
 
   const body = await res.json().catch(() => null);
   if (!res.ok) {
-    throw new Error(body?.message || "Không thể điều chỉnh tồn kho.");
+    throw new Error(extractApiError(body, "Không thể điều chỉnh tồn kho."));
   }
 
   return body;
@@ -243,7 +259,7 @@ export async function createCustomer(customer: any, token?: string) {
     body: JSON.stringify(customer),
   });
   const body = await res.json().catch(() => null);
-  if (!res.ok) throw new Error(body?.message || "Không thể tạo khách hàng.");
+  if (!res.ok) throw new Error(extractApiError(body, "Không thể tạo khách hàng."));
   return body;
 }
 
@@ -255,7 +271,7 @@ export async function updateCustomer(id: string, customer: any, token?: string) 
   });
   if (!res.ok) {
     const body = await res.json().catch(() => null);
-    throw new Error(body?.message || "Không thể cập nhật khách hàng.");
+    throw new Error(extractApiError(body, "Không thể cập nhật khách hàng."));
   }
 }
 
@@ -266,7 +282,7 @@ export async function deleteCustomer(id: string, token?: string) {
   });
   if (!res.ok) {
     const body = await res.json().catch(() => null);
-    throw new Error(body?.message || "Không thể xóa khách hàng.");
+    throw new Error(extractApiError(body, "Không thể xóa khách hàng."));
   }
 }
 
@@ -292,7 +308,7 @@ export async function createVoucher(voucher: any, token?: string) {
     body: JSON.stringify(voucher),
   });
   const body = await res.json().catch(() => null);
-  if (!res.ok) throw new Error(body?.message || "Không thể tạo voucher.");
+  if (!res.ok) throw new Error(extractApiError(body, "Không thể tạo voucher."));
   return body;
 }
 
@@ -304,7 +320,7 @@ export async function updateVoucher(code: string, voucher: any, token?: string) 
   });
   if (!res.ok) {
     const body = await res.json().catch(() => null);
-    throw new Error(body?.message || "Không thể cập nhật voucher.");
+    throw new Error(extractApiError(body, "Không thể cập nhật voucher."));
   }
 }
 
@@ -315,7 +331,7 @@ export async function deleteVoucher(code: string, token?: string) {
   });
   if (!res.ok) {
     const body = await res.json().catch(() => null);
-    throw new Error(body?.message || "Không thể xóa voucher.");
+    throw new Error(extractApiError(body, "Không thể xóa voucher."));
   }
 }
 
@@ -341,7 +357,7 @@ export async function createUser(user: any, token?: string) {
     body: JSON.stringify(user),
   });
   const body = await res.json().catch(() => null);
-  if (!res.ok) throw new Error(body?.message || "Không thể tạo nhân viên.");
+  if (!res.ok) throw new Error(extractApiError(body, "Không thể tạo nhân viên."));
   return body;
 }
 
@@ -353,7 +369,7 @@ export async function updateUser(id: string, user: any, token?: string) {
   });
   if (!res.ok) {
     const body = await res.json().catch(() => null);
-    throw new Error(body?.message || "Không thể cập nhật nhân viên.");
+    throw new Error(extractApiError(body, "Không thể cập nhật nhân viên."));
   }
 }
 
@@ -364,7 +380,7 @@ export async function resetUserPassword(id: string, newPassword?: string, token?
     body: JSON.stringify({ newPassword }),
   });
   const body = await res.json().catch(() => null);
-  if (!res.ok) throw new Error(body?.message || "Không thể đặt lại mật khẩu.");
+  if (!res.ok) throw new Error(extractApiError(body, "Không thể đặt lại mật khẩu."));
   return body;
 }
 
@@ -375,7 +391,7 @@ export async function deleteUser(id: string, token?: string) {
   });
   if (!res.ok) {
     const body = await res.json().catch(() => null);
-    throw new Error(body?.message || "Không thể vô hiệu hóa nhân viên.");
+    throw new Error(extractApiError(body, "Không thể vô hiệu hóa nhân viên."));
   }
 }
 
@@ -424,7 +440,7 @@ export async function createReturn(orderId: string, reason: string, token?: stri
     body: JSON.stringify({ orderId, reason }),
   });
   const body = await res.json().catch(() => null);
-  if (!res.ok) throw new Error(body?.message || "Không thể tạo phiếu trả hàng.");
+  if (!res.ok) throw new Error(extractApiError(body, "Không thể tạo phiếu trả hàng."));
   return body;
 }
 
@@ -435,6 +451,115 @@ export async function processReturn(id: string, status: string, processedById?: 
     body: JSON.stringify({ status, processedById }),
   });
   const body = await res.json().catch(() => null);
-  if (!res.ok) throw new Error(body?.message || "Không thể duyệt trả hàng.");
+  if (!res.ok) throw new Error(extractApiError(body, "Không thể duyệt trả hàng."));
+  return body;
+}
+
+// ==========================================
+// PRODUCT REVIEWS API WRAPPERS (UC-15)
+// ==========================================
+export type ReviewPayload = {
+  productId: string;
+  rating: number;
+  title?: string;
+  content?: string;
+};
+
+export async function fetchProductReviews(
+  productId: string,
+  sort: string = "helpful",
+  star?: number,
+) {
+  const params = new URLSearchParams({ sort });
+  if (star) params.set("star", String(star));
+  const res = await fetch(
+    `${apiBaseUrl}/api/reviews/product/${productId}?${params.toString()}`,
+  );
+  if (!res.ok) throw new Error("Không thể tải đánh giá sản phẩm");
+  return res.json();
+}
+
+export async function fetchReviewSummary(productId: string) {
+  const res = await fetch(`${apiBaseUrl}/api/reviews/product/${productId}/summary`);
+  if (!res.ok) throw new Error("Không thể tải tóm tắt đánh giá");
+  return res.json();
+}
+
+export async function fetchReviewEligibility(productId: string, token?: string) {
+  const res = await fetch(
+    `${apiBaseUrl}/api/reviews/product/${productId}/eligibility`,
+    { headers: authHeaders(token) },
+  );
+  if (!res.ok) throw new Error("Không thể kiểm tra quyền đánh giá");
+  return res.json();
+}
+
+export async function createReview(review: ReviewPayload, token?: string) {
+  const res = await fetch(`${apiBaseUrl}/api/reviews`, {
+    method: "POST",
+    headers: authHeaders(token),
+    body: JSON.stringify(review),
+  });
+  const body = await res.json().catch(() => null);
+  if (!res.ok) throw new Error(extractApiError(body, "Không thể gửi đánh giá."));
+  return body;
+}
+
+export async function updateReview(
+  id: string,
+  review: Omit<ReviewPayload, "productId">,
+  token?: string,
+) {
+  const res = await fetch(`${apiBaseUrl}/api/reviews/${id}`, {
+    method: "PUT",
+    headers: authHeaders(token),
+    body: JSON.stringify(review),
+  });
+  const body = await res.json().catch(() => null);
+  if (!res.ok) throw new Error(extractApiError(body, "Không thể cập nhật đánh giá."));
+  return body;
+}
+
+export async function deleteReview(id: string, token?: string) {
+  const res = await fetch(`${apiBaseUrl}/api/reviews/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(token),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    throw new Error(extractApiError(body, "Không thể xóa đánh giá."));
+  }
+}
+
+export async function markReviewHelpful(id: string) {
+  const res = await fetch(`${apiBaseUrl}/api/reviews/${id}/helpful`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+  });
+  const body = await res.json().catch(() => null);
+  if (!res.ok) throw new Error(extractApiError(body, "Không thể đánh dấu hữu ích."));
+  return body;
+}
+
+export async function fetchAllReviewsForAdmin(token?: string) {
+  const res = await fetch(`${apiBaseUrl}/api/reviews/admin/all`, {
+    headers: authHeaders(token),
+  });
+  if (!res.ok) throw new Error("Không thể tải danh sách đánh giá");
+  return res.json();
+}
+
+export async function setReviewVisibility(
+  id: string,
+  isHidden: boolean,
+  token?: string,
+) {
+  const res = await fetch(`${apiBaseUrl}/api/reviews/${id}/visibility`, {
+    method: "PUT",
+    headers: authHeaders(token),
+    body: JSON.stringify({ isHidden }),
+  });
+  const body = await res.json().catch(() => null);
+  if (!res.ok) throw new Error(extractApiError(body, "Không thể cập nhật trạng thái đánh giá."));
   return body;
 }
