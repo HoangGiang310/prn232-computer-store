@@ -52,6 +52,12 @@ const adminActions = [
     desc: "Xem doanh thu, lợi nhuận, top sản phẩm và trạng thái kho.",
     stat: "BC",
   },
+  {
+    href: "/reviews",
+    title: "KIỂM DUYỆT ĐÁNH GIÁ",
+    desc: "Xem, ẩn hoặc hiện lại bình luận và đánh giá của khách hàng.",
+    stat: "★",
+  },
 ];
 
 export default function AdminPage() {

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ComputerStoreApi.Data;
+using ComputerStoreApi.DTOs;
 using ComputerStoreApi.Models;
 using System.Security.Claims;
 
@@ -97,24 +98,28 @@ namespace ComputerStoreApi.Controllers
             return Ok(orders);
         }
 
-        // Thêm khách hàng mới
+        // Thêm khách hàng mới (dùng DTO + validation)
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Customer customer)
+        public async Task<IActionResult> Create([FromBody] CustomerDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            customer.Id = Guid.NewGuid();
-            customer.CreatedAt = DateTime.UtcNow;
-            
-            // Đảm bảo không lỗi do các trường WebUsername/WebPasswordHash null ở DB seeder
-            if (string.IsNullOrEmpty(customer.WebUsername))
+            var customer = new Customer
             {
-                customer.WebUsername = "customer_" + customer.PhoneNumber;
-            }
-            if (string.IsNullOrEmpty(customer.WebPasswordHash))
-            {
-                customer.WebPasswordHash = "no_password_offline";
-            }
+                Id = Guid.NewGuid(),
+                FullName = dto.FullName.Trim(),
+                PhoneNumber = dto.PhoneNumber.Trim(),
+                Email = dto.Email ?? string.Empty,
+                Address = dto.Address ?? string.Empty,
+                Notes = dto.Notes ?? string.Empty,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            // Đảm bảo không lỗi do các trường WebUsername/WebPasswordHash NOT NULL
+            customer.WebUsername = string.IsNullOrEmpty(dto.WebUsername)
+                ? "customer_" + dto.PhoneNumber
+                : dto.WebUsername;
+            customer.WebPasswordHash = "no_password_offline";
 
             _dbContext.Customers.Add(customer);
             await _dbContext.SaveChangesAsync();
@@ -122,22 +127,24 @@ namespace ComputerStoreApi.Controllers
             return CreatedAtAction(nameof(GetById), new { id = customer.Id }, customer);
         }
 
-        // Cập nhật thông tin khách hàng
+        // Cập nhật thông tin khách hàng (dùng DTO + validation)
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] Customer customer)
+        public async Task<IActionResult> Update(Guid id, [FromBody] CustomerDto dto)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             var existing = await _dbContext.Customers.FindAsync(id);
-            if (existing == null) return NotFound();
+            if (existing == null) return NotFound(new { message = "Không tìm thấy khách hàng." });
 
-            existing.FullName = customer.FullName;
-            existing.PhoneNumber = customer.PhoneNumber;
-            existing.Email = customer.Email;
-            existing.Address = customer.Address;
-            existing.Notes = customer.Notes;
+            existing.FullName = dto.FullName.Trim();
+            existing.PhoneNumber = dto.PhoneNumber.Trim();
+            existing.Email = dto.Email ?? existing.Email;
+            existing.Address = dto.Address ?? existing.Address;
+            existing.Notes = dto.Notes ?? existing.Notes;
 
-            if (!string.IsNullOrEmpty(customer.WebUsername))
+            if (!string.IsNullOrEmpty(dto.WebUsername))
             {
-                existing.WebUsername = customer.WebUsername;
+                existing.WebUsername = dto.WebUsername;
             }
 
             await _dbContext.SaveChangesAsync();

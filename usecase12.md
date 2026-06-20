@@ -91,7 +91,7 @@ Khách hàng đăng ký tài khoản, xác thực email, cập nhật thông tin
 6. Hệ thống lưu và hiển thị thông báo thành công.
 7. Khách có thể `Sửa` hoặc `Xóa` địa chỉ đã lưu.
 
-## Luwalsh Chính: Đặt Lại Mật Khẩu
+## Luồng chính: Đặt Lại Mật Khẩu
 
 1. Khách hàng chọn `Quên mật khẩu` trên trang đăng nhập.
 2. Hệ thống yêu cầu nhập email.
@@ -145,6 +145,18 @@ Khách hàng đăng ký tài khoản, xác thực email, cập nhật thông tin
 - Email xác nhận phải gửi trong vòng 1 phút.
 - Trang cá nhân phải tải nhanh (< 2 giây).
 - Hỗ trợ 2FA (two-factor authentication) tùy chọn cho bảo mật cao.
+
+## Trạng thái triển khai (so với mã nguồn hiện tại)
+
+- ✅ **Đã triển khai**: Đăng ký tài khoản khách hàng (xem chi tiết tại `usecase14.md`).
+  - Endpoint backend: `POST /api/auth/register` (AuthController).
+  - DTO: `RegisterDto` (có validation: username 3-50 ký tự, email hợp lệ, mật khẩu ≥ 6 ký tự).
+  - Trang frontend: `pages/register.tsx` (liên kết từ `/login` và trang chủ).
+  - Tài khoản được kích hoạt ngay (`IsActive = true`), chưa có bước OTP/xác thực email.
+  - Đăng ký công khai chỉ tạo vai trò `customer`; vai trò nội bộ do Admin tạo qua UC-10.
+- ⏳ **Chưa triển khai (dự kiến)**: Xác thực email/OTP, quản lý nhiều địa chỉ giao hàng, đặt lại mật khẩu qua email, đổi mật khẩu, xóa tài khoản (GDPR), đăng nhập Google/Facebook, 2FA.
+
+> Lưu ý: Các luồng OTP và quy tắc mật khẩu mạnh (≥ 8 ký tự) mô tả ở trên là thiết kế mục tiêu cho giai đoạn sau. Mã nguồn hiện tại yêu cầu mật khẩu tối thiểu 6 ký tự và kích hoạt tài khoản tức thì.
 
 ## Ghi chú
 

@@ -1,5 +1,6 @@
 using ComputerStoreApi.Data;
 using ComputerStoreApi.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace ComputerStoreApi.Services
@@ -39,85 +40,130 @@ namespace ComputerStoreApi.Services
             // 2. INSERT TÀI KHOẢN NHÂN VIÊN (USERS)
             if (!_context.Users.Any())
             {
-                string fakeHashPassword = "Mã_Hóa_Password_123_Của_Hệ_Thống";
+                // Dùng PasswordHasher giống hệt AuthController để mật khẩu đăng nhập được
+                var passwordHasher = new PasswordHasher<User>();
 
                 var users = new List<User>
                 {
-                    new User { Username = "admin_01", PasswordHash = fakeHashPassword, FullName = "Nguyễn Văn Admin", RoleName = "admin", Email = "admin01@computerstore.local", IsActive = true, CreatedAt = DateTime.UtcNow },
-                    new User { Username = "sales_01", PasswordHash = fakeHashPassword, FullName = "Trần Thị Bán Hàng", RoleName = "sales", Email = "sales01@computerstore.local", IsActive = true, CreatedAt = DateTime.UtcNow },
-                    new User { Username = "acc_01", PasswordHash = fakeHashPassword, FullName = "Phạm Kế Toán", RoleName = "accountant", Email = "accountant01@computerstore.local", IsActive = true, CreatedAt = DateTime.UtcNow },
-                    new User { Username = "kho_01", PasswordHash = fakeHashPassword, FullName = "Lê Thủ Kho", RoleName = "warehouse", Email = "warehouse01@computerstore.local", IsActive = true, CreatedAt = DateTime.UtcNow }
+                    new User { Username = "admin_01", FullName = "Nguyễn Văn Admin", RoleName = "admin", Email = "admin01@computerstore.local", IsActive = true, CreatedAt = DateTime.UtcNow },
+                    new User { Username = "sales_01", FullName = "Trần Thị Bán Hàng", RoleName = "sales", Email = "sales01@computerstore.local", IsActive = true, CreatedAt = DateTime.UtcNow },
+                    new User { Username = "acc_01", FullName = "Phạm Kế Toán", RoleName = "accountant", Email = "accountant01@computerstore.local", IsActive = true, CreatedAt = DateTime.UtcNow },
+                    new User { Username = "kho_01", FullName = "Lê Thủ Kho", RoleName = "warehouse", Email = "warehouse01@computerstore.local", IsActive = true, CreatedAt = DateTime.UtcNow }
                 };
+
+                // Mật khẩu mặc định cho tất cả tài khoản nhân viên mẫu: "Password@123"
+                foreach (var u in users)
+                {
+                    u.PasswordHash = passwordHasher.HashPassword(u, "Password@123");
+                }
+
                 _context.Users.AddRange(users);
                 _context.SaveChanges();
             }
 
-            // 3. INSERT KHÁCH HÀNG (CUSTOMERS)
-            if (!_context.Customers.Any())
+            // 2b. ĐẢM BẢO CÁC TÀI KHOẢN MẪU LUÔN ĐĂNG NHẬP ĐƯỢC
+            // Chạy mỗi lần khởi động: tạo nếu thiếu, đặt lại mật khẩu "Password@123" nếu hash không hợp lệ.
+            // Nhờ vậy dù database cũ ở trạng thái nào, 5 tài khoản mẫu vẫn luôn dùng được.
+            EnsureSampleAccounts();
+
+            // 3. INSERT KHÁCH HÀNG VÃNG LAI (CUSTOMERS)
+            // Khách online "longkhachhang" và tài khoản đăng nhập của họ được tạo ở EnsureSampleAccounts().
+            if (!_context.Customers.Any(c => c.WebUsername == "khachvanglai_pos"))
             {
-                var customers = new List<Customer>
+                // Khách vãng lai tại quầy (không có tài khoản đăng nhập online)
+                var walkInCustomer = new Customer
                 {
-                    new Customer {
-                        FullName = "Khách Vãng Lai POS",
-                        PhoneNumber = "0000000000",
-                        Address = "Tại cửa hàng",
-                        Email = "khachvanglai@computerstore.local",
-                        Notes = "Khách mua trực tiếp không để lại thông tin",
-                        WebUsername = "khachvanglai_pos",         // Vượt lỗi WebUsername NOT NULL
-                        WebPasswordHash = "no_password_pos",       // Vượt lỗi WebPasswordHash NOT NULL
-                        CreatedAt = DateTime.UtcNow
-                    },
-                    new Customer {
-                        FullName = "Trần Hoàng Long",
-                        PhoneNumber = "0912345678",
-                        Email = "longth@gmail.com",
-                        Address = "123 Nguyễn Huệ, Quận 1, TPHCM",
-                        WebUsername = "longkhachhang",
-                        WebPasswordHash = "hashed_customer_password",
-                        Notes = "Khách hàng thân thiết mua Online",
-                        CreatedAt = DateTime.UtcNow
-                    }
+                    FullName = "Khách Vãng Lai POS",
+                    PhoneNumber = "0000000000",
+                    Address = "Tại cửa hàng",
+                    Email = "khachvanglai@computerstore.local",
+                    Notes = "Khách mua trực tiếp không để lại thông tin",
+                    WebUsername = "khachvanglai_pos",         // Vượt lỗi WebUsername NOT NULL
+                    WebPasswordHash = "no_password_pos",       // Vượt lỗi WebPasswordHash NOT NULL
+                    CreatedAt = DateTime.UtcNow
                 };
-                _context.Customers.AddRange(customers);
+
+                _context.Customers.Add(walkInCustomer);
                 _context.SaveChanges();
             }
 
-            // 4. INSERT SẢN PHẨM LAPTOP (PRODUCTS)
+            // 4. INSERT SẢN PHẨM LAPTOP & PHỤ KIỆN (PRODUCTS)
             if (!_context.Products.Any())
             {
-                var p1 = new Product
+                // Ảnh dùng nguồn Unsplash (miễn phí, có thật) để hiển thị đẹp trên giao diện
+                var products = new List<(Product product, string image)>
                 {
-                    ProductCode = "LAP-DELL-XPS13",
-                    Name = "Laptop Dell XPS 13 9320",
-                    Brand = "Dell",
-                    Specifications = "Core i7-1260P, 16GB RAM, 512GB SSD, 13.4 OLED Touch",
-                    ImportPrice = 32000000,
-                    Price = 38500000,
-                    StockQuantity = 15,
-                    LowStockThreshold = 3,
-                    CreatedAt = DateTime.UtcNow
+                    (new Product { ProductCode = "LAP-DELL-XPS13", Name = "Dell XPS 13 9320", Brand = "Dell",
+                        Specifications = "Intel Core i7-1260P, 16GB LPDDR5, 512GB SSD, 13.4\" OLED 3.5K Touch, Windows 11",
+                        ImportPrice = 32000000, Price = 38500000, StockQuantity = 15, LowStockThreshold = 3, CreatedAt = DateTime.UtcNow },
+                        "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=800&q=80"),
+
+                    (new Product { ProductCode = "LAP-MAC-M3AIR", Name = "MacBook Air 13\" M3 2024", Brand = "Apple",
+                        Specifications = "Apple M3 8-core CPU, 10-core GPU, 16GB Unified Memory, 512GB SSD, 13.6\" Liquid Retina",
+                        ImportPrice = 28000000, Price = 32990000, StockQuantity = 8, LowStockThreshold = 3, CreatedAt = DateTime.UtcNow },
+                        "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&q=80"),
+
+                    (new Product { ProductCode = "LAP-MAC-M3PRO16", Name = "MacBook Pro 16\" M3 Pro", Brand = "Apple",
+                        Specifications = "Apple M3 Pro 12-core CPU, 18-core GPU, 36GB RAM, 1TB SSD, 16.2\" Liquid Retina XDR",
+                        ImportPrice = 58000000, Price = 65990000, StockQuantity = 5, LowStockThreshold = 2, CreatedAt = DateTime.UtcNow },
+                        "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800&q=80"),
+
+                    (new Product { ProductCode = "LAP-ASUS-ROG16", Name = "ASUS ROG Strix G16", Brand = "ASUS",
+                        Specifications = "Intel Core i9-14900HX, 32GB DDR5, 1TB SSD, RTX 4070 8GB, 16\" QHD+ 240Hz",
+                        ImportPrice = 42000000, Price = 49990000, StockQuantity = 7, LowStockThreshold = 3, CreatedAt = DateTime.UtcNow },
+                        "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=800&q=80"),
+
+                    (new Product { ProductCode = "LAP-ASUS-ZEN14", Name = "ASUS Zenbook 14 OLED", Brand = "ASUS",
+                        Specifications = "Intel Core Ultra 7 155H, 16GB LPDDR5X, 1TB SSD, 14\" 3K OLED 120Hz, Windows 11",
+                        ImportPrice = 24000000, Price = 28990000, StockQuantity = 12, LowStockThreshold = 4, CreatedAt = DateTime.UtcNow },
+                        "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=800&q=80"),
+
+                    (new Product { ProductCode = "LAP-LENOVO-LEGION", Name = "Lenovo Legion Pro 5", Brand = "Lenovo",
+                        Specifications = "AMD Ryzen 7 7745HX, 16GB DDR5, 512GB SSD, RTX 4060 8GB, 16\" WQXGA 165Hz",
+                        ImportPrice = 33000000, Price = 38490000, StockQuantity = 9, LowStockThreshold = 3, CreatedAt = DateTime.UtcNow },
+                        "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=800&q=80"),
+
+                    (new Product { ProductCode = "LAP-LENOVO-X1", Name = "Lenovo ThinkPad X1 Carbon Gen 12", Brand = "Lenovo",
+                        Specifications = "Intel Core Ultra 7 155U, 32GB RAM, 1TB SSD, 14\" WUXGA IPS, vỏ sợi carbon",
+                        ImportPrice = 40000000, Price = 46990000, StockQuantity = 4, LowStockThreshold = 2, CreatedAt = DateTime.UtcNow },
+                        "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&q=80"),
+
+                    (new Product { ProductCode = "LAP-HP-SPECTRE", Name = "HP Spectre x360 14", Brand = "HP",
+                        Specifications = "Intel Core Ultra 7 155H, 16GB, 1TB SSD, 14\" 2.8K OLED Touch, xoay gập 360°",
+                        ImportPrice = 30000000, Price = 35990000, StockQuantity = 6, LowStockThreshold = 3, CreatedAt = DateTime.UtcNow },
+                        "https://images.unsplash.com/photo-1602080858428-57174f9431cf?w=800&q=80"),
+
+                    (new Product { ProductCode = "LAP-ACER-SWIFT", Name = "Acer Swift Go 14", Brand = "Acer",
+                        Specifications = "Intel Core i5-13500H, 16GB LPDDR5, 512GB SSD, 14\" 2.2K IPS, nhẹ 1.25kg",
+                        ImportPrice = 16000000, Price = 19990000, StockQuantity = 18, LowStockThreshold = 5, CreatedAt = DateTime.UtcNow },
+                        "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=800&q=80"),
+
+                    (new Product { ProductCode = "LAP-MSI-KATANA", Name = "MSI Katana 15", Brand = "MSI",
+                        Specifications = "Intel Core i7-13620H, 16GB DDR5, 512GB SSD, RTX 4050 6GB, 15.6\" FHD 144Hz",
+                        ImportPrice = 22000000, Price = 26490000, StockQuantity = 2, LowStockThreshold = 3, CreatedAt = DateTime.UtcNow },
+                        "https://images.unsplash.com/photo-1542393545-10f5cde2c810?w=800&q=80"),
+
+                    (new Product { ProductCode = "ACC-LOGI-MXMASTER", Name = "Chuột Logitech MX Master 3S", Brand = "Logitech",
+                        Specifications = "Cảm biến 8000 DPI, cuộn MagSpeed, kết nối Bluetooth/USB, pin 70 ngày",
+                        ImportPrice = 1900000, Price = 2590000, StockQuantity = 40, LowStockThreshold = 10, CreatedAt = DateTime.UtcNow },
+                        "https://images.unsplash.com/photo-1527814050087-3793815479db?w=800&q=80"),
+
+                    (new Product { ProductCode = "ACC-KEY-KEYCHRON", Name = "Bàn phím cơ Keychron K8 Pro", Brand = "Keychron",
+                        Specifications = "Layout TKL, switch Gateron, hot-swap, RGB, kết nối không dây Bluetooth 5.1",
+                        ImportPrice = 2200000, Price = 2990000, StockQuantity = 25, LowStockThreshold = 8, CreatedAt = DateTime.UtcNow },
+                        "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&q=80"),
                 };
 
-                var p2 = new Product
-                {
-                    ProductCode = "LAP-MAC-M3AIR",
-                    Name = "MacBook Air 13 inch M3 2024",
-                    Brand = "Apple",
-                    Specifications = "Apple M3 chip, 8-core CPU, 10-core GPU, 16GB Unified Memory, 512GB SSD",
-                    ImportPrice = 28000000,
-                    Price = 32990000,
-                    StockQuantity = 2,
-                    LowStockThreshold = 3,
-                    CreatedAt = DateTime.UtcNow
-                };
-
-                _context.Products.AddRange(p1, p2);
+                _context.Products.AddRange(products.Select(x => x.product));
                 _context.SaveChanges();
 
                 _context.ProductImages.AddRange(
-                    new ProductImage { ProductId = p1.Id, ImageUrl = "https://cdn.example.com/dell-xps-1.jpg", IsMain = true },
-                    new ProductImage { ProductId = p1.Id, ImageUrl = "https://cdn.example.com/dell-xps-detail.jpg", IsMain = false },
-                    new ProductImage { ProductId = p2.Id, ImageUrl = "https://cdn.example.com/macbook-m3.jpg", IsMain = true }
+                    products.Select(x => new ProductImage
+                    {
+                        ProductId = x.product.Id,
+                        ImageUrl = x.image,
+                        IsMain = true
+                    })
                 );
                 _context.SaveChanges();
             }
@@ -139,6 +185,39 @@ namespace ComputerStoreApi.Services
                         TotalUsageLimit = 100,
                         StartDate = DateTime.SpecifyKind(rawStartDate, DateTimeKind.Utc),
                         EndDate = DateTime.SpecifyKind(rawEndDate, DateTimeKind.Utc)
+                    },
+                    new Voucher
+                    {
+                        Code = "SINHVIEN10",
+                        Name = "Ưu đãi sinh viên - giảm 10%",
+                        DiscountType = "Percentage",
+                        DiscountValue = 10,
+                        MinOrderValue = 15000000,
+                        TotalUsageLimit = 200,
+                        StartDate = DateTime.SpecifyKind(rawStartDate, DateTimeKind.Utc),
+                        EndDate = DateTime.SpecifyKind(DateTime.UtcNow.AddDays(60), DateTimeKind.Utc)
+                    },
+                    new Voucher
+                    {
+                        Code = "FREESHIP",
+                        Name = "Miễn phí vận chuyển toàn quốc",
+                        DiscountType = "FixedAmount",
+                        DiscountValue = 300000,
+                        MinOrderValue = 5000000,
+                        TotalUsageLimit = 500,
+                        StartDate = DateTime.SpecifyKind(rawStartDate, DateTimeKind.Utc),
+                        EndDate = DateTime.SpecifyKind(DateTime.UtcNow.AddDays(90), DateTimeKind.Utc)
+                    },
+                    new Voucher
+                    {
+                        Code = "BLACKFRIDAY",
+                        Name = "Black Friday - giảm 5%",
+                        DiscountType = "Percentage",
+                        DiscountValue = 5,
+                        MinOrderValue = 0,
+                        TotalUsageLimit = 1000,
+                        StartDate = DateTime.SpecifyKind(rawStartDate, DateTimeKind.Utc),
+                        EndDate = DateTime.SpecifyKind(DateTime.UtcNow.AddDays(15), DateTimeKind.Utc)
                     }
                 );
                 _context.SaveChanges();
@@ -212,6 +291,140 @@ namespace ComputerStoreApi.Services
                     targetProduct.StockQuantity -= 1;
                     _context.SaveChanges();
                 }
+            }
+
+            // 7. GIEO DỮ LIỆU ĐÁNH GIÁ SẢN PHẨM MẪU (UC-15)
+            if (!_context.ProductReviews.Any())
+            {
+                var firstCustomer = _context.Customers.FirstOrDefault();
+                var someProducts = _context.Products.Take(2).ToList();
+
+                if (firstCustomer != null && someProducts.Any())
+                {
+                    var sampleReviews = new List<ProductReview>();
+
+                    foreach (var product in someProducts)
+                    {
+                        sampleReviews.Add(new ProductReview
+                        {
+                            Id = Guid.NewGuid(),
+                            ProductId = product.Id,
+                            CustomerId = firstCustomer.Id,
+                            CustomerName = firstCustomer.FullName,
+                            Rating = 5,
+                            Title = "Sản phẩm rất tốt",
+                            Content = "Máy chạy mượt, cấu hình mạnh, đóng gói cẩn thận. Rất hài lòng với trải nghiệm mua hàng.",
+                            IsVerifiedPurchase = true,
+                            IsHidden = false,
+                            HelpfulCount = 3,
+                            CreatedAt = DateTime.UtcNow.AddDays(-2)
+                        });
+                    }
+
+                    _context.ProductReviews.AddRange(sampleReviews);
+                    _context.SaveChanges();
+                }
+            }
+        }
+
+        // Đảm bảo các tài khoản mẫu luôn tồn tại và đăng nhập được với mật khẩu "Password@123".
+        // Dùng chính trình xác thực mật khẩu để phát hiện hash hỏng (không chỉ riêng chuỗi giữ chỗ).
+        private void EnsureSampleAccounts()
+        {
+            const string defaultPassword = "Password@123";
+            var hasher = new PasswordHasher<User>();
+
+            // Danh sách tài khoản mẫu: (username, họ tên, email, vai trò)
+            var sampleAccounts = new (string Username, string FullName, string Email, string Role)[]
+            {
+                ("admin_01", "Nguyễn Văn Admin", "admin01@computerstore.local", "admin"),
+                ("sales_01", "Trần Thị Bán Hàng", "sales01@computerstore.local", "sales"),
+                ("acc_01", "Phạm Kế Toán", "accountant01@computerstore.local", "accountant"),
+                ("kho_01", "Lê Thủ Kho", "warehouse01@computerstore.local", "warehouse"),
+                ("longkhachhang", "Trần Hoàng Long", "longth@gmail.com", "customer"),
+            };
+
+            var changed = false;
+
+            foreach (var acc in sampleAccounts)
+            {
+                var user = _context.Users.FirstOrDefault(u => u.Username == acc.Username);
+
+                if (user == null)
+                {
+                    // Tài khoản chưa tồn tại -> tạo mới
+                    user = new User
+                    {
+                        Id = Guid.NewGuid(),
+                        Username = acc.Username,
+                        FullName = acc.FullName,
+                        Email = acc.Email,
+                        RoleName = acc.Role,
+                        IsActive = true,
+                        CreatedAt = DateTime.UtcNow,
+                        PasswordHash = string.Empty
+                    };
+                    user.PasswordHash = hasher.HashPassword(user, defaultPassword);
+                    _context.Users.Add(user);
+                    changed = true;
+                }
+                else
+                {
+                    // Tài khoản đã có -> kiểm tra mật khẩu hiện tại có hợp lệ không
+                    var needsReset = false;
+                    if (string.IsNullOrWhiteSpace(user.PasswordHash))
+                    {
+                        needsReset = true;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            var verify = hasher.VerifyHashedPassword(user, user.PasswordHash, defaultPassword);
+                            // Nếu hash không đúng định dạng hoặc không khớp mật khẩu mặc định -> đặt lại
+                            needsReset = verify == PasswordVerificationResult.Failed;
+                        }
+                        catch
+                        {
+                            // Hash hỏng/không decode được -> đặt lại
+                            needsReset = true;
+                        }
+                    }
+
+                    if (needsReset)
+                    {
+                        user.PasswordHash = hasher.HashPassword(user, defaultPassword);
+                        user.IsActive = true;
+                        changed = true;
+                    }
+                }
+
+                // Nếu là khách hàng, đảm bảo có bản ghi Customer tương ứng để mua hàng/đánh giá
+                if (acc.Role == "customer")
+                {
+                    var customer = _context.Customers.FirstOrDefault(c => c.WebUsername == acc.Username);
+                    if (customer == null)
+                    {
+                        _context.Customers.Add(new Customer
+                        {
+                            Id = Guid.NewGuid(),
+                            FullName = acc.FullName,
+                            PhoneNumber = "0912345678",
+                            Email = acc.Email,
+                            Address = "123 Nguyễn Huệ, Quận 1, TPHCM",
+                            Notes = "Khách hàng mẫu online",
+                            WebUsername = acc.Username,
+                            WebPasswordHash = user.PasswordHash,
+                            CreatedAt = DateTime.UtcNow
+                        });
+                        changed = true;
+                    }
+                }
+            }
+
+            if (changed)
+            {
+                _context.SaveChanges();
             }
         }
     }
