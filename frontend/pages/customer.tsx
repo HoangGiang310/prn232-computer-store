@@ -87,6 +87,10 @@ export default function CustomerPage() {
     [cart],
   );
 
+  const activeOrders = orders.filter((order) =>
+    ["New", "Confirmed", "Processing", "Shipping"].includes(order.orderStatus),
+  ).length;
+
   function addToCart(product: ProductOption) {
     setCart((current) => {
       const existing = current.find((item) => item.productId === product.id);
@@ -212,28 +216,44 @@ export default function CustomerPage() {
 
   return (
     <main className="main">
-      <section className="card header">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
-          <div>
-            <h1>Xin chào, {customerName || "Khách hàng"}</h1>
-            <p>Đây là trang đặt hàng online và theo dõi đơn hàng của bạn.</p>
+      <section className="card role-hero role-hero-customer">
+        <div className="role-pill">Vai trò: Khách hàng online</div>
+        <h1>Xin chào, {customerName || "Khách hàng"}</h1>
+        <p className="role-subtle">
+          Theo dõi đơn hàng, đặt mua sản phẩm và quản lý thông tin giao nhận trong một trải nghiệm thân thiện.
+        </p>
+        <div className="role-stat-grid">
+          <div className="role-stat-card">
+            <strong>{orders.length}</strong>
+            <span>Đơn hàng đã đặt</span>
           </div>
-          <div className="buttons-group" style={{ gap: "12px" }}>
-            <button className="button" onClick={handleRefresh} disabled={refreshing}>
-              {refreshing ? "Làm mới..." : "Làm mới dữ liệu"}
-            </button>
-            <button className="button" onClick={handleLogout}>
-              Đăng xuất
-            </button>
-            <Link href="/" className="button">
-              Trang chủ
-            </Link>
+          <div className="role-stat-card">
+            <strong>{activeOrders}</strong>
+            <span>Đơn đang xử lý</span>
           </div>
+          <div className="role-stat-card">
+            <strong>{cart.length}</strong>
+            <span>Sản phẩm trong giỏ</span>
+          </div>
+        </div>
+        <div className="buttons-group" style={{ justifyContent: "flex-start", marginTop: "16px" }}>
+          <button className="button" onClick={handleRefresh} disabled={refreshing}>
+            {refreshing ? "Làm mới..." : "Làm mới dữ liệu"}
+          </button>
+          <button className="button" onClick={handleLogout}>
+            Đăng xuất
+          </button>
+          <Link href="/" className="button back-button">
+            Trang chủ
+          </Link>
         </div>
       </section>
 
       <section className="card">
-        <h2>Sản phẩm</h2>
+        <div className="role-section-title">
+          <h2>Sản phẩm</h2>
+          <p>Khám phá laptop và linh kiện với thông tin giá và tồn kho rõ ràng.</p>
+        </div>
         {error ? <p className="error">{error}</p> : null}
         {success ? <p className="success">{success}</p> : null}
         <div className="shop-grid">

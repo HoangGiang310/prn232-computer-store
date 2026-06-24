@@ -3,60 +3,80 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { getAuth, getRedirectFromRole, logout } from "../lib/auth";
 
-const adminActions = [
+const adminActionGroups = [
   {
-    href: "/products",
-    title: "QUẢN LÝ SẢN PHẨM",
-    desc: "Thêm, sửa, xóa laptop và theo dõi danh mục hàng hóa.",
-    stat: "SP",
+    title: "BÁN HÀNG & VẬN HÀNH",
+    items: [
+      {
+        href: "/create-order",
+        title: "POS BÁN HÀNG",
+        desc: "Tạo đơn trực tiếp tại cửa hàng, xử lý thanh toán và kiểm tra tồn kho tức thì.",
+        stat: "POS",
+      },
+      {
+        href: "/orders",
+        title: "ĐƠN HÀNG",
+        desc: "Theo dõi trạng thái đơn online, offline, hoàn hàng và giao nhận trong một bảng điều khiển.",
+        stat: "ĐH",
+      },
+    ],
   },
   {
-    href: "/orders",
-    title: "QUẢN LÝ ĐƠN HÀNG",
-    desc: "Kiểm tra đơn online, offline và cập nhật trạng thái xử lý.",
-    stat: "ĐH",
+    title: "SẢN PHẨM & KHO",
+    items: [
+      {
+        href: "/products",
+        title: "QUẢN LÝ SẢN PHẨM",
+        desc: "Thêm, chỉnh sửa và quản lý laptop, hình ảnh, giá bán và cấu hình.",
+        stat: "SP",
+      },
+      {
+        href: "/inventory",
+        title: "QUẢN LÝ KHO",
+        desc: "Theo dõi hàng tồn, nhập xuất, cảnh báo thiếu hàng và lịch sử điều chỉnh.",
+        stat: "KHO",
+      },
+    ],
   },
   {
-    href: "/create-order",
-    title: "TẠO ĐƠN HÀNG MỚI",
-    desc: "Tạo đơn bán trực tiếp tại cửa hàng cho nhân viên POS.",
-    stat: "POS",
+    title: "KHÁCH HÀNG & CHIẾN DỊCH",
+    items: [
+      {
+        href: "/customers",
+        title: "KHÁCH HÀNG",
+        desc: "Quản lý thông tin khách hàng, ghi chú nội bộ và lịch sử mua hàng.",
+        stat: "KH",
+      },
+      {
+        href: "/vouchers",
+        title: "VOUCHER & KHUYẾN MÃI",
+        desc: "Tạo chương trình ưu đãi, điều kiện áp dụng và mã giảm giá cho cả online lẫn offline.",
+        stat: "%",
+      },
+    ],
   },
   {
-    href: "/inventory",
-    title: "QUẢN LÝ KHO",
-    desc: "Theo dõi tồn kho, điều chỉnh nhập xuất và cảnh báo thiếu hàng.",
-    stat: "KHO",
-  },
-  {
-    href: "/customers",
-    title: "QUẢN LÝ KHÁCH HÀNG",
-    desc: "Lưu thông tin khách, ghi chú và lịch sử mua hàng.",
-    stat: "KH",
-  },
-  {
-    href: "/vouchers",
-    title: "QUẢN LÝ VOUCHER",
-    desc: "Tạo mã giảm giá, thời hạn và điều kiện áp dụng.",
-    stat: "%",
-  },
-  {
-    href: "/users",
-    title: "QUẢN LÝ NHÂN VIÊN",
-    desc: "Tạo tài khoản, phân quyền và đặt lại mật khẩu.",
-    stat: "NV",
-  },
-  {
-    href: "/reports",
-    title: "BÁO CÁO & THỐNG KÊ",
-    desc: "Xem doanh thu, lợi nhuận, top sản phẩm và trạng thái kho.",
-    stat: "BC",
-  },
-  {
-    href: "/reviews",
-    title: "KIỂM DUYỆT ĐÁNH GIÁ",
-    desc: "Xem, ẩn hoặc hiện lại bình luận và đánh giá của khách hàng.",
-    stat: "★",
+    title: "QUẢN TRỊ & BÁO CÁO",
+    items: [
+      {
+        href: "/users",
+        title: "NHÂN VIÊN",
+        desc: "Thêm tài khoản, phân quyền theo vai trò và giám sát hoạt động của nhân sự.",
+        stat: "NV",
+      },
+      {
+        href: "/reports",
+        title: "BÁO CÁO",
+        desc: "Xem doanh thu, lợi nhuận, báo cáo kho và phân tích hiệu suất bán hàng.",
+        stat: "BC",
+      },
+      {
+        href: "/reviews",
+        title: "ĐÁNH GIÁ",
+        desc: "Duyệt bình luận, ẩn nội dung không phù hợp và giữ chất lượng trải nghiệm khách hàng.",
+        stat: "★",
+      },
+    ],
   },
 ];
 
@@ -127,6 +147,7 @@ export default function AdminPage() {
           <span>
             XIN CHÀO <strong>{username.toUpperCase()}</strong>. THEO DÕI SẢN PHẨM, ĐƠN HÀNG, KHO, NHÂN VIÊN VÀ BÁO CÁO TRONG MỘT MÀN HÌNH.
           </span>
+          <div className="role-pill">Vai trò: Quản trị toàn diện</div>
         </div>
 
         <div className="admin-shop-terminal" aria-hidden="true">
@@ -152,13 +173,37 @@ export default function AdminPage() {
             <span>BÁO CÁO</span>
           </div>
 
-          <div className="admin-shop-grid">
-            {adminActions.map((action) => (
-              <Link href={action.href} className="admin-shop-action" key={action.href}>
-                <span className="action-mark">{action.stat}</span>
-                <strong>{action.title}</strong>
-                <small>{action.desc.toUpperCase()}</small>
-              </Link>
+          <div className="role-shell">
+            <section className="card role-hero role-hero-admin">
+              <div className="role-stat-grid">
+                <div className="role-stat-card">
+                  <strong>24/7</strong>
+                  <span>Giám sát vận hành</span>
+                </div>
+                <div className="role-stat-card">
+                  <strong>4 vai trò</strong>
+                  <span>Phân quyền rõ ràng</span>
+                </div>
+                <div className="role-stat-card">
+                  <strong>100%</strong>
+                  <span>Thông tin tập trung</span>
+                </div>
+              </div>
+            </section>
+
+            {adminActionGroups.map((group) => (
+              <section className="card role-group-card" key={group.title}>
+                <h3>{group.title}</h3>
+                <div className="admin-shop-grid">
+                  {group.items.map((action) => (
+                    <Link href={action.href} className="admin-shop-action" key={action.href}>
+                      <span className="action-mark">{action.stat}</span>
+                      <strong>{action.title}</strong>
+                      <small>{action.desc.toUpperCase()}</small>
+                    </Link>
+                  ))}
+                </div>
+              </section>
             ))}
           </div>
         </section>

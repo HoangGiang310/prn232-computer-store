@@ -5,6 +5,13 @@ import { getAuth, logout } from "../lib/auth";
 
 const allowedRoles = ["manager", "warehouse"];
 
+const warehouseHighlights = [
+  { title: "Tổng tồn kho", value: "1,248 SKU", note: "Cập nhật realtime" },
+  { title: "Sắp hết hàng", value: "12 sản phẩm", note: "Cần ưu tiên nhập thêm" },
+  { title: "Đơn cần xử lý", value: "8 đơn", note: "Đang chờ xuất kho" },
+  { title: "Lịch sử điều chỉnh", value: "96 lần", note: "Theo dõi nguồn gốc thay đổi" },
+];
+
 export default function ManagerPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -39,43 +46,62 @@ export default function ManagerPage() {
 
   return (
     <main className="main">
-      <section className="card header">
-        <h1>Quản lý kho</h1>
-        <p>Chào mừng, {username}. Đây là khu vực quản lý kho dành cho bạn.</p>
+      <section className="card role-hero role-hero-warehouse">
+        <div className="role-pill">Vai trò: Quản lý kho</div>
+        <h1>Kiểm soát hàng tồn, nhập xuất và cảnh báo thiếu hàng</h1>
+        <p className="role-subtle">
+          Chào {username}. Đây là trung tâm giúp bạn giám sát kho hàng, theo dõi thay đổi và phản ứng nhanh khi mức tồn thấp.
+        </p>
+        <div className="role-stat-grid">
+          {warehouseHighlights.map((item) => (
+            <div className="role-stat-card" key={item.title}>
+              <strong>{item.value}</strong>
+              <span>{item.title}</span>
+              <small>{item.note}</small>
+            </div>
+          ))}
+        </div>
       </section>
 
-      <section className="card dashboard-card">
-        <div className="dashboard-section">
+      <section className="card">
+        <div className="role-section-title">
           <h2>Chức năng chính</h2>
           <p>Điều hướng nhanh đến các công việc quản lý kho và theo dõi tồn kho.</p>
         </div>
 
-        <div className="dashboard-grid">
-          <Link href="/inventory" className="button dashboard-button">
-            Quản lý tồn kho
+        <div className="role-feature-grid">
+          <Link href="/inventory" className="role-action-card">
+            <strong>Quản lý tồn kho</strong>
+            <p>Xem và điều chỉnh số lượng, cảnh báo mức tồn thấp và theo dõi biến động kho.</p>
           </Link>
-          <Link href="/products" className="button dashboard-button">
-            Danh sách sản phẩm
+          <Link href="/products" className="role-action-card">
+            <strong>Danh sách sản phẩm</strong>
+            <p>Kiểm tra thông tin sản phẩm, giá bán, hình ảnh và trạng thái tồn kho.</p>
           </Link>
-          <Link href="/orders" className="button dashboard-button">
-            Theo dõi đơn hàng
+          <Link href="/orders" className="role-action-card">
+            <strong>Theo dõi đơn hàng</strong>
+            <p>Đảm bảo đơn hàng được xuất kho đúng thời điểm và không phát sinh sai sót.</p>
           </Link>
-          <Link href="/reports" className="button dashboard-button">
-            Báo cáo tồn kho
+          <Link href="/reports" className="role-action-card">
+            <strong>Báo cáo tồn kho</strong>
+            <p>Phân tích hàng chậm tiêu thụ, hàng cũ và các mặt hàng cần bổ sung.</p>
           </Link>
         </div>
       </section>
 
-      <section className="card dashboard-card">
-        <h2>Lưu ý vai trò</h2>
-        <ul>
-          <li>Xem và điều chỉnh tồn kho</li>
-          <li>Kiểm tra lịch sử điều chỉnh kho</li>
-          <li>Giám sát tình trạng hàng hóa và cảnh báo tồn kho thấp</li>
+      <section className="card">
+        <div className="role-section-title">
+          <h2>Lưu ý vai trò</h2>
+          <p>Những nhiệm vụ trọng tâm của người quản lý kho.</p>
+        </div>
+        <ul className="role-list">
+          <li>Xem và điều chỉnh tồn kho theo tình hình thực tế.</li>
+          <li>Kiểm tra lịch sử điều chỉnh kho để truy xuất nguyên nhân thay đổi.</li>
+          <li>Giám sát tình trạng hàng hóa và cảnh báo tồn kho thấp kịp thời.</li>
         </ul>
       </section>
 
-      <section className="card button-row">
+      <section className="card buttons-group">
         <button className="button" onClick={handleLogout}>
           Đăng xuất
         </button>
