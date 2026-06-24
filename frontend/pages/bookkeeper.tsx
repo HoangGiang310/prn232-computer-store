@@ -5,6 +5,13 @@ import { getAuth, logout } from "../lib/auth";
 
 const allowedRoles = ["bookkeeper", "accountant"];
 
+const financeHighlights = [
+  { title: "Doanh thu hôm nay", value: "₫ 128.4M", note: "Tăng 8% so với ngày trước" },
+  { title: "Lợi nhuận gộp", value: "₫ 41.2M", note: "Tỷ suất khá ổn định" },
+  { title: "Công nợ chờ thu", value: "₫ 15.8M", note: "2 đơn cần theo dõi" },
+  { title: "Hoàn tiền chờ xử lý", value: "3 yêu cầu", note: "Cần kiểm tra tình trạng vận chuyển" },
+];
+
 export default function BookkeeperPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -39,64 +46,66 @@ export default function BookkeeperPage() {
 
   return (
     <main className="main">
-      <section className="card header">
-        <h1>Bảng điều khiển Kế toán</h1>
-        <p>Xin chào, {username}. Giao diện dành cho vai trò kế toán và báo cáo tài chính.</p>
-      </section>
-
-      <section className="card" style={{ marginBottom: "24px" }}>
-        <div style={{ display: "grid", gap: "16px", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}>
-          <div style={{ padding: "18px", background: "#eff6ff", borderRadius: "14px" }}>
-            <h3>Báo cáo tài chính</h3>
-            <p>Xem doanh thu, lợi nhuận, doanh số online/offline và phân tích đơn hàng.</p>
-          </div>
-          <div style={{ padding: "18px", background: "#fef3c7", borderRadius: "14px" }}>
-            <h3>Thu chi & hóa đơn</h3>
-            <p>Theo dõi các công nợ, hoàn trả và số liệu chi phí.</p>
-          </div>
-          <div style={{ padding: "18px", background: "#ecfdf5", borderRadius: "14px" }}>
-            <h3>Cảnh báo tài chính</h3>
-            <p>Nhận báo cáo nhanh về lợi nhuận và các sản phẩm bán chạy.</p>
-          </div>
+      <section className="card role-hero role-hero-accounting">
+        <div className="role-pill">Vai trò: Kế toán & báo cáo</div>
+        <h1>Giám sát số liệu kinh doanh và chi phí một cách rõ ràng</h1>
+        <p className="role-subtle">
+          Chào {username}. Giao diện này giúp bạn nắm nhanh doanh thu, lợi nhuận, công nợ và các giao dịch cần chú ý.
+        </p>
+        <div className="role-stat-grid">
+          {financeHighlights.map((item) => (
+            <div className="role-stat-card" key={item.title}>
+              <strong>{item.value}</strong>
+              <span>{item.title}</span>
+              <small>{item.note}</small>
+            </div>
+          ))}
         </div>
       </section>
 
       <section className="card">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
+        <div className="role-section-title">
           <h2>Truy cập nhanh</h2>
+          <p>Điều hướng tới các báo cáo và dữ liệu tài chính quan trọng.</p>
         </div>
-
-        <div style={{ display: "grid", gap: "14px", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
-          <Link href="/reports" className="button dashboard-button">
-            Báo cáo & thống kê
+        <div className="role-feature-grid">
+          <Link href="/reports" className="role-action-card">
+            <strong>Báo cáo & thống kê</strong>
+            <p>Xem doanh thu, lợi nhuận, top sản phẩm và số liệu theo kênh bán hàng.</p>
           </Link>
-          <Link href="/orders" className="button dashboard-button">
-            Danh sách đơn hàng
+          <Link href="/orders" className="role-action-card">
+            <strong>Danh sách đơn hàng</strong>
+            <p>Quản lý đơn hàng, trạng thái giao nhận và các yêu cầu hoàn tiền.</p>
           </Link>
-          <Link href="/inventory" className="button dashboard-button">
-            Báo cáo tồn kho
+          <Link href="/inventory" className="role-action-card">
+            <strong>Báo cáo tồn kho</strong>
+            <p>Liên kết số lượng tồn với doanh số để đánh giá ảnh hưởng tới lợi nhuận.</p>
           </Link>
-          <Link href="/customers" className="button dashboard-button">
-            Khách hàng & giao dịch
+          <Link href="/customers" className="role-action-card">
+            <strong>Khách hàng & giao dịch</strong>
+            <p>Tra cứu khách hàng, giao dịch và các khoản nợ cần theo dõi.</p>
           </Link>
         </div>
       </section>
 
-      <section className="card" style={{ marginTop: "24px" }}>
-        <h2>Chức năng kế toán</h2>
-        <ul>
-          <li>Xem báo cáo doanh thu, lợi nhuận và đơn hàng.</li>
+      <section className="card">
+        <div className="role-section-title">
+          <h2>Điểm cần chú ý</h2>
+          <p>Những mảng tài chính thường được kế toán theo dõi hàng ngày.</p>
+        </div>
+        <ul className="role-list">
+          <li>Xem báo cáo doanh thu, lợi nhuận và đơn hàng một cách tuần tự.</li>
           <li>Kiểm tra sản phẩm bán chạy và tình trạng kho liên quan.</li>
-          <li>Quản lý đơn hàng, yêu cầu hoàn trả và thanh toán.</li>
+          <li>Quản lý hoàn trả và các giao dịch thanh toán cần đối soát.</li>
           <li>Định hướng các con số thu chi cho bộ phận quản lý.</li>
         </ul>
       </section>
 
-      <section className="card" style={{ display: "flex", gap: "12px", flexWrap: "wrap", justifyContent: "center", marginTop: "24px" }}>
-        <button className="button" style={{ minWidth: "180px" }} onClick={handleLogout}>
+      <section className="card buttons-group">
+        <button className="button" onClick={handleLogout}>
           Đăng xuất
         </button>
-        <Link href="/" className="button back-button" style={{ minWidth: "180px" }}>
+        <Link href="/" className="button back-button">
           Quay lại trang chủ
         </Link>
       </section>
