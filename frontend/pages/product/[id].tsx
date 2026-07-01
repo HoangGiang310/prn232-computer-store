@@ -81,6 +81,7 @@ export default function ProductDetailPage() {
   const [formError, setFormError] = useState("");
   const [formSuccess, setFormSuccess] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [cartMessage, setCartMessage] = useState("");
 
   useEffect(() => {
     const auth = getAuth();
@@ -219,6 +220,13 @@ export default function ProductDetailPage() {
 
   function handleAddToCart() {
     if (!product) return;
+
+    const auth = getAuth();
+    if (!auth?.token || auth.role?.toLowerCase() !== "customer") {
+      setCartMessage("Bạn cần phải đăng nhập mới có thể thêm sản phẩm");
+      return;
+    }
+
     addCheckoutItem({
       productId: product.id,
       name: product.name,
@@ -230,6 +238,7 @@ export default function ProductDetailPage() {
       mainImage: product.images?.[0]?.imageUrl,
       specifications: product.specifications,
     });
+    setCartMessage("Thêm sản phẩm thành công");
   }
 
   function handleBuyNow() {
@@ -333,6 +342,11 @@ export default function ProductDetailPage() {
                 Xem Giỏ Hàng
               </Link>
             </div>
+            {cartMessage ? (
+              <p style={{ marginTop: 12, color: cartMessage.includes("thành công") ? "#15803d" : "#b91c1c" }}>
+                {cartMessage}
+              </p>
+            ) : null}
           </div>
         </div>
       </section>
