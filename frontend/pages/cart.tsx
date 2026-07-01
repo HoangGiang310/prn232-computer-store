@@ -25,13 +25,28 @@ export default function CartPage() {
     [items],
   );
 
-  function handleRemove(productId: string) {
-    const nextItems = items.filter((item) => item.productId !== productId);
+  function persistItems(nextItems: CheckoutCartItem[]) {
     setItems(nextItems);
     if (typeof window !== "undefined") {
       const storageKey = "computer-store-checkout-cart";
       window.localStorage.setItem(storageKey, JSON.stringify(nextItems));
     }
+  }
+
+  function handleQuantityChange(productId: string, delta: number) {
+    const nextItems = items
+      .map((item) => {
+        if (item.productId !== productId) return item;
+        const nextQuantity = item.quantity + delta;
+        return nextQuantity > 0 ? { ...item, quantity: nextQuantity } : null;
+      })
+      .filter((item): item is CheckoutCartItem => item !== null);
+
+    persistItems(nextItems);
+  }
+
+  function handleRemove(productId: string) {
+    persistItems(items.filter((item) => item.productId !== productId));
   }
 
   function handleClear() {
@@ -86,7 +101,16 @@ export default function CartPage() {
                     <p>Giá: {Number(item.price).toLocaleString("vi-VN")} ₫</p>
                     <p>Số lượng: {item.quantity}</p>
                   </div>
-                  <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                  <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <button className="button" onClick={() => handleQuantityChange(item.productId, -1)} aria-label={`Giảm số lượng ${item.name}`}>
+                        −
+                      </button>
+                      <span style={{ minWidth: 24, textAlign: "center", fontWeight: 600 }}>{item.quantity}</span>
+                      <button className="button" onClick={() => handleQuantityChange(item.productId, 1)} aria-label={`Tăng số lượng ${item.name}`}>
+                        +
+                      </button>
+                    </div>
                     <span style={{ fontWeight: 600 }}>
                       {(item.price * item.quantity).toLocaleString("vi-VN")} ₫
                     </span>

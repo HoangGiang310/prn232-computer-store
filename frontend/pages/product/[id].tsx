@@ -329,6 +329,9 @@ export default function ProductDetailPage() {
               <button className="button" onClick={handleAddToCart} disabled={Number(product?.stockQuantity ?? 0) <= 0}>
                 {Number(product?.stockQuantity ?? 0) <= 0 ? "Hết hàng" : "Thêm Giỏ Hàng"}
               </button>
+              <Link href="/cart" className="button">
+                Xem Giỏ Hàng
+              </Link>
             </div>
           </div>
         </div>
