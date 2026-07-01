@@ -254,8 +254,8 @@ export default function ProductDetailPage() {
         <section className="card header">
           <h1>Lỗi</h1>
           <p className="error">{error}</p>
-          <Link href="/customer" className="button">
-            Quay lại
+          <Link href="/" className="button">
+            Quay Lại Trang Chủ
           </Link>
         </section>
       </main>
@@ -273,8 +273,8 @@ export default function ProductDetailPage() {
             <h1>{product?.name}</h1>
             <p>{product?.brand} · Mã: {product?.productCode}</p>
           </div>
-          <Link href="/customer" className="button">
-            ← Quay lại mua sắm
+          <Link href="/" className="button">
+            ← Quay Lại Trang Chủ
           </Link>
         </div>
       </section>
