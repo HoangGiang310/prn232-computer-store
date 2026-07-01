@@ -20,7 +20,7 @@ const redirectAccessMap: Record<string, { destination: string; roles: string[]; 
     roles: ["bookkeeper", "accountant", "admin"],
     label: "Kế toán",
   },
-  customer: { destination: "/customer", roles: ["customer"], label: "Khách hàng" },
+  customer: { destination: "/", roles: ["customer"], label: "Khách hàng" },
 };
 
 export default function LoginPage() {
