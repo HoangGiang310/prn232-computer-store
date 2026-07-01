@@ -11,7 +11,7 @@ import {
   deleteReview,
   markReviewHelpful,
 } from "../../lib/api";
-import { addCheckoutItem } from "../../lib/cart";
+import { addCheckoutItem, addBuyNowItem } from "../../lib/cart";
 
 type Review = {
   id: string;
@@ -243,7 +243,7 @@ export default function ProductDetailPage() {
 
   function handleBuyNow() {
     if (!product) return;
-    addCheckoutItem({
+    addBuyNowItem({
       productId: product.id,
       name: product.name,
       productCode: product.productCode,
