@@ -11,6 +11,7 @@ export type CheckoutCartItem = {
 };
 
 const storageKey = "computer-store-checkout-cart";
+const buyNowStorageKey = "computer-store-buy-now-cart";
 
 export function readCheckoutCart(): CheckoutCartItem[] {
   if (typeof window === "undefined") return [];
@@ -52,4 +53,36 @@ export function addCheckoutItem(item: CheckoutCartItem) {
 export function clearCheckoutCart() {
   if (typeof window === "undefined") return;
   window.localStorage.removeItem(storageKey);
+}
+
+// Buy Now Cart Functions (using sessionStorage - temporary)
+export function readBuyNowCart(): CheckoutCartItem[] {
+  if (typeof window === "undefined") return [];
+
+  try {
+    const raw = window.sessionStorage.getItem(buyNowStorageKey);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as CheckoutCartItem[];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveBuyNowCart(items: CheckoutCartItem[]) {
+  if (typeof window === "undefined") return;
+  window.sessionStorage.setItem(buyNowStorageKey, JSON.stringify(items));
+}
+
+export function addBuyNowItem(item: CheckoutCartItem) {
+  const current = readBuyNowCart();
+  // Buy Now chỉ lưu 1 sản phẩm, không cộng gộp
+  const next: CheckoutCartItem[] = [{ ...item, quantity: 1 }];
+  saveBuyNowCart(next);
+  return next;
+}
+
+export function clearBuyNowCart() {
+  if (typeof window === "undefined") return;
+  window.sessionStorage.removeItem(buyNowStorageKey);
 }
