@@ -11,6 +11,7 @@ import {
   deleteReview,
   markReviewHelpful,
 } from "../../lib/api";
+import { addCheckoutItem } from "../../lib/cart";
 
 type Review = {
   id: string;
@@ -216,6 +217,22 @@ export default function ProductDetailPage() {
     }
   }
 
+  function handleAddToCart() {
+    if (!product) return;
+    addCheckoutItem({
+      productId: product.id,
+      name: product.name,
+      productCode: product.productCode,
+      brand: product.brand,
+      price: Number(product.price ?? 0),
+      quantity: 1,
+      stockQuantity: Number(product.stockQuantity ?? 0),
+      mainImage: product.images?.[0]?.imageUrl,
+      specifications: product.specifications,
+    });
+    router.push("/checkout");
+  }
+
   const myCustomerId = useMemo(() => {
     // Không có id khách trực tiếp ở client, dựa vào existingReviewId để nhận biết review của mình
     return existingReviewId;
@@ -289,6 +306,11 @@ export default function ProductDetailPage() {
               <span style={{ marginLeft: 8 }}>
                 {reviewData?.averageRating ?? 0} / 5 ({total} đánh giá)
               </span>
+            </div>
+            <div className="buttons-group" style={{ marginTop: 16, justifyContent: "flex-start" }}>
+              <button className="button login-button" onClick={handleAddToCart} disabled={Number(product?.stockQuantity ?? 0) <= 0}>
+                {Number(product?.stockQuantity ?? 0) <= 0 ? "Hết hàng" : "Mua Ngay"}
+              </button>
             </div>
           </div>
         </div>
