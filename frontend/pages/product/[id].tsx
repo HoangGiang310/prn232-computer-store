@@ -230,6 +230,21 @@ export default function ProductDetailPage() {
       mainImage: product.images?.[0]?.imageUrl,
       specifications: product.specifications,
     });
+  }
+
+  function handleBuyNow() {
+    if (!product) return;
+    addCheckoutItem({
+      productId: product.id,
+      name: product.name,
+      productCode: product.productCode,
+      brand: product.brand,
+      price: Number(product.price ?? 0),
+      quantity: 1,
+      stockQuantity: Number(product.stockQuantity ?? 0),
+      mainImage: product.images?.[0]?.imageUrl,
+      specifications: product.specifications,
+    });
     router.push("/checkout");
   }
 
@@ -308,8 +323,11 @@ export default function ProductDetailPage() {
               </span>
             </div>
             <div className="buttons-group" style={{ marginTop: 16, justifyContent: "flex-start" }}>
-              <button className="button login-button" onClick={handleAddToCart} disabled={Number(product?.stockQuantity ?? 0) <= 0}>
+              <button className="button login-button" onClick={handleBuyNow} disabled={Number(product?.stockQuantity ?? 0) <= 0}>
                 {Number(product?.stockQuantity ?? 0) <= 0 ? "Hết hàng" : "Mua Ngay"}
+              </button>
+              <button className="button" onClick={handleAddToCart} disabled={Number(product?.stockQuantity ?? 0) <= 0}>
+                {Number(product?.stockQuantity ?? 0) <= 0 ? "Hết hàng" : "Thêm Giỏ Hàng"}
               </button>
             </div>
           </div>
