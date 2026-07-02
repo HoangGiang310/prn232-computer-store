@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { createOrder } from "../lib/api";
 import { getAuth } from "../lib/auth";
-import { clearCheckoutCart, readCheckoutCart, type CheckoutCartItem } from "../lib/cart";
+import { clearCheckoutCart, readCheckoutCart, readBuyNowCart, clearBuyNowCart, type CheckoutCartItem } from "../lib/cart";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -25,10 +25,17 @@ export default function CheckoutPage() {
       return;
     }
 
-    const savedItems = readCheckoutCart();
+    // Ưu tiên đọc từ Buy Now cart (từ "Mua Ngay")
+    const buyNowItems = readBuyNowCart();
+    const savedItems = buyNowItems.length > 0 ? buyNowItems : readCheckoutCart();
     setItems(savedItems);
     setShippingName(auth.username || "");
     setAuthToken(auth.token);
+
+    // Cleanup: xóa Buy Now cart khi người dùng quay lại trang này
+    return () => {
+      // Không xóa ngay, để cho người dùng hoàn thành đơn hàng trước
+    };
   }, [router]);
 
   const totalAmount = useMemo(
@@ -80,6 +87,7 @@ export default function CheckoutPage() {
 
       await createOrder(payload, authToken);
       clearCheckoutCart();
+      clearBuyNowCart(); // Xóa Buy Now cart sau khi thanh toán thành công
       setItems([]);
       setSuccess("Đặt hàng thành công. Vui lòng kiểm tra đơn hàng trong tài khoản của bạn.");
     } catch (err) {
@@ -87,6 +95,12 @@ export default function CheckoutPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleGoBack() {
+    // Xóa Buy Now cart khi thoát khỏi checkout
+    clearBuyNowCart();
+    router.back();
   }
 
   if (items.length === 0) {
@@ -113,7 +127,7 @@ export default function CheckoutPage() {
             <h1>Thanh toán</h1>
             <p>Xác nhận sản phẩm và nhập thông tin giao nhận.</p>
           </div>
-          <button className="button" onClick={() => router.back()}>
+          <button className="button" onClick={handleGoBack}>
             ← Quay lại
           </button>
         </div>

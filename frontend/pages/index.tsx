@@ -99,15 +99,22 @@ export default function Home() {
           <Link href={protectedHref(homeProtectedLinks.reports)}>BÁO CÁO</Link>
         </div>
 
-        {auth ? (
-          <button className="store-nav-button" onClick={handleLogout}>
-            ĐĂNG XUẤT
-          </button>
-        ) : (
-          <Link href="/login" className="store-nav-button">
-            ĐĂNG NHẬP
-          </Link>
-        )}
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          {auth?.role?.toLowerCase() === "customer" ? (
+            <Link href="/cart" className="store-nav-button" style={{ textDecoration: "none" }}>
+              GIỎ HÀNG
+            </Link>
+          ) : null}
+          {auth ? (
+            <button className="store-nav-button" onClick={handleLogout}>
+              ĐĂNG XUẤT
+            </button>
+          ) : (
+            <Link href="/login" className="store-nav-button">
+              ĐĂNG NHẬP
+            </Link>
+          )}
+        </div>
       </nav>
 
       <section className="store-hero" aria-label="KHUYẾN MÃI MÁY TÍNH">

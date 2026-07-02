@@ -42,7 +42,7 @@ export function getRedirectFromRole(role: string) {
     case "staff":
       return "/staff";
     case "customer":
-      return "/customer";
+      return "/";
     case "accountant":
     case "bookkeeper":
       return "/bookkeeper";
