@@ -12,6 +12,7 @@ type InventoryProduct = {
   id: string;
   productCode: string;
   name: string;
+  category: string;
   brand: string;
   price: number;
   stockQuantity: number;
@@ -123,7 +124,7 @@ export default function InventoryPage() {
     const term = searchTerm.trim().toLowerCase();
     if (!term) return products;
     return products.filter((product) =>
-      [product.productCode, product.name, product.brand]
+      [product.productCode, product.name, product.brand, product.category]
         .join(" ")
         .toLowerCase()
         .includes(term),
@@ -233,6 +234,7 @@ export default function InventoryPage() {
                       <tr key={product.id} className={product.stockQuantity <= product.lowStockThreshold ? 'low-stock' : ''}>
                         <td>{product.productCode}</td>
                         <td>{product.name}</td>
+                        <td>{product.category}</td>
                         <td>{product.brand}</td>
                         <td className="price-cell" style={{ textAlign: "right" }}>
                           {product.price.toLocaleString("vi-VN", {
@@ -310,6 +312,9 @@ export default function InventoryPage() {
                       <strong>Thông tin sản phẩm:</strong>
                       <p style={{ margin: "8px 0 0" }}>
                         {selectedProduct.productCode} - {selectedProduct.name}
+                      </p>
+                      <p style={{ margin: "8px 0 0" }}>
+                        Phân loại: {selectedProduct.category}
                       </p>
                       <p style={{ margin: "8px 0 0" }}>
                         Kho Hàng Hiện Tại: {selectedProduct.stockQuantity}

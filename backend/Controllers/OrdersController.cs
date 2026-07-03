@@ -24,6 +24,7 @@ namespace ComputerStoreApi.Controllers
         {
             var orders = await _dbContext.Orders
                 .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
                 .Include(o => o.Shipment)
                 .Include(o => o.Customer)
                 .ToListAsync();

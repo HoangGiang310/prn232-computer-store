@@ -16,6 +16,7 @@ type Product = ProductPayload & {
 const initialProductForm: ProductPayload = {
   productCode: "",
   name: "",
+  category: "",
   brand: "",
   specifications: "",
   importPrice: 0,
@@ -73,6 +74,7 @@ export default function ProductsPage() {
     setFormData({
       productCode: product.productCode,
       name: product.name,
+      category: product.category ?? "",
       brand: product.brand,
       specifications: product.specifications,
       importPrice: product.importPrice,
@@ -94,8 +96,8 @@ export default function ProductsPage() {
     const brand = formData.brand.trim();
     const specs = formData.specifications.trim();
 
-    if (!code || !name || !brand || !specs) {
-      setError("Vui lòng nhập đầy đủ: mã, tên, hãng và cấu hình sản phẩm.");
+    if (!code || !name || !formData.category.trim() || !brand || !specs) {
+      setError("Vui lòng nhập đầy đủ: mã, tên, phân loại, hãng và cấu hình sản phẩm.");
       return;
     }
     if (Number(formData.importPrice) < 0 || Number(formData.price) < 0) {
@@ -118,6 +120,7 @@ export default function ProductsPage() {
         ...formData,
         productCode: code,
         name,
+        category: formData.category.trim(),
         brand,
         specifications: specs,
         importPrice: Number(formData.importPrice),
@@ -333,6 +336,25 @@ export default function ProductsPage() {
                   style={{ flex: 1, minWidth: "280px" }}
                 />
               </label>
+              <label className="product-field-card" style={{ display: "flex", alignItems: "center", gap: "18px", justifyContent: "space-between" }}>
+                <span style={{ minWidth: "180px", fontWeight: 600 }}>Phân loại</span>
+                <select
+                  value={formData.category}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, category: e.target.value }))
+                  }
+                  required
+                  style={{ flex: 1, minWidth: "280px", padding: "12px 16px" }}
+                >
+                  <option value="">Chọn phân loại</option>
+                  <option value="Laptop">Laptop</option>
+                  <option value="Chuột có dây">Chuột có dây</option>
+                  <option value="Chuột không dây">Chuột không dây</option>
+                  <option value="Bàn phím có dây">Bàn phím có dây</option>
+                  <option value="Bàn phím không dây">Bàn phím không dây</option>
+                  <option value="Giá kê laptop">Giá kê laptop</option>
+                </select>
+              </label>
               <label className="product-field-card" style={{ display: "grid", gap: "10px", maxWidth: "50%" }}>
                 <span style={{ fontWeight: 600 }}>Cấu hình</span>
                 <textarea
@@ -451,6 +473,7 @@ export default function ProductsPage() {
                   <th>Ảnh</th>
                   <th>Mã SP</th>
                   <th>Tên</th>
+                  <th>Phân loại</th>
                   <th>Hãng</th>
                   <th>Giá bán</th>
                   <th>Tồn kho</th>
@@ -478,6 +501,7 @@ export default function ProductsPage() {
                         {product.name}
                       </Link>
                     </td>
+                    <td>{product.category}</td>
                     <td>{product.brand}</td>
                     <td>
                       {product.price.toLocaleString("vi-VN", {

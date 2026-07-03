@@ -231,6 +231,7 @@ export default function ProductDetailPage() {
       productId: product.id,
       name: product.name,
       productCode: product.productCode,
+      category: product.category,
       brand: product.brand,
       price: Number(product.price ?? 0),
       quantity: 1,
@@ -247,6 +248,7 @@ export default function ProductDetailPage() {
       productId: product.id,
       name: product.name,
       productCode: product.productCode,
+      category: product.category,
       brand: product.brand,
       price: Number(product.price ?? 0),
       quantity: 1,
@@ -295,7 +297,7 @@ export default function ProductDetailPage() {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
           <div>
             <h1>{product?.name}</h1>
-            <p>{product?.brand} · Mã: {product?.productCode}</p>
+            <p>{product?.category} · {product?.brand} · Mã: {product?.productCode}</p>
           </div>
           <Link href="/" className="button">
             ← Quay Lại Trang Chủ

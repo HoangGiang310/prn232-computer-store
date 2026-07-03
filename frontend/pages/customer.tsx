@@ -22,6 +22,7 @@ type ProductOption = {
   id: string;
   productCode: string;
   name: string;
+  category?: string;
   brand?: string;
   specifications?: string;
   price: number;
@@ -109,6 +110,7 @@ export default function CustomerPage() {
         {
           productId: product.id,
           name: product.name,
+          category: product.category,
           quantity: 1,
           unitPrice: product.price,
           stockQuantity: product.stockQuantity,
@@ -271,6 +273,7 @@ export default function CustomerPage() {
                     <div className="shop-card-media-fallback">💻</div>
                   )}
                   {product.brand ? <span className="shop-card-brand">{product.brand}</span> : null}
+                  {product.category ? <span className="shop-card-category">{product.category}</span> : null}
                   <span className={`shop-card-stock ${outOfStock ? "out" : "in"}`}>
                     {outOfStock ? "Hết hàng" : `Còn ${product.stockQuantity}`}
                   </span>

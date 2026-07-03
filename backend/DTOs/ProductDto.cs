@@ -14,6 +14,10 @@ namespace ComputerStoreApi.DTOs
         [StringLength(200, ErrorMessage = "Tên sản phẩm tối đa 200 ký tự.")]
         public string Name { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "Phân loại sản phẩm là bắt buộc.")]
+        [StringLength(100, ErrorMessage = "Phân loại tối đa 100 ký tự.")]
+        public string Category { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "Hãng sản xuất là bắt buộc.")]
         [StringLength(100, ErrorMessage = "Tên hãng tối đa 100 ký tự.")]
         public string Brand { get; set; } = string.Empty;

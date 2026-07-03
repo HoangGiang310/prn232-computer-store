@@ -93,65 +93,80 @@ namespace ComputerStoreApi.Services
                 // Ảnh dùng nguồn Unsplash (miễn phí, có thật) để hiển thị đẹp trên giao diện
                 var products = new List<(Product product, string image)>
                 {
-                    (new Product { ProductCode = "LAP-DELL-XPS13", Name = "Dell XPS 13 9320", Brand = "Dell",
+                    (new Product { ProductCode = "LAP-DELL-XPS13", Name = "Dell XPS 13 9320", Category = "Laptop", Brand = "Dell",
                         Specifications = "Intel Core i7-1260P, 16GB LPDDR5, 512GB SSD, 13.4\" OLED 3.5K Touch, Windows 11",
                         ImportPrice = 32000000, Price = 38500000, StockQuantity = 15, LowStockThreshold = 3, CreatedAt = DateTime.UtcNow },
                         "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=800&q=80"),
 
-                    (new Product { ProductCode = "LAP-MAC-M3AIR", Name = "MacBook Air 13\" M3 2024", Brand = "Apple",
+                    (new Product { ProductCode = "LAP-MAC-M3AIR", Name = "MacBook Air 13\" M3 2024", Category = "Laptop", Brand = "Apple",
                         Specifications = "Apple M3 8-core CPU, 10-core GPU, 16GB Unified Memory, 512GB SSD, 13.6\" Liquid Retina",
                         ImportPrice = 28000000, Price = 32990000, StockQuantity = 8, LowStockThreshold = 3, CreatedAt = DateTime.UtcNow },
                         "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&q=80"),
 
-                    (new Product { ProductCode = "LAP-MAC-M3PRO16", Name = "MacBook Pro 16\" M3 Pro", Brand = "Apple",
+                    (new Product { ProductCode = "LAP-MAC-M3PRO16", Name = "MacBook Pro 16\" M3 Pro", Category = "Laptop", Brand = "Apple",
                         Specifications = "Apple M3 Pro 12-core CPU, 18-core GPU, 36GB RAM, 1TB SSD, 16.2\" Liquid Retina XDR",
                         ImportPrice = 58000000, Price = 65990000, StockQuantity = 5, LowStockThreshold = 2, CreatedAt = DateTime.UtcNow },
                         "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800&q=80"),
 
-                    (new Product { ProductCode = "LAP-ASUS-ROG16", Name = "ASUS ROG Strix G16", Brand = "ASUS",
+                    (new Product { ProductCode = "LAP-ASUS-ROG16", Name = "ASUS ROG Strix G16", Category = "Laptop", Brand = "ASUS",
                         Specifications = "Intel Core i9-14900HX, 32GB DDR5, 1TB SSD, RTX 4070 8GB, 16\" QHD+ 240Hz",
                         ImportPrice = 42000000, Price = 49990000, StockQuantity = 7, LowStockThreshold = 3, CreatedAt = DateTime.UtcNow },
                         "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=800&q=80"),
 
-                    (new Product { ProductCode = "LAP-ASUS-ZEN14", Name = "ASUS Zenbook 14 OLED", Brand = "ASUS",
+                    (new Product { ProductCode = "LAP-ASUS-ZEN14", Name = "ASUS Zenbook 14 OLED", Category = "Laptop", Brand = "ASUS",
                         Specifications = "Intel Core Ultra 7 155H, 16GB LPDDR5X, 1TB SSD, 14\" 3K OLED 120Hz, Windows 11",
                         ImportPrice = 24000000, Price = 28990000, StockQuantity = 12, LowStockThreshold = 4, CreatedAt = DateTime.UtcNow },
                         "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=800&q=80"),
 
-                    (new Product { ProductCode = "LAP-LENOVO-LEGION", Name = "Lenovo Legion Pro 5", Brand = "Lenovo",
+                    (new Product { ProductCode = "LAP-LENOVO-LEGION", Name = "Lenovo Legion Pro 5", Category = "Laptop", Brand = "Lenovo",
                         Specifications = "AMD Ryzen 7 7745HX, 16GB DDR5, 512GB SSD, RTX 4060 8GB, 16\" WQXGA 165Hz",
                         ImportPrice = 33000000, Price = 38490000, StockQuantity = 9, LowStockThreshold = 3, CreatedAt = DateTime.UtcNow },
                         "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=800&q=80"),
 
-                    (new Product { ProductCode = "LAP-LENOVO-X1", Name = "Lenovo ThinkPad X1 Carbon Gen 12", Brand = "Lenovo",
+                    (new Product { ProductCode = "LAP-LENOVO-X1", Name = "Lenovo ThinkPad X1 Carbon Gen 12", Category = "Laptop", Brand = "Lenovo",
                         Specifications = "Intel Core Ultra 7 155U, 32GB RAM, 1TB SSD, 14\" WUXGA IPS, vỏ sợi carbon",
                         ImportPrice = 40000000, Price = 46990000, StockQuantity = 4, LowStockThreshold = 2, CreatedAt = DateTime.UtcNow },
                         "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&q=80"),
 
-                    (new Product { ProductCode = "LAP-HP-SPECTRE", Name = "HP Spectre x360 14", Brand = "HP",
+                    (new Product { ProductCode = "LAP-HP-SPECTRE", Name = "HP Spectre x360 14", Category = "Laptop", Brand = "HP",
                         Specifications = "Intel Core Ultra 7 155H, 16GB, 1TB SSD, 14\" 2.8K OLED Touch, xoay gập 360°",
                         ImportPrice = 30000000, Price = 35990000, StockQuantity = 6, LowStockThreshold = 3, CreatedAt = DateTime.UtcNow },
                         "https://images.unsplash.com/photo-1602080858428-57174f9431cf?w=800&q=80"),
 
-                    (new Product { ProductCode = "LAP-ACER-SWIFT", Name = "Acer Swift Go 14", Brand = "Acer",
+                    (new Product { ProductCode = "LAP-ACER-SWIFT", Name = "Acer Swift Go 14", Category = "Laptop", Brand = "Acer",
                         Specifications = "Intel Core i5-13500H, 16GB LPDDR5, 512GB SSD, 14\" 2.2K IPS, nhẹ 1.25kg",
                         ImportPrice = 16000000, Price = 19990000, StockQuantity = 18, LowStockThreshold = 5, CreatedAt = DateTime.UtcNow },
                         "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=800&q=80"),
 
-                    (new Product { ProductCode = "LAP-MSI-KATANA", Name = "MSI Katana 15", Brand = "MSI",
+                    (new Product { ProductCode = "LAP-MSI-KATANA", Name = "MSI Katana 15", Category = "Laptop", Brand = "MSI",
                         Specifications = "Intel Core i7-13620H, 16GB DDR5, 512GB SSD, RTX 4050 6GB, 15.6\" FHD 144Hz",
                         ImportPrice = 22000000, Price = 26490000, StockQuantity = 2, LowStockThreshold = 3, CreatedAt = DateTime.UtcNow },
                         "https://images.unsplash.com/photo-1542393545-10f5cde2c810?w=800&q=80"),
 
-                    (new Product { ProductCode = "ACC-LOGI-MXMASTER", Name = "Chuột Logitech MX Master 3S", Brand = "Logitech",
+                    (new Product { ProductCode = "ACC-LOGI-MXMASTER", Name = "Chuột Logitech MX Master 3S", Category = "Chuột không dây", Brand = "Logitech",
                         Specifications = "Cảm biến 8000 DPI, cuộn MagSpeed, kết nối Bluetooth/USB, pin 70 ngày",
                         ImportPrice = 1900000, Price = 2590000, StockQuantity = 40, LowStockThreshold = 10, CreatedAt = DateTime.UtcNow },
                         "https://images.unsplash.com/photo-1527814050087-3793815479db?w=800&q=80"),
 
-                    (new Product { ProductCode = "ACC-KEY-KEYCHRON", Name = "Bàn phím cơ Keychron K8 Pro", Brand = "Keychron",
+                    (new Product { ProductCode = "ACC-KEY-KEYCHRON", Name = "Bàn phím cơ Keychron K8 Pro", Category = "Bàn phím không dây", Brand = "Keychron",
                         Specifications = "Layout TKL, switch Gateron, hot-swap, RGB, kết nối không dây Bluetooth 5.1",
                         ImportPrice = 2200000, Price = 2990000, StockQuantity = 25, LowStockThreshold = 8, CreatedAt = DateTime.UtcNow },
                         "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&q=80"),
+
+                    (new Product { ProductCode = "ACC-LOGI-G502", Name = "Chuột Logitech G502 HERO", Category = "Chuột có dây", Brand = "Logitech",
+                        Specifications = "Cảm biến 16.000 DPI, thiết kế ergonomic, kết nối USB, đèn RGB, 11 nút có thể lập trình",
+                        ImportPrice = 950000, Price = 1499000, StockQuantity = 30, LowStockThreshold = 8, CreatedAt = DateTime.UtcNow },
+                        "https://images.unsplash.com/photo-1555617117-08fda2cae6a1?w=800&q=80"),
+
+                    (new Product { ProductCode = "ACC-ASUS-ROG-STRIX", Name = "Bàn phím ASUS ROG Strix Scope", Category = "Bàn phím có dây", Brand = "ASUS",
+                        Specifications = "Bàn phím cơ full-size, switch ROG NX, đèn RGB, kết nối USB, kê tay đi kèm",
+                        ImportPrice = 2200000, Price = 2890000, StockQuantity = 18, LowStockThreshold = 6, CreatedAt = DateTime.UtcNow },
+                        "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&q=80"),
+
+                    (new Product { ProductCode = "ACC-LAP-STAND", Name = "Giá kê laptop Cooler Master", Category = "Giá kê laptop", Brand = "Cooler Master",
+                        Specifications = "Giá kê laptop hợp kim nhôm, 6 mức điều chỉnh độ cao, tản nhiệt tốt, gấp gọn tiện lợi",
+                        ImportPrice = 350000, Price = 450000, StockQuantity = 50, LowStockThreshold = 10, CreatedAt = DateTime.UtcNow },
+                        "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&q=80"),
                 };
 
                 _context.Products.AddRange(products.Select(x => x.product));

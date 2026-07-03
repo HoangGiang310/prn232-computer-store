@@ -209,6 +209,7 @@ export default function Home() {
                     </div>
                     <div className="home-product-info">
                       <h2>{product.name}</h2>
+                      {product.category ? <p className="home-product-category">{product.category}</p> : null}
                       <p>{product.specifications}</p>
                       <strong>{Number(product.price).toLocaleString("vi-VN")} ₫</strong>
                     </div>

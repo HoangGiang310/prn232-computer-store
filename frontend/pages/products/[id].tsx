@@ -8,6 +8,7 @@ type ProductDetail = {
   productCode: string;
   name: string;
   brand: string;
+  category: string;
   specifications: string;
   importPrice: number;
   price: number;
@@ -103,7 +104,7 @@ export default function ProductDetailPage() {
           <div>
             <h1>{product.name}</h1>
             <p>
-              {product.productCode} • {product.brand}
+              {product.category} · {product.brand} · {product.productCode}
             </p>
           </div>
           <div className="buttons-group">

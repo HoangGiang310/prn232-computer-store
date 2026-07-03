@@ -2,6 +2,7 @@ export type CheckoutCartItem = {
   productId: string;
   name: string;
   productCode?: string;
+  category?: string;
   brand?: string;
   price: number;
   quantity: number;

@@ -11,6 +11,7 @@ type OrderItem = {
   product?: {
     name: string;
     productCode: string;
+    category?: string;
   };
 };
 
@@ -327,7 +328,8 @@ export default function OrdersPage() {
                               <ul style={{ marginTop: "8px" }}>
                                 {order.orderItems?.map((item) => (
                                   <li key={item.id}>
-                                    {item.product?.name ?? item.productId} x {item.quantity} @ {item.unitPrice.toLocaleString("vi-VN", {
+                                    {item.product?.name ?? item.productId}
+                                    {item.product?.category ? ` (${item.product.category})` : ""} x {item.quantity} @ {item.unitPrice.toLocaleString("vi-VN", {
                                       style: "currency",
                                       currency: "VND",
                                     })}

@@ -22,6 +22,9 @@ namespace ComputerStoreApi.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; } // Giá bán
 
+        [Required, MaxLength(100)]
+        public string Category { get; set; } = string.Empty; // Phân loại sản phẩm
+
         public int StockQuantity { get; set; } // Tồn kho hiện tại
         public int LowStockThreshold { get; set; } // Ngưỡng cảnh báo hết hàng
 
