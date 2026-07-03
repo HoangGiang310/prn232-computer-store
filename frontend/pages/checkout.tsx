@@ -38,9 +38,14 @@ export default function CheckoutPage() {
     };
   }, [router]);
 
-  const totalAmount = useMemo(
-    () => items.reduce((sum, item) => sum + item.price * item.quantity, 0),
+  const selectedItems = useMemo(
+    () => items.filter((item) => item.selected !== false),
     [items],
+  );
+
+  const totalAmount = useMemo(
+    () => selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    [selectedItems],
   );
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -53,8 +58,8 @@ export default function CheckoutPage() {
       return;
     }
 
-    if (items.length === 0) {
-      setError("Giỏ hàng trống. Vui lòng thêm sản phẩm trước khi thanh toán.");
+    if (selectedItems.length === 0) {
+      setError("Vui lòng chọn ít nhất một sản phẩm để thanh toán.");
       return;
     }
 
@@ -78,7 +83,7 @@ export default function CheckoutPage() {
         discountAmount: 0,
         shippingFee: 0,
         finalAmount: totalAmount,
-        orderItems: items.map((item) => ({
+        orderItems: selectedItems.map((item) => ({
           productId: item.productId,
           quantity: item.quantity,
           unitPrice: item.price,
@@ -103,16 +108,16 @@ export default function CheckoutPage() {
     router.back();
   }
 
-  if (items.length === 0) {
+  if (selectedItems.length === 0) {
     return (
       <main className="main">
         <section className="card header">
           <h1>Thanh toán</h1>
-          <p>Giỏ hàng hiện đang trống.</p>
+          <p>Bạn cần chọn sản phẩm trước khi thanh toán.</p>
           <div className="buttons-group">
-            <Link href="/customer" className="button">
-              Quay lại cửa hàng
-            </Link>
+            <button type="button" className="button" onClick={() => router.push("/cart")}> 
+              Quay lại giỏ hàng
+            </button>
           </div>
         </section>
       </main>
@@ -138,7 +143,7 @@ export default function CheckoutPage() {
         {success ? <p className="success">{success}</p> : null}
 
         <div style={{ display: "grid", gap: 16 }}>
-          {items.map((item) => (
+          {selectedItems.map((item) => (
             <div key={item.productId} className="cart-item-row">
               <div>
                 <strong>{item.name}</strong>

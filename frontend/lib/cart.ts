@@ -6,6 +6,7 @@ export type CheckoutCartItem = {
   price: number;
   quantity: number;
   stockQuantity: number;
+  selected?: boolean;
   mainImage?: string;
   specifications?: string;
 };
@@ -20,7 +21,9 @@ export function readCheckoutCart(): CheckoutCartItem[] {
     const raw = window.localStorage.getItem(storageKey);
     if (!raw) return [];
     const parsed = JSON.parse(raw) as CheckoutCartItem[];
-    return Array.isArray(parsed) ? parsed : [];
+    return Array.isArray(parsed)
+      ? parsed.map((item) => ({ ...item, selected: item.selected !== false }))
+      : [];
   } catch {
     return [];
   }
@@ -39,11 +42,15 @@ export function addCheckoutItem(item: CheckoutCartItem) {
   if (existing) {
     next = current.map((entry) =>
       entry.productId === item.productId
-        ? { ...entry, quantity: Math.min(entry.quantity + item.quantity, item.stockQuantity || entry.stockQuantity) }
+        ? {
+            ...entry,
+            quantity: Math.min(entry.quantity + item.quantity, item.stockQuantity || entry.stockQuantity),
+            selected: entry.selected !== false,
+          }
         : entry,
     );
   } else {
-    next = [...current, item];
+    next = [...current, { ...item, selected: true }];
   }
 
   saveCheckoutCart(next);
@@ -63,7 +70,9 @@ export function readBuyNowCart(): CheckoutCartItem[] {
     const raw = window.sessionStorage.getItem(buyNowStorageKey);
     if (!raw) return [];
     const parsed = JSON.parse(raw) as CheckoutCartItem[];
-    return Array.isArray(parsed) ? parsed : [];
+    return Array.isArray(parsed)
+      ? parsed.map((item) => ({ ...item, selected: item.selected !== false }))
+      : [];
   } catch {
     return [];
   }
@@ -77,7 +86,7 @@ export function saveBuyNowCart(items: CheckoutCartItem[]) {
 export function addBuyNowItem(item: CheckoutCartItem) {
   const current = readBuyNowCart();
   // Buy Now chỉ lưu 1 sản phẩm, không cộng gộp
-  const next: CheckoutCartItem[] = [{ ...item, quantity: 1 }];
+  const next: CheckoutCartItem[] = [{ ...item, quantity: 1, selected: true }];
   saveBuyNowCart(next);
   return next;
 }
