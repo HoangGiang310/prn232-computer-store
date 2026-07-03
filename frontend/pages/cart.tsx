@@ -8,6 +8,7 @@ export default function CartPage() {
   const router = useRouter();
   const [auth, setAuth] = useState<{ token: string; role: string; username: string } | null>(null);
   const [items, setItems] = useState<CheckoutCartItem[]>([]);
+  const [cartError, setCartError] = useState("");
 
   useEffect(() => {
     const currentAuth = getAuth();
@@ -20,9 +21,14 @@ export default function CartPage() {
     setItems(readCheckoutCart());
   }, [router]);
 
-  const totalAmount = useMemo(
-    () => items.reduce((sum, item) => sum + item.price * item.quantity, 0),
+  const selectedItems = useMemo(
+    () => items.filter((item) => item.selected !== false),
     [items],
+  );
+
+  const totalAmount = useMemo(
+    () => selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    [selectedItems],
   );
 
   function persistItems(nextItems: CheckoutCartItem[]) {
@@ -45,6 +51,14 @@ export default function CartPage() {
     persistItems(nextItems);
   }
 
+  function handleToggleSelect(productId: string) {
+    persistItems(
+      items.map((item) =>
+        item.productId === productId ? { ...item, selected: !item.selected } : item,
+      ),
+    );
+  }
+
   function handleRemove(productId: string) {
     persistItems(items.filter((item) => item.productId !== productId));
   }
@@ -52,6 +66,15 @@ export default function CartPage() {
   function handleClear() {
     clearCheckoutCart();
     setItems([]);
+  }
+
+  function handleProceedToCheckout() {
+    if (selectedItems.length === 0) {
+      setCartError("Bạn cần chọn sản phẩm trước khi thanh toán");
+      return;
+    }
+    setCartError("");
+    router.push("/checkout");
   }
 
   if (!auth) {
@@ -70,14 +93,15 @@ export default function CartPage() {
             <Link href="/" className="button">
               ← Quay Về Trang Chủ
             </Link>
-            <Link href="/checkout" className="button login-button">
+            <button type="button" className="button login-button" onClick={handleProceedToCheckout}>
               Thanh toán
-            </Link>
+            </button>
           </div>
         </div>
       </section>
 
       <section className="card">
+        {cartError ? <p className="error">{cartError}</p> : null}
         {items.length === 0 ? (
           <div style={{ textAlign: "center", padding: "24px 0" }}>
             <h2>Giỏ hàng trống</h2>
@@ -96,7 +120,14 @@ export default function CartPage() {
               {items.map((item) => (
                 <div key={item.productId} className="cart-item-row">
                   <div>
-                    <strong>{item.name}</strong>
+                    <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <input
+                        type="checkbox"
+                        checked={item.selected !== false}
+                        onChange={() => handleToggleSelect(item.productId)}
+                      />
+                      <strong>{item.name}</strong>
+                    </label>
                     <p>Mã: {item.productCode || "-"}</p>
                     <p>Giá: {Number(item.price).toLocaleString("vi-VN")} ₫</p>
                     <p>Số lượng: {item.quantity}</p>
