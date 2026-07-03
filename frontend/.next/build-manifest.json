@@ -27,11 +27,6 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/admin": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/admin.js"
-    ],
     "/cart": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
@@ -42,20 +37,15 @@
       "static/chunks/main.js",
       "static/chunks/pages/checkout.js"
     ],
-    "/login": [
+    "/order-success": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/login.js"
+      "static/chunks/pages/order-success.js"
     ],
     "/product/[id]": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/product/[id].js"
-    ],
-    "/products": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/products.js"
     ]
   },
   "ampFirstPages": []

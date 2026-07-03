@@ -90,11 +90,19 @@ export default function CheckoutPage() {
         })),
       };
 
-      await createOrder(payload, authToken);
+      const orderData = await createOrder(payload, authToken);
+      
+      // Lưu thông tin đơn hàng vào sessionStorage (chỉ cho tab hiện tại)
+      if (orderData && orderData.id) {
+        sessionStorage.setItem('lastOrder', JSON.stringify(orderData));
+      }
+      
+      // Xóa cart
       clearCheckoutCart();
-      clearBuyNowCart(); // Xóa Buy Now cart sau khi thanh toán thành công
-      setItems([]);
-      setSuccess("Đặt hàng thành công. Vui lòng kiểm tra đơn hàng trong tài khoản của bạn.");
+      clearBuyNowCart();
+      
+      // Chuyển hướng đến trang đặt hàng thành công
+      router.push('/order-success');
     } catch (err) {
       setError(err instanceof Error ? err.message : "Không thể tạo đơn hàng.");
     } finally {

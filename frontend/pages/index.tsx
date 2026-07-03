@@ -101,9 +101,14 @@ export default function Home() {
 
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           {auth?.role?.toLowerCase() === "customer" ? (
-            <Link href="/cart" className="store-nav-button" style={{ textDecoration: "none" }}>
-              GIỎ HÀNG
-            </Link>
+            <>
+              <Link href="/order-history" className="store-nav-button" style={{ textDecoration: "none" }}>
+                LỊCH SỬ ĐƠN
+              </Link>
+              <Link href="/cart" className="store-nav-button" style={{ textDecoration: "none" }}>
+                GIỎ HÀNG
+              </Link>
+            </>
           ) : null}
           {auth ? (
             <button className="store-nav-button" onClick={handleLogout}>
