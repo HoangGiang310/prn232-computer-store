@@ -177,104 +177,75 @@ export default function ProductsPage() {
   );
 
   return (
-    <main className="main">
+    <main className="main products-page">
       <section className="card header">
-        <h1>Quản Lý Sản Phẩm</h1>
-        <p>Quản lý danh sách sản phẩm, tạo mới, sửa thông tin và theo dõi tồn kho.</p>
+        <h1>Quản lý sản phẩm</h1>
+        <p>Quản lý danh sách sản phẩm, giá bán và tồn kho theo phong cách showroom.</p>
       </section>
 
-      <section className="card" style={{ marginBottom: "24px" }}>
-        <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
-          <div
-            style={{
-              flex: 1,
-              minWidth: "220px",
-              padding: "16px",
-              background: "#f8fafc",
-              borderRadius: "12px",
-            }}
-          >
-            <h3>Tổng sản phẩm</h3>
-            <p style={{ fontSize: "32px", margin: "12px 0 0" }}>{products.length}</p>
-          </div>
-          <div
-            style={{
-              flex: 1,
-              minWidth: "220px",
-              padding: "16px",
-              background: "#f8fafc",
-              borderRadius: "12px",
-            }}
-          >
-            <h3>Sản phẩm cảnh báo</h3>
-            <p style={{ fontSize: "32px", margin: "12px 0 0", color: "#b91c1c" }}>
-              {lowStockCount}
-            </p>
-          </div>
+      <section className="card stats-grid">
+        <div className="stat-card">
+          <span className="stat-label">Tổng sản phẩm</span>
+          <strong>{products.length}</strong>
+        </div>
+        <div className="stat-card">
+          <span className="stat-label">Sản phẩm cảnh báo</span>
+          <strong>{lowStockCount}</strong>
         </div>
       </section>
 
-      <section className="card">
-        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-          <button className="button" onClick={() => setShowForm(true)}>
-            Thêm sản phẩm mới
-          </button>
-          <Link href="/admin" className="button">
-            Quay lại Admin
-          </Link>
+      <section className="card filter-card">
+        <div className="filter-header">
+          <div>
+            <h2>Tiện ích tìm kiếm</h2>
+            <p>Lọc theo tên, hãng, giá và trạng thái kho để tìm sản phẩm nhanh hơn.</p>
+          </div>
+          <div className="button-group">
+            <button className="button" onClick={() => setShowForm(true)}>
+              Thêm sản phẩm mới
+            </button>
+            <Link href="/admin" className="button secondary">
+              Quay lại Admin
+            </Link>
+          </div>
         </div>
 
-        <div style={{ marginTop: "20px", display: "grid", gap: "12px", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr" }}>
-          <label>
-            Tìm kiếm sản phẩm
+        <div className="filter-grid">
+          <label className="input-group">
+            <span>Tìm kiếm sản phẩm</span>
             <input
               type="text"
               placeholder="Tên, mã, hãng..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              style={{ width: "100%", marginTop: "8px", padding: "12px 16px" }}
             />
           </label>
-          <label>
-            Hãng
-            <select
-              value={selectedBrand}
-              onChange={(e) => setSelectedBrand(e.target.value)}
-              style={{ width: "100%", marginTop: "8px", padding: "12px 16px" }}
-            >
+
+          <label className="input-group">
+            <span>Hãng</span>
+            <select value={selectedBrand} onChange={(e) => setSelectedBrand(e.target.value)}>
               <option value="">Tất cả</option>
               {[...new Set(products.map((p) => p.brand))].sort().map((brand) => (
-                <option key={brand} value={brand}>{brand}</option>
+                <option key={brand} value={brand}>
+                  {brand}
+                </option>
               ))}
             </select>
           </label>
-          <label>
-            Giá tối thiểu
-            <input
-              type="number"
-              min={0}
-              value={minPrice}
-              onChange={(e) => setMinPrice(e.target.value)}
-              style={{ width: "100%", marginTop: "8px", padding: "12px 16px" }}
-            />
+
+          <label className="input-group">
+            <span>Giá tối thiểu</span>
+            <input type="number" min={0} value={minPrice} onChange={(e) => setMinPrice(e.target.value)} />
           </label>
-          <label>
-            Giá tối đa
-            <input
-              type="number"
-              min={0}
-              value={maxPrice}
-              onChange={(e) => setMaxPrice(e.target.value)}
-              style={{ width: "100%", marginTop: "8px", padding: "12px 16px" }}
-            />
+
+          <label className="input-group">
+            <span>Giá tối đa</span>
+            <input type="number" min={0} value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} />
           </label>
-          <label>
-            Trạng thái kho
-            <select
-              value={stockStatus}
-              onChange={(e) => setStockStatus(e.target.value)}
-              style={{ width: "100%", marginTop: "8px", padding: "12px 16px" }}
-            >
+
+          <label className="input-group">
+            <span>Trạng thái kho</span>
+            <select value={stockStatus} onChange={(e) => setStockStatus(e.target.value)}>
               <option value="">Tất cả</option>
               <option value="instock">Còn hàng</option>
               <option value="lowstock">Gần hết</option>
@@ -285,13 +256,11 @@ export default function ProductsPage() {
       </section>
 
       {showForm ? (
-        <section className="card">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
+        <section className="card product-form">
+          <div className="filter-header">
             <div>
               <h2>{editingId ? "Cập nhật sản phẩm" : "Thêm sản phẩm mới"}</h2>
-              <p style={{ marginTop: "8px", maxWidth: "560px", color: "#4b5563" }}>
-                Nhập thông tin chi tiết sản phẩm, bao gồm mã, tên, hãng, cấu hình và số lượng tồn kho.
-              </p>
+              <p>Nhập thông tin chi tiết sản phẩm: mã, tên, hãng, cấu hình và tồn kho.</p>
             </div>
           </div>
 
@@ -436,21 +405,11 @@ export default function ProductsPage() {
 
             {error ? <p className="error">{error}</p> : null}
 
-            <div className="buttons-group" style={{ justifyContent: "center", marginTop: "16px" }}>
-              <button
-                type="submit"
-                className="button login-button"
-                disabled={loading}
-                style={{ minWidth: "140px" }}
-              >
+            <div className="buttons-group">
+              <button type="submit" className="button" disabled={loading}>
                 {loading ? "Đang lưu..." : editingId ? "Cập nhật" : "Lưu"}
               </button>
-              <button
-                type="button"
-                className="button register-button"
-                onClick={resetForm}
-                style={{ minWidth: "140px" }}
-              >
+              <button type="button" className="button secondary" onClick={resetForm}>
                 Hủy
               </button>
             </div>
@@ -459,14 +418,14 @@ export default function ProductsPage() {
       ) : null}
 
       <section className="card">
-        <h2 className="product-list-title">Danh Sách Sản Phẩm</h2>
+        <h2 className="product-list-title">Danh sách sản phẩm</h2>
         {error ? <p className="error">{error}</p> : null}
         {loading ? (
           <p>Đang tải dữ liệu...</p>
         ) : filteredProducts.length === 0 ? (
           <p>Không có sản phẩm để hiển thị.</p>
         ) : (
-          <div style={{ overflowX: "auto" }}>
+          <div className="table-scroll">
             <table className="product-list-table">
               <thead>
                 <tr>
@@ -486,18 +445,14 @@ export default function ProductsPage() {
                   <tr key={product.id}>
                     <td>
                       {product.images && product.images[0] ? (
-                        <img
-                          src={product.images[0].imageUrl}
-                          alt={product.name}
-                          className="table-thumb"
-                        />
+                        <img src={product.images[0].imageUrl} alt={product.name} className="table-thumb" />
                       ) : (
                         <div className="table-thumb table-thumb-fallback">💻</div>
                       )}
                     </td>
                     <td>{product.productCode}</td>
                     <td>
-                      <Link href={`/products/${product.id}`} style={{ color: "#2563eb", fontWeight: 600 }}>
+                      <Link href={`/products/${product.id}`} className="product-link">
                         {product.name}
                       </Link>
                     </td>
@@ -513,16 +468,10 @@ export default function ProductsPage() {
                     <td>{product.lowStockThreshold}</td>
                     <td className="action-buttons-cell">
                       <div className="action-buttons-column">
-                        <button
-                          className="button product-action-button"
-                          onClick={() => handleEdit(product)}
-                        >
+                        <button className="button product-action-button" onClick={() => handleEdit(product)}>
                           Sửa
                         </button>
-                        <button
-                          className="button register-button product-action-button"
-                          onClick={() => handleDelete(product.id)}
-                        >
+                        <button className="button secondary product-action-button" onClick={() => handleDelete(product.id)}>
                           Xóa
                         </button>
                       </div>

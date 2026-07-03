@@ -168,62 +168,29 @@ export default function OrdersPage() {
         </p>
       </section>
 
-      <section className="card" style={{ marginBottom: "24px" }}>
-        <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
-          <div
-            style={{
-              flex: 1,
-              minWidth: "220px",
-              padding: "16px",
-              background: "#f8fafc",
-              borderRadius: "12px",
-            }}
-          >
-            <h3>Tổng đơn hàng</h3>
-            <p style={{ fontSize: "32px", margin: "12px 0 0" }}>{totalOrders}</p>
-          </div>
-          <div
-            style={{
-              flex: 1,
-              minWidth: "220px",
-              padding: "16px",
-              background: "#f8fafc",
-              borderRadius: "12px",
-            }}
-          >
-            <h3>Đơn hàng đang xử lý</h3>
-            <p style={{ fontSize: "32px", margin: "12px 0 0", color: "#d97706" }}>
-              {pendingOrders}
-            </p>
-          </div>
-          <div
-            style={{
-              flex: 1,
-              minWidth: "220px",
-              padding: "16px",
-              background: "#f8fafc",
-              borderRadius: "12px",
-            }}
-          >
-            <h3>Doanh thu</h3>
-            <p style={{ fontSize: "32px", margin: "12px 0 0" }}>
-              {totalRevenue.toLocaleString("vi-VN", {
-                style: "currency",
-                currency: "VND",
-              })}
-            </p>
-          </div>
+      <section className="card stats-grid stats-grid-three">
+        <div className="stat-card">
+          <span className="stat-label">Tổng đơn hàng</span>
+          <strong>{totalOrders}</strong>
+        </div>
+        <div className="stat-card">
+          <span className="stat-label">Đơn hàng đang xử lý</span>
+          <strong className="stat-highlight">{pendingOrders}</strong>
+        </div>
+        <div className="stat-card">
+          <span className="stat-label">Doanh thu</span>
+          <strong>{totalRevenue.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</strong>
         </div>
       </section>
 
       <section className="card">
-        <div className="buttons-group" style={{ justifyContent: "flex-start" }}>
-          <Link href="/admin" className="button">
+        <div className="dashboard-actions">
+          <Link href="/admin" className="button back-button">
             Quay lại Admin
           </Link>
         </div>
 
-        <div className="input-group" style={{ marginTop: "16px" }}>
+        <div className="input-group input-group-inline">
           <label>
             Lọc trạng thái
             <select
@@ -260,7 +227,7 @@ export default function OrdersPage() {
         ) : filteredOrders.length === 0 ? (
           <p>Không có đơn hàng để hiển thị.</p>
         ) : (
-          <div style={{ overflowX: "auto" }}>
+          <div className="table-scroll">
             <table className="order-list-table">
               <thead>
                 <tr>
@@ -338,44 +305,37 @@ export default function OrdersPage() {
                               </ul>
                             </div>
                             <div className="order-detail-card">
-                              <div
-                                style={{
-                                  display: "flex",
-                                  gap: "12px",
-                                  flexWrap: "wrap",
-                                  alignItems: "center",
-                                }}
+                              <div className="order-detail-action-row">
+                            <label>
+                              Trạng thái mới
+                              <select
+                                value={
+                                  statusUpdates[order.id] ?? order.orderStatus
+                                }
+                                onChange={(e) =>
+                                  setStatusUpdates((prev) => ({
+                                    ...prev,
+                                    [order.id]: e.target.value,
+                                  }))
+                                }
                               >
-                                <label>
-                                  Trạng thái mới
-                                  <select
-                                    value={
-                                      statusUpdates[order.id] ?? order.orderStatus
-                                    }
-                                    onChange={(e) =>
-                                      setStatusUpdates((prev) => ({
-                                        ...prev,
-                                        [order.id]: e.target.value,
-                                      }))
-                                    }
-                                  >
-                                    {statusOptions.map((status) => (
-                                      <option key={status} value={status}>
-                                        {status}
-                                      </option>
-                                    ))}
-                                  </select>
-                                </label>
-                                <button
-                                  className="button"
-                                  disabled={savingId === order.id}
-                                  onClick={() => handleSaveStatus(order)}
-                                >
-                                  {savingId === order.id
-                                    ? "Đang lưu..."
-                                    : "Cập nhật trạng thái"}
-                                </button>
-                              </div>
+                                {statusOptions.map((status) => (
+                                  <option key={status} value={status}>
+                                    {status}
+                                  </option>
+                                ))}
+                              </select>
+                            </label>
+                            <button
+                              className="button"
+                              disabled={savingId === order.id}
+                              onClick={() => handleSaveStatus(order)}
+                            >
+                              {savingId === order.id
+                                ? "Đang lưu..."
+                                : "Cập nhật trạng thái"}
+                            </button>
+                          </div>
                             </div>
 
                             {/* Section: Đổi trả / Hoàn tiền */}
