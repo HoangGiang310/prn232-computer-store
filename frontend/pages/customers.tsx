@@ -331,7 +331,7 @@ export default function CustomersPage() {
                         Đơn {o.orderChannel} - {new Date(o.createdAt).toLocaleDateString("vi-VN")}
                       </p>
                       <p style={{ margin: 0, fontSize: "12px", color: "#6B7280" }}>
-                        {o.orderItems.map((oi: any) => `${oi.product?.name || "Laptop"} x${oi.quantity}`).join(", ")}
+                        {o.orderItems.map((oi: any) => `${oi.product?.name || "Laptop"}${oi.product?.category ? ` (${oi.product.category})` : ""} x${oi.quantity}`).join(", ")}
                       </p>
                     </div>
                     <div style={{ textAlign: "right" }}>

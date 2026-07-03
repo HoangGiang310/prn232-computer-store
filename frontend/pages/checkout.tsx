@@ -148,6 +148,7 @@ export default function CheckoutPage() {
               <div>
                 <strong>{item.name}</strong>
                 <p>Mã: {item.productCode || "-"}</p>
+                <p>Phân loại: {item.category || "-"}</p>
                 <p>Giá: {Number(item.price).toLocaleString("vi-VN")} ₫</p>
               </div>
               <div>

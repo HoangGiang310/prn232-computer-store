@@ -11,6 +11,7 @@ type ProductOption = {
   id: string;
   productCode: string;
   name: string;
+  category?: string;
   price: number;
   stockQuantity: number;
 };
@@ -280,7 +281,7 @@ export default function CreateOrderPage() {
                     <option value="">Chọn sản phẩm</option>
                     {products.map((product) => (
                       <option key={product.id} value={product.id}>
-                        {product.productCode} - {product.name} (
+                        {product.productCode} - {product.name} ({product.category ?? "Không rõ"}) (
                         {product.stockQuantity} tồn)
                       </option>
                     ))}

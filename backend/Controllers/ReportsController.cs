@@ -95,6 +95,7 @@ namespace ComputerStoreApi.Controllers
                     ProductId = g.Key,
                     ProductCode = g.First().Product?.ProductCode ?? "UNKNOWN",
                     Name = g.First().Product?.Name ?? "Sản phẩm đã bị xóa",
+                    Category = g.First().Product?.Category ?? string.Empty,
                     Brand = g.First().Product?.Brand ?? "",
                     QuantitySold = g.Sum(oi => oi.Quantity),
                     TotalRevenue = g.Sum(oi => oi.Quantity * oi.UnitPrice)
@@ -124,6 +125,7 @@ namespace ComputerStoreApi.Controllers
                     p.Id,
                     p.ProductCode,
                     p.Name,
+                    p.Category,
                     p.StockQuantity,
                     p.LowStockThreshold
                 })

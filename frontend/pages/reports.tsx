@@ -26,6 +26,7 @@ type TopProduct = {
   productId: string;
   productCode: string;
   name: string;
+  category?: string;
   brand: string;
   quantitySold: number;
   totalRevenue: number;
@@ -40,6 +41,7 @@ type InventoryStatus = {
     id: string;
     productCode: string;
     name: string;
+    category?: string;
     stockQuantity: number;
     lowStockThreshold: number;
   }>;
@@ -226,7 +228,7 @@ export default function ReportsPage() {
                       #{idx + 1} {p.name}
                     </p>
                     <p style={{ margin: 0, fontSize: "12px", color: "#6B7280" }}>
-                      Mã: {p.productCode} | Hãng: {p.brand}
+                      Mã: {p.productCode} | Loại: {p.category || "N/A"} | Hãng: {p.brand}
                     </p>
                   </div>
                   <div style={{ textAlign: "right" }}>
@@ -265,7 +267,7 @@ export default function ReportsPage() {
                   <ul style={{ paddingLeft: "16px", margin: 0, fontSize: "13px", color: "#78350F" }}>
                     {inventoryReport.lowStockItems.map((item) => (
                       <li key={item.id} style={{ marginBottom: "4px" }}>
-                        <strong>{item.productCode}</strong> - {item.name}: Còn {item.stockQuantity} (Ngưỡng: {item.lowStockThreshold})
+                      <strong>{item.productCode}</strong> - {item.name} ({item.category || "Không rõ"}): Còn {item.stockQuantity} (Ngưỡng: {item.lowStockThreshold})
                       </li>
                     ))}
                   </ul>
