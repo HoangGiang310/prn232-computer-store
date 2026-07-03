@@ -215,37 +215,39 @@ export default function CustomerPage() {
   }
 
   return (
-    <main className="main">
-      <section className="card role-hero role-hero-customer">
-        <div className="role-pill">Vai trò: Khách hàng online</div>
-        <h1>Xin chào, {customerName || "Khách hàng"}</h1>
-        <p className="role-subtle">
-          Theo dõi đơn hàng, đặt mua sản phẩm và quản lý thông tin giao nhận trong một trải nghiệm thân thiện.
-        </p>
-        <div className="role-stat-grid">
-          <div className="role-stat-card">
-            <strong>{orders.length}</strong>
-            <span>Đơn hàng đã đặt</span>
+    <main className="dashboard-page dashboard-customer-page">
+      <section className="dashboard-hero role-hero role-hero-customer">
+        <div className="dashboard-hero-copy">
+          <div className="role-pill">Vai trò: Khách hàng online</div>
+          <h1>Xin chào, {customerName || "Khách hàng"}</h1>
+          <p className="role-subtle">
+            Theo dõi đơn hàng, đặt mua sản phẩm và quản lý thông tin giao nhận trong một trải nghiệm thân thiện.
+          </p>
+          <div className="role-stat-grid">
+            <div className="role-stat-card">
+              <strong>{orders.length}</strong>
+              <span>Đơn hàng đã đặt</span>
+            </div>
+            <div className="role-stat-card">
+              <strong>{activeOrders}</strong>
+              <span>Đơn đang xử lý</span>
+            </div>
+            <div className="role-stat-card">
+              <strong>{cart.length}</strong>
+              <span>Sản phẩm trong giỏ</span>
+            </div>
           </div>
-          <div className="role-stat-card">
-            <strong>{activeOrders}</strong>
-            <span>Đơn đang xử lý</span>
+          <div className="buttons-group" style={{ justifyContent: "flex-start", marginTop: "16px" }}>
+            <button className="button" onClick={handleRefresh} disabled={refreshing}>
+              {refreshing ? "Làm mới..." : "Làm mới dữ liệu"}
+            </button>
+            <button className="button" onClick={handleLogout}>
+              Đăng xuất
+            </button>
+            <Link href="/" className="button back-button">
+              Trang chủ
+            </Link>
           </div>
-          <div className="role-stat-card">
-            <strong>{cart.length}</strong>
-            <span>Sản phẩm trong giỏ</span>
-          </div>
-        </div>
-        <div className="buttons-group" style={{ justifyContent: "flex-start", marginTop: "16px" }}>
-          <button className="button" onClick={handleRefresh} disabled={refreshing}>
-            {refreshing ? "Làm mới..." : "Làm mới dữ liệu"}
-          </button>
-          <button className="button" onClick={handleLogout}>
-            Đăng xuất
-          </button>
-          <Link href="/" className="button back-button">
-            Trang chủ
-          </Link>
         </div>
       </section>
 
@@ -310,14 +312,14 @@ export default function CustomerPage() {
           <div>
             {cart.map((item) => (
               <div key={item.productId} className="cart-item-row">
-                <div>
+                <div className="cart-item-details">
                   <strong>{item.name}</strong>
                   <p>Giá: {item.unitPrice.toLocaleString("vi-VN")} ₫</p>
                   <p>Kho: {item.stockQuantity}</p>
                 </div>
-                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                  <label>
-                    Số lượng
+                <div className="cart-item-actions">
+                  <label className="cart-quantity-label">
+                    <span>Số lượng</span>
                     <input
                       type="number"
                       min={1}
@@ -332,7 +334,7 @@ export default function CustomerPage() {
                 </div>
               </div>
             ))}
-            <p style={{ marginTop: "12px", fontWeight: 600 }}>
+            <p className="cart-summary">
               Tổng: {cartTotal.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
             </p>
           </div>
@@ -341,10 +343,10 @@ export default function CustomerPage() {
 
       <section className="card">
         <h2>Thông tin giao nhận</h2>
-        <form onSubmit={handleCheckout} className="login-form">
-          <div className="input-group">
-            <label>
-              Tên người nhận
+        <form onSubmit={handleCheckout} className="auth-form customer-shipping-form">
+          <div className="auth-form-grid">
+            <label className="auth-field input-group">
+              <span>Tên người nhận</span>
               <input
                 type="text"
                 value={shippingName}
@@ -352,8 +354,8 @@ export default function CustomerPage() {
                 required
               />
             </label>
-            <label>
-              Số điện thoại
+            <label className="auth-field input-group">
+              <span>Số điện thoại</span>
               <input
                 type="text"
                 value={shippingPhone}
@@ -361,8 +363,8 @@ export default function CustomerPage() {
                 required
               />
             </label>
-            <label>
-              Địa chỉ giao hàng
+            <label className="auth-field input-group">
+              <span>Địa chỉ giao hàng</span>
               <textarea
                 value={shippingAddress}
                 onChange={(e) => setShippingAddress(e.target.value)}
@@ -370,16 +372,16 @@ export default function CustomerPage() {
                 required
               />
             </label>
-            <label>
-              Phương thức thanh toán
+            <label className="auth-field input-group">
+              <span>Phương thức thanh toán</span>
               <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
                 <option value="E-Wallet">Ví điện tử</option>
                 <option value="Card">Thẻ</option>
                 <option value="Cash">Tiền mặt</option>
               </select>
             </label>
-            <label>
-              Voucher (tuỳ chọn)
+            <label className="auth-field input-group">
+              <span>Voucher (tuỳ chọn)</span>
               <input
                 type="text"
                 value={voucherCode}
@@ -400,10 +402,10 @@ export default function CustomerPage() {
         {orders.length === 0 ? (
           <p>Bạn chưa có đơn hàng nào.</p>
         ) : (
-          <div style={{ display: "grid", gap: "16px" }}>
+          <div className="order-list-grid">
             {orders.map((order) => (
               <div key={order.id} className="order-card">
-                <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
+                <div className="order-card-header">
                   <strong>Đơn hàng #{order.id.substring(0, 8)}</strong>
                   <span>{order.orderStatus}</span>
                 </div>
@@ -411,19 +413,16 @@ export default function CustomerPage() {
                 <p>Phương thức: {order.paymentMethod}</p>
                 <p>Thành tiền: {Number(order.finalAmount).toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
                 <p>Giao đến: {order.shippingAddress}</p>
-                <div style={{ marginTop: "12px" }}>
+                <div className="order-items-section">
                   <strong>Sản phẩm:</strong>
-                  <ul>
+                  <ul className="order-item-list">
                     {order.orderItems?.map((item: any) => (
                       <li key={item.productId}>
                         {item.product?.name ?? "Sản phẩm"} x{item.quantity}
                         {(order.orderStatus === "Delivered" || order.orderStatus === "Confirmed") && item.productId ? (
-                          <>
-                            {" "}
-                            <Link href={`/product/${item.productId}`} style={{ color: "#2563eb" }}>
-                              [Đánh giá]
-                            </Link>
-                          </>
+                          <Link href={`/product/${item.productId}`} className="order-item-link">
+                            [Đánh giá]
+                          </Link>
                         ) : null}
                       </li>
                     ))}

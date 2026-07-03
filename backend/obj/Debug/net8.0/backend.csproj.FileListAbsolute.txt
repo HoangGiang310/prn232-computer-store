@@ -535,6 +535,7 @@ D:\prn232-computer-store\backend\temp_build_output\tr\Microsoft.CodeAnalysis.Wor
 D:\prn232-computer-store\backend\temp_build_output\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
 D:\prn232-computer-store\backend\temp_build_output\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
 D:\Disk E\University FPT\PRN232 Project\prn232-computer-store\backend\bin\Debug\net8.0\backend.exe
+>>>>>>> main
 C:\Users\ADMIN\Downloads\PRN232\prn232-computer-store\backend\bin\Debug\net8.0\appsettings.json
 C:\Users\ADMIN\Downloads\PRN232\prn232-computer-store\backend\bin\Debug\net8.0\package-lock.json
 C:\Users\ADMIN\Downloads\PRN232\prn232-computer-store\backend\bin\Debug\net8.0\backend.staticwebassets.endpoints.json
@@ -650,4 +651,3 @@ C:\Users\ADMIN\Downloads\PRN232\prn232-computer-store\backend\obj\Debug\net8.0\r
 C:\Users\ADMIN\Downloads\PRN232\prn232-computer-store\backend\obj\Debug\net8.0\backend.pdb
 C:\Users\ADMIN\Downloads\PRN232\prn232-computer-store\backend\obj\Debug\net8.0\backend.genruntimeconfig.cache
 C:\Users\ADMIN\Downloads\PRN232\prn232-computer-store\backend\obj\Debug\net8.0\ref\backend.dll
->>>>>>> main

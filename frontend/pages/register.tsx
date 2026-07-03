@@ -71,50 +71,46 @@ export default function RegisterPage() {
       <section className="auth-panel auth-register-panel">
         <div className="auth-heading">
           <h1>Đăng ký tài khoản</h1>
-          <p>Tạo tài khoản khách hàng để mua sắm online</p>
+          <p>Khởi tạo tài khoản khách hàng để sử dụng đầy đủ showroom online.</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="auth-form">
-          <label className="auth-field">
-            <span className="auth-icon">⌕</span>
-            <span className="auth-sr">Tên đăng nhập</span>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Tên đăng nhập"
-              required
-              autoFocus
-            />
-          </label>
+        <form onSubmit={handleSubmit} className="auth-form auth-register-form">
+          <div className="auth-form-grid">
+            <label className="auth-field input-group">
+              <span>Tên đăng nhập</span>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Tên đăng nhập"
+                required
+                autoFocus
+              />
+            </label>
 
-          <label className="auth-field">
-            <span className="auth-icon">@</span>
-            <span className="auth-sr">Email</span>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
-              required
-            />
-          </label>
+            <label className="auth-field input-group">
+              <span>Email</span>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                required
+              />
+            </label>
 
-          <label className="auth-field">
-            <span className="auth-icon">◇</span>
-            <span className="auth-sr">Họ và tên</span>
-            <input
-              type="text"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              placeholder="Họ và tên"
-            />
-          </label>
+            <label className="auth-field input-group">
+              <span>Họ và tên</span>
+              <input
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="Họ và tên"
+              />
+            </label>
 
-          <div className="auth-two-columns">
-            <label className="auth-field">
-              <span className="auth-icon">☎</span>
-              <span className="auth-sr">Số điện thoại</span>
+            <label className="auth-field input-group">
+              <span>Số điện thoại</span>
               <input
                 type="text"
                 value={phoneNumber}
@@ -123,9 +119,8 @@ export default function RegisterPage() {
               />
             </label>
 
-            <label className="auth-field">
-              <span className="auth-icon">⌂</span>
-              <span className="auth-sr">Địa chỉ</span>
+            <label className="auth-field input-group">
+              <span>Địa chỉ</span>
               <input
                 type="text"
                 value={address}
@@ -133,31 +128,29 @@ export default function RegisterPage() {
                 placeholder="Địa chỉ"
               />
             </label>
+
+            <label className="auth-field input-group">
+              <span>Mật khẩu</span>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Mật khẩu"
+                required
+              />
+            </label>
+
+            <label className="auth-field input-group">
+              <span>Xác nhận mật khẩu</span>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Xác nhận mật khẩu"
+                required
+              />
+            </label>
           </div>
-
-          <label className="auth-field">
-            <span className="auth-icon">▣</span>
-            <span className="auth-sr">Mật khẩu</span>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Mật khẩu"
-              required
-            />
-          </label>
-
-          <label className="auth-field">
-            <span className="auth-icon">▣</span>
-            <span className="auth-sr">Xác nhận mật khẩu</span>
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Xác nhận mật khẩu"
-              required
-            />
-          </label>
 
           <input type="hidden" value={role} />
 

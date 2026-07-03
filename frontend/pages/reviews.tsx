@@ -79,13 +79,13 @@ export default function AdminReviewsPage() {
   return (
     <main className="main">
       <section className="card header">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
+        <div className="order-card-header">
           <div>
             <h1>Kiểm duyệt đánh giá sản phẩm</h1>
             <p>Xem, ẩn hoặc hiện lại các bình luận của khách hàng.</p>
           </div>
-          <div className="buttons-group" style={{ gap: 12 }}>
-            <Link href="/admin" className="button">
+          <div className="buttons-group">
+            <Link href="/admin" className="button back-button">
               ← Bảng điều khiển
             </Link>
             <button className="button" onClick={handleLogout}>
@@ -96,16 +96,16 @@ export default function AdminReviewsPage() {
       </section>
 
       <section className="card">
-        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
+        <div className="input-group input-group-inline">
           <label>
-            Lọc:&nbsp;
+            Lọc
             <select value={filter} onChange={(e) => setFilter(e.target.value as any)}>
               <option value="all">Tất cả</option>
               <option value="visible">Đang hiển thị</option>
               <option value="hidden">Đã ẩn</option>
             </select>
           </label>
-          <span>Tổng: {filtered.length} đánh giá</span>
+          <div className="review-count">Tổng: {filtered.length} đánh giá</div>
         </div>
 
         {error ? <p className="error">{error}</p> : null}
@@ -114,34 +114,33 @@ export default function AdminReviewsPage() {
         ) : filtered.length === 0 ? (
           <p>Không có đánh giá nào.</p>
         ) : (
-          <div style={{ display: "grid", gap: 16, marginTop: 16 }}>
+          <div className="review-list">
             {filtered.map((review) => (
               <div
                 key={review.id}
-                className="order-card"
-                style={{ opacity: review.isHidden ? 0.6 : 1 }}
+                className={`order-card${review.isHidden ? " dimmed-row" : ""}`}
               >
-                <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+                <div className="order-card-header">
                   <div>
                     <strong>{review.productName}</strong>
-                    <p style={{ margin: "4px 0", color: "#666" }}>
+                    <p className="subtext">
                       {review.customerName} · {"★".repeat(review.rating)}
                       {"☆".repeat(5 - review.rating)}
                       {review.isVerifiedPurchase ? " · ✓ Đã mua" : ""}
                     </p>
                   </div>
-                  <span style={{ color: review.isHidden ? "#c0392b" : "#1a8917", fontWeight: 600 }}>
+                  <span className={review.isHidden ? "status-pill status-inactive" : "status-pill status-active"}>
                     {review.isHidden ? "ĐÃ ẨN" : "HIỂN THỊ"}
                   </span>
                 </div>
-                {review.title ? <p style={{ fontWeight: 600 }}>{review.title}</p> : null}
-                <p style={{ whiteSpace: "pre-wrap" }}>{review.content}</p>
-                <p style={{ color: "#888", fontSize: "0.85rem" }}>
-                  {new Date(review.createdAt).toLocaleString("vi-VN")} · 👍 {review.helpfulCount}
-                </p>
-                <button className="button" onClick={() => toggleVisibility(review)}>
-                  {review.isHidden ? "Hiện lại" : "Ẩn bình luận"}
-                </button>
+                {review.title ? <p className="review-title">{review.title}</p> : null}
+                <p className="review-content">{review.content}</p>
+                <div className="review-footer">
+                  <span>{new Date(review.createdAt).toLocaleString("vi-VN")} · 👍 {review.helpfulCount}</span>
+                  <button className="button button-small" onClick={() => toggleVisibility(review)}>
+                    {review.isHidden ? "Hiện lại" : "Ẩn bình luận"}
+                  </button>
+                </div>
               </div>
             ))}
           </div>

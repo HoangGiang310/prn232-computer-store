@@ -1,1 +1,9 @@
-{"/_app":"pages/_app.js","/_error":"pages/_error.js","/create-order":"pages/create-order.html","/bookkeeper":"pages/bookkeeper.html","/customer":"pages/customer.html","/admin":"pages/admin.html","/customers":"pages/customers.html","/":"pages/index.html","/login":"pages/login.html","/inventory":"pages/inventory.html","/manager":"pages/manager.html","/logout":"pages/logout.html","/products/[id]":"pages/products/[id].html","/reports":"pages/reports.html","/reviews":"pages/reviews.html","/staff":"pages/staff.html","/products":"pages/products.html","/register":"pages/register.html","/product/[id]":"pages/product/[id].html","/users":"pages/users.html","/vouchers":"pages/vouchers.html","/orders":"pages/orders.html","/_document":"pages/_document.js","/404":"pages/404.html"}
+{
+  "/_app": "pages/_app.js",
+  "/_error": "pages/_error.js",
+  "/_document": "pages/_document.js",
+  "/": "pages/index.js",
+  "/admin": "pages/admin.js",
+  "/login": "pages/login.js",
+  "/customer": "pages/customer.js"
+}
