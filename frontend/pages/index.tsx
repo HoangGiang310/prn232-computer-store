@@ -205,47 +205,60 @@ export default function Home() {
           </div>
 
           <div className="home-product-grid">
-            {(liveProducts.length > 0 ? liveProducts : featuredProducts).map((product) => {
-              const img =
-                product.images?.find((i: any) => i.isMain)?.imageUrl ||
-                product.images?.[0]?.imageUrl;
+  {(liveProducts.length > 0 ? liveProducts : []).map((product) => {
+    const img =
+      product.images?.find((i: any) => i.isMain)?.imageUrl ||
+      product.images?.[0]?.imageUrl;
 
-            <div className="home-product-grid">
-              {(liveProducts.length > 0 ? liveProducts : []).map((product) => {
-                const img =
-                  product.images?.find((i: any) => i.isMain)?.imageUrl ||
-                  product.images?.[0]?.imageUrl;
-                return (
-                  <Link href={`/product/${product.id}`} className="home-product-card" key={product.id}>
-                    <div className="home-product-media">
-                      {img ? <img src={img} alt={product.name} loading="lazy" /> : <span>💻</span>}
-                      {product.brand ? <span className="home-product-brand">{product.brand}</span> : null}
-                    </div>
-                    <div className="home-product-info">
-                      <h2>{product.name}</h2>
-                      {product.category ? <p className="home-product-category">{product.category}</p> : null}
-                      <p>{product.specifications}</p>
-                      <strong>{Number(product.price).toLocaleString("vi-VN")} ₫</strong>
-                    </div>
-                  </Link>
-                );
-              })}
-              {liveProducts.length === 0
-                ? featuredProducts.map((product) => (
-                    <div className="product-tile" key={product.name}>
-                      <span className="product-tag">{product.tag}</span>
-                      <div className="product-device">
-                        <span className="device-screen" />
-                        <span className="device-base" />
-                      </div>
-                      <h2>{product.name}</h2>
-                      <p>{product.spec}</p>
-                      <strong>{product.price}</strong>
-                    </div>
-                  ))
-                : null}
-            </div>
-          </article>
+    return (
+      <Link
+        href={`/product/${product.id}`}
+        className="home-product-card"
+        key={product.id}
+      >
+        <div className="home-product-media">
+          {img ? (
+            <img src={img} alt={product.name} loading="lazy" />
+          ) : (
+            <span>💻</span>
+          )}
+
+          {product.brand && (
+            <span className="home-product-brand">{product.brand}</span>
+          )}
+        </div>
+
+        <div className="home-product-info">
+          <h2>{product.name}</h2>
+
+          {product.category && (
+            <p className="home-product-category">{product.category}</p>
+          )}
+
+          <p>{product.specifications}</p>
+
+          <strong>
+            {Number(product.price).toLocaleString("vi-VN")} ₫
+          </strong>
+        </div>
+      </Link>
+    );
+  })}
+
+  {liveProducts.length === 0 &&
+    featuredProducts.map((product) => (
+      <div className="product-tile" key={product.name}>
+        <span className="product-tag">{product.tag}</span>
+        <div className="product-device">
+          <span className="device-screen" />
+          <span className="device-base" />
+        </div>
+        <h2>{product.name}</h2>
+        <p>{product.spec}</p>
+        <strong>{product.price}</strong>
+      </div>
+    ))}
+</div>
         </section>
 
         <aside className="store-sidebar">
