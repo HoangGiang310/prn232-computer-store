@@ -6,9 +6,11 @@ import '../services/product_service.dart';
 import 'create_order_screen.dart';
 import 'customers_screen.dart';
 import 'inventory_screen.dart';
+import 'login_screen.dart';
 import 'orders_screen.dart';
 import 'product_detail_screen.dart';
 import 'products_screen.dart';
+import 'register_screen.dart';
 import 'reports_screen.dart';
 import 'vouchers_screen.dart';
 
@@ -24,21 +26,99 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Product> _products = [];
   bool _isLoading = true;
   String? _error;
-  String? _userName;
+  AuthUser? _currentUser;
 
   @override
   void initState() {
     super.initState();
-    _loadProfile();
+    _loadUser();
     _loadProducts();
   }
 
-  Future<void> _loadProfile() async {
+  Future<void> _loadUser() async {
     final user = await AuthService.getCurrentUser();
     if (!mounted) return;
     setState(() {
-      _userName = user?.fullName ?? user?.username;
+      _currentUser = user;
     });
+  }
+
+  Future<void> _logout() async {
+    await AuthService.logout();
+    if (!mounted) return;
+    setState(() {
+      _currentUser = null;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Đăng xuất thành công.')),
+    );
+    _loadProducts();
+  }
+
+  String _getRoleLabel(String role) {
+    switch (role.toLowerCase()) {
+      case 'admin':
+        return 'QUẢN TRỊ VIÊN';
+      case 'sales':
+      case 'staff':
+        return 'NHÂN VIÊN BÁN HÀNG';
+      case 'warehouse':
+      case 'manager':
+        return 'THỦ KHO / QUẢN LÝ KHO';
+      case 'accountant':
+      case 'bookkeeper':
+        return 'KẾ TOÁN';
+      case 'customer':
+        return 'KHÁCH HÀNG';
+      default:
+        return role.toUpperCase();
+    }
+  }
+
+  List<Widget> _buildFeatureCards(BuildContext context) {
+    final cards = <Widget>[];
+
+    void addCard(IconData icon, String title, String subtitle, Widget destination) {
+      cards.add(_homeFeatureCard(context, icon, title, subtitle, destination));
+    }
+
+    final role = _currentUser?.role.toLowerCase();
+
+    if (role == null) {
+      addCard(
+        Icons.inventory_2_outlined,
+        'Sản phẩm',
+        'Xem và lọc sản phẩm',
+        const ProductsScreen(),
+      );
+      return cards;
+    }
+
+    if (role == 'admin') {
+      addCard(Icons.inventory_2_outlined, 'Sản phẩm', 'Xem và lọc sản phẩm', const ProductsScreen());
+      addCard(Icons.shopping_bag_outlined, 'Đơn hàng', 'Theo dõi đơn', const OrdersScreen());
+      addCard(Icons.bar_chart_outlined, 'Báo cáo', 'Doanh thu và thống kê', const ReportsScreen());
+      addCard(Icons.people_alt_outlined, 'Khách hàng', 'Danh sách khách mua', const CustomersScreen());
+      addCard(Icons.warehouse_outlined, 'Kho hàng', 'Điều chỉnh tồn kho', const InventoryScreen());
+      addCard(Icons.confirmation_num_outlined, 'Voucher', 'Quản lý khuyến mãi', const VouchersScreen());
+    } else if (role == 'sales' || role == 'staff') {
+      addCard(Icons.inventory_2_outlined, 'Sản phẩm', 'Xem và lọc sản phẩm', const ProductsScreen());
+      addCard(Icons.add_shopping_cart_outlined, 'Tạo đơn', 'Tạo đơn hàng POS', const CreateOrderScreen());
+      addCard(Icons.shopping_bag_outlined, 'Đơn hàng', 'Theo dõi đơn', const OrdersScreen());
+      addCard(Icons.people_alt_outlined, 'Khách hàng', 'Danh sách khách mua', const CustomersScreen());
+    } else if (role == 'warehouse' || role == 'manager') {
+      addCard(Icons.inventory_2_outlined, 'Sản phẩm', 'Xem và lọc sản phẩm', const ProductsScreen());
+      addCard(Icons.warehouse_outlined, 'Kho hàng', 'Điều chỉnh tồn kho', const InventoryScreen());
+      addCard(Icons.shopping_bag_outlined, 'Đơn hàng', 'Theo dõi đơn', const OrdersScreen());
+    } else if (role == 'accountant' || role == 'bookkeeper') {
+      addCard(Icons.bar_chart_outlined, 'Báo cáo', 'Doanh thu và thống kê', const ReportsScreen());
+    } else if (role == 'customer') {
+      addCard(Icons.inventory_2_outlined, 'Sản phẩm', 'Xem và lọc sản phẩm', const ProductsScreen());
+      addCard(Icons.shopping_bag_outlined, 'Đơn hàng', 'Đơn hàng của bạn', const OrdersScreen());
+      addCard(Icons.confirmation_num_outlined, 'Voucher', 'Danh sách khuyến mãi', const VouchersScreen());
+    }
+
+    return cards;
   }
 
   Future<void> _loadProducts() async {
@@ -69,26 +149,33 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: const Color(0xFF0F172A),
         foregroundColor: Colors.white,
         actions: [
-          IconButton(
-            onPressed: () async {
-              await AuthService.logout();
-              if (!mounted || !context.mounted) return;
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (_) => const HomeScreen()),
-                (route) => false,
-              );
-            },
-            icon: const Icon(Icons.logout_rounded),
-          ),
+          if (_currentUser != null)
+            IconButton(
+              icon: const Icon(Icons.logout),
+              tooltip: 'Đăng xuất',
+              onPressed: _logout,
+            )
+          else
+            IconButton(
+              icon: const Icon(Icons.login),
+              tooltip: 'Đăng nhập',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                ).then((_) => _loadUser());
+              },
+            ),
         ],
       ),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
-            await _loadProfile();
+            await _loadUser();
             await _loadProducts();
           },
           child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,7 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xFF1D4ED8), Color(0xFF2563EB)],
+                      colors: [Color(0xFF0F172A), Color(0xFF1E293B)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -108,27 +195,72 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Chào ${_userName ?? 'quý khách'}',
+                        _currentUser != null
+                            ? 'XIN CHÀO: ${_currentUser!.fullName?.toUpperCase() ?? _currentUser!.username.toUpperCase()}'
+                            : 'CHÀO MỪNG BẠN',
                         style: const TextStyle(
-                          color: Colors.white70,
+                          color: Color(0xFF38BDF8),
                           fontSize: 12,
-                          letterSpacing: 2,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.5,
                         ),
                       ),
                       const SizedBox(height: 8),
-                      const Text(
-                        'Công nghệ mới, giá tốt, giao hàng nhanh',
-                        style: TextStyle(
+                      Text(
+                        _currentUser != null
+                            ? 'Vai trò: ${_getRoleLabel(_currentUser!.role)}'
+                            : 'Trải nghiệm mua sắm laptop hàng đầu',
+                        style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 24,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       const SizedBox(height: 8),
-                      const Text(
-                        'Laptop - PC - Linh kiện cho game thủ, đồ họa và công việc.',
-                        style: TextStyle(color: Colors.white70),
+                      Text(
+                        _currentUser != null
+                            ? 'Bạn đã đăng nhập vào hệ thống quản lý cửa hàng.'
+                            : 'Đăng nhập hoặc Đăng ký để đặt hàng trực tuyến, áp dụng voucher và viết đánh giá sản phẩm.',
+                        style: const TextStyle(color: Colors.white70, fontSize: 13),
                       ),
+                      if (_currentUser == null) ...[
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                                ).then((_) => _loadUser());
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF1D4ED8),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              ),
+                              child: const Text('Đăng nhập'),
+                            ),
+                            const SizedBox(width: 12),
+                            OutlinedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => const RegisterScreen()),
+                                ).then((_) => _loadUser());
+                              },
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                side: const BorderSide(color: Colors.white54),
+                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              ),
+                              child: const Text('Đăng ký'),
+                            ),
+                          ],
+                        ),
+                      ]
                     ],
                   ),
                 ),
@@ -145,50 +277,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisSpacing: 12,
                   crossAxisSpacing: 12,
                   childAspectRatio: 1.15,
-                  children: [
-                    _homeFeatureCard(
-                      context,
-                      Icons.inventory_2_outlined,
-                      'Sản phẩm',
-                      'Xem và lọc sản phẩm',
-                      const ProductsScreen(),
-                    ),
-                    _homeFeatureCard(
-                      context,
-                      Icons.shopping_bag_outlined,
-                      'Đơn hàng',
-                      'Theo dõi đơn',
-                      const OrdersScreen(),
-                    ),
-                    _homeFeatureCard(
-                      context,
-                      Icons.bar_chart_outlined,
-                      'Báo cáo',
-                      'Doanh thu và thống kê',
-                      const ReportsScreen(),
-                    ),
-                    _homeFeatureCard(
-                      context,
-                      Icons.people_alt_outlined,
-                      'Khách hàng',
-                      'Danh sách khách mua',
-                      const CustomersScreen(),
-                    ),
-                    _homeFeatureCard(
-                      context,
-                      Icons.warehouse_outlined,
-                      'Kho hàng',
-                      'Điều chỉnh tồn kho',
-                      const InventoryScreen(),
-                    ),
-                    _homeFeatureCard(
-                      context,
-                      Icons.confirmation_num_outlined,
-                      'Voucher',
-                      'Quản lý khuyến mãi',
-                      const VouchersScreen(),
-                    ),
-                  ],
+                  children: _buildFeatureCards(context),
                 ),
                 const SizedBox(height: 20),
                 Row(
