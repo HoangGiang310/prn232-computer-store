@@ -68,57 +68,61 @@ export default function StaffPage() {
   }
 
   return (
-    <main className="main">
-      <section className="card role-hero role-hero-sales">
-        <div className="role-pill">Vai trò: Nhân viên bán hàng</div>
-        <h1>Bán hàng nhanh, rõ ràng và tập trung vào khách hàng</h1>
-        <p className="role-subtle">
-          Chào {username}. Giao diện này giúp bạn xử lý đơn hàng tại quầy, theo dõi tồn kho và chăm sóc khách hàng ngay trong một màn hình.
-        </p>
-        <div className="role-stat-grid">
-          <div className="role-stat-card">
-            <strong>06</strong>
-            <span>Đơn mới chờ xử lý</span>
-          </div>
-          <div className="role-stat-card">
-            <strong>POS</strong>
-            <span>Tạo đơn nhanh</span>
-          </div>
-          <div className="role-stat-card">
-            <strong>24/7</strong>
-            <span>Hỗ trợ giao dịch</span>
+    <main className="dashboard-page dashboard-staff-page">
+      <section className="dashboard-hero role-hero role-hero-sales">
+        <div className="dashboard-hero-copy">
+          <div className="role-pill">Vai trò: Nhân viên bán hàng</div>
+          <h1>Bán hàng nhanh, rõ ràng và tập trung vào khách hàng</h1>
+          <p className="role-subtle">
+            Chào {username}. Giao diện này giúp bạn xử lý đơn hàng tại quầy, theo dõi tồn kho và chăm sóc khách hàng ngay trong một màn hình.
+          </p>
+          <div className="role-stat-grid">
+            <div className="role-stat-card">
+              <strong>06</strong>
+              <span>Đơn mới chờ xử lý</span>
+            </div>
+            <div className="role-stat-card">
+              <strong>POS</strong>
+              <span>Tạo đơn nhanh</span>
+            </div>
+            <div className="role-stat-card">
+              <strong>24/7</strong>
+              <span>Hỗ trợ giao dịch</span>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="card">
-        <div className="role-section-title">
-          <h2>Truy cập nhanh</h2>
-          <p>Tiếp cận các công việc thường dùng nhất cho nhân viên bán hàng.</p>
-        </div>
-        <div className="role-feature-grid">
-          {quickActions.map((action) => (
-            <Link href={action.href} className="role-action-card" key={action.href}>
-              <strong>{action.title}</strong>
-              <p>{action.desc}</p>
-            </Link>
-          ))}
-        </div>
-      </section>
+      <div className="dashboard-grid">
+        <section className="dashboard-card">
+          <div className="role-section-title">
+            <h2>Truy cập nhanh</h2>
+            <p>Tiếp cận các công việc thường dùng nhất cho nhân viên bán hàng.</p>
+          </div>
+          <div className="role-feature-grid">
+            {quickActions.map((action) => (
+              <Link href={action.href} className="role-action-card" key={action.href}>
+                <strong>{action.title}</strong>
+                <p>{action.desc}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
 
-      <section className="card">
-        <div className="role-section-title">
-          <h2>Nhiệm vụ hôm nay</h2>
-          <p>Danh sách ưu tiên giúp bạn làm việc hiệu quả hơn trong ca.</p>
-        </div>
-        <ul className="role-list">
-          {todayTasks.map((task) => (
-            <li key={task}>{task}</li>
-          ))}
-        </ul>
-      </section>
+        <section className="dashboard-card">
+          <div className="role-section-title">
+            <h2>Nhiệm vụ hôm nay</h2>
+            <p>Danh sách ưu tiên giúp bạn làm việc hiệu quả hơn trong ca.</p>
+          </div>
+          <ul className="role-list">
+            {todayTasks.map((task) => (
+              <li key={task}>{task}</li>
+            ))}
+          </ul>
+        </section>
+      </div>
 
-      <section className="card buttons-group">
+      <section className="dashboard-card buttons-group">
         <button className="button" onClick={handleLogout}>
           Đăng xuất
         </button>

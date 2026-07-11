@@ -101,9 +101,14 @@ export default function Home() {
 
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           {auth?.role?.toLowerCase() === "customer" ? (
-            <Link href="/cart" className="store-nav-button" style={{ textDecoration: "none" }}>
-              GIỎ HÀNG
-            </Link>
+            <>
+              <Link href="/order-history" className="store-nav-button" style={{ textDecoration: "none" }}>
+                LỊCH SỬ ĐƠN
+              </Link>
+              <Link href="/cart" className="store-nav-button" style={{ textDecoration: "none" }}>
+                GIỎ HÀNG
+              </Link>
+            </>
           ) : null}
           {auth ? (
             <button className="store-nav-button" onClick={handleLogout}>
@@ -118,128 +123,164 @@ export default function Home() {
       </nav>
 
       <section className="store-hero" aria-label="KHUYẾN MÃI MÁY TÍNH">
-        <div className="hero-scene">
-          <div className="scene-sign">
-            <span>SIÊU ƯU ĐÃI</span>
-            <strong>CÔNG NGHỆ</strong>
-          </div>
-          <div className="scene-lights">
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-          </div>
-          <div className="scene-shelf scene-shelf-left">
-            <span className="box box-red" />
-            <span className="box box-green" />
-            <span className="box box-gold" />
-          </div>
-          <div className="scene-shelf scene-shelf-right">
-            <span className="box box-blue" />
-            <span className="box box-red" />
-            <span className="box box-green" />
-          </div>
-          <div className="scene-desk">
-            <div className="scene-monitor">
-              <span className="screen-line wide" />
-              <span className="screen-line" />
-              <span className="screen-line short" />
+        <div className="hero-copy">
+          <span className="hero-eyebrow">ƯU ĐÃI LAPTOP & GAMING SIÊU HOT</span>
+          <h1>Giao diện showroom laptop chuyên nghiệp cho Admin, nhân viên và khách hàng</h1>
+          <p>
+            TQG Computer Store cung cấp trải nghiệm mua sắm nhanh, danh mục sản phẩm rõ ràng và điều hướng role phù hợp cho mỗi người dùng.
+          </p>
+
+          <div className="hero-badges">
+            <div className="hero-badge-card">
+              <strong>Giao hàng nhanh</strong>
+              <span>Trong 24h nội thành</span>
             </div>
-            <div className="scene-keyboard" />
-            <div className="scene-tower">
-              <span />
-              <span />
+            <div className="hero-badge-card">
+              <strong>Đổi trả 30 ngày</strong>
+              <span>Đảm bảo yên tâm khi mua</span>
+            </div>
+            <div className="hero-badge-card">
+              <strong>Bảo hành toàn diện</strong>
+              <span>Ưu đãi dịch vụ trọn gói</span>
             </div>
           </div>
-          <div className="hero-badge">
-            <span>GIẢM ĐẾN</span>
-            <strong>30%</strong>
+
+          <div className="hero-actions">
+            <Link href={protectedHref(homeProtectedLinks.products)} className="hero-primary">
+              XEM SẢN PHẨM
+            </Link>
+            <Link href="/register" className="hero-secondary">
+              ĐĂNG KÝ KHÁCH HÀNG
+            </Link>
           </div>
-          <div className="scene-plants left" />
-          <div className="scene-plants right" />
+        </div>
+
+        <div className="hero-visual">
+          <div className="hero-visual-card">
+            <span className="product-label">Laptop Gaming</span>
+            <strong>Giảm giá đến 30%</strong>
+            <p>Intel i7, RTX 4060, RAM 16GB, màn hình 144Hz cho trải nghiệm mượt mà.</p>
+          </div>
+          <div className="hero-visual-glow" />
+          <div className="hero-visual-image" aria-hidden="true">
+            <span />
+          </div>
         </div>
       </section>
 
       <section className="store-tabs" aria-label="ĐIỀU HƯỚNG NHANH">
         <Link href={protectedHref(homeProtectedLinks.products)} className="active">
-          HÀNG MỚI
+          SẢN PHẨM
         </Link>
-        <Link href={protectedHref(homeProtectedLinks.inventory)}>TỒN KHO</Link>
+        <Link href={protectedHref(homeProtectedLinks.inventory)}>KHO HÀNG</Link>
         <Link href={protectedHref(homeProtectedLinks.customers)}>KHÁCH HÀNG</Link>
         <Link href={protectedHref(homeProtectedLinks.vouchers)}>VOUCHER</Link>
       </section>
 
       <div className="store-layout">
         <section className="store-feed">
-          <div className="feed-filter">
+          <div className="feed-heading">
             <div>
-              <span>TẤT CẢ SẢN PHẨM</span>
-              <span>BÁN CHẠY</span>
-              <span>ƯU ĐÃI</span>
+              <p>ƯU ĐÃI NỔI BẬT</p>
+              <h2>Danh mục sản phẩm showroom</h2>
             </div>
-            <Link href={protectedHref(homeProtectedLinks.products)}>XEM TẤT CẢ</Link>
+            <Link href={protectedHref(homeProtectedLinks.products)} className="store-link">
+              Xem toàn bộ danh mục
+            </Link>
           </div>
 
-          <article className="promo-post">
-            <div className="post-author">
-              <div className="avatar">T</div>
-              <div>
-                <strong>CỬA HÀNG TQG</strong>
-                <small>CẬP NHẬT HÔM NAY</small>
-              </div>
-              <span className="pin-label">NỔI BẬT</span>
-            </div>
+          <div className="store-feature-row">
+            <article className="feature-card">
+              <strong>Máy mới</strong>
+              <p>Laptop chính hãng, cấu hình mới nhất, trưng bày trực quan.</p>
+            </article>
+            <article className="feature-card">
+              <strong>Ưu đãi</strong>
+              <p>Giảm giá theo ngày, voucher, quà tặng đi kèm.</p>
+            </article>
+            <article className="feature-card">
+              <strong>Top bán chạy</strong>
+              <p>Sản phẩm được khách hàng đánh giá cao và mua nhiều nhất.</p>
+            </article>
+          </div>
 
-            <h1>TRANG CHỦ CỬA HÀNG MÁY TÍNH</h1>
-            <p>
-              HỆ THỐNG BÁN HÀNG MÁY TÍNH VỚI GIAO DIỆN NHANH, RÕ RÀNG VÀ DỄ THAO TÁC CHO NHÂN VIÊN CỬA HÀNG.
-            </p>
+          <div className="home-product-grid">
+  {(liveProducts.length > 0 ? liveProducts : []).map((product) => {
+    const img =
+      product.images?.find((i: any) => i.isMain)?.imageUrl ||
+      product.images?.[0]?.imageUrl;
 
-            <div className="home-product-grid">
-              {(liveProducts.length > 0 ? liveProducts : []).map((product) => {
-                const img =
-                  product.images?.find((i: any) => i.isMain)?.imageUrl ||
-                  product.images?.[0]?.imageUrl;
-                return (
-                  <Link href={`/product/${product.id}`} className="home-product-card" key={product.id}>
-                    <div className="home-product-media">
-                      {img ? <img src={img} alt={product.name} loading="lazy" /> : <span>💻</span>}
-                      {product.brand ? <span className="home-product-brand">{product.brand}</span> : null}
-                    </div>
-                    <div className="home-product-info">
-                      <h2>{product.name}</h2>
-                      <p>{product.specifications}</p>
-                      <strong>{Number(product.price).toLocaleString("vi-VN")} ₫</strong>
-                    </div>
-                  </Link>
-                );
-              })}
-              {liveProducts.length === 0
-                ? featuredProducts.map((product) => (
-                    <div className="product-tile" key={product.name}>
-                      <span className="product-tag">{product.tag}</span>
-                      <div className="product-device">
-                        <span className="device-screen" />
-                        <span className="device-base" />
-                      </div>
-                      <h2>{product.name}</h2>
-                      <p>{product.spec}</p>
-                      <strong>{product.price}</strong>
-                    </div>
-                  ))
-                : null}
-            </div>
-          </article>
+    return (
+      <Link
+        href={`/product/${product.id}`}
+        className="home-product-card"
+        key={product.id}
+      >
+        <div className="home-product-media">
+          {img ? (
+            <img src={img} alt={product.name} loading="lazy" />
+          ) : (
+            <span>💻</span>
+          )}
+
+          {product.brand && (
+            <span className="home-product-brand">{product.brand}</span>
+          )}
+        </div>
+
+        <div className="home-product-info">
+          <h2>{product.name}</h2>
+
+          {product.category && (
+            <p className="home-product-category">{product.category}</p>
+          )}
+
+          <p>{product.specifications}</p>
+
+          <strong>
+            {Number(product.price).toLocaleString("vi-VN")} ₫
+          </strong>
+        </div>
+      </Link>
+    );
+  })}
+
+  {liveProducts.length === 0 &&
+    featuredProducts.map((product) => (
+      <div className="product-tile" key={product.name}>
+        <span className="product-tag">{product.tag}</span>
+        <div className="product-device">
+          <span className="device-screen" />
+          <span className="device-base" />
+        </div>
+        <h2>{product.name}</h2>
+        <p>{product.spec}</p>
+        <strong>{product.price}</strong>
+      </div>
+    ))}
+</div>
         </section>
 
         <aside className="store-sidebar">
+          <section className="side-panel side-panel-highlight">
+            <h2>ƯU ĐÃI NGAY</h2>
+            <p>Giao hàng nhanh, hỗ trợ trả góp và dịch vụ khách hàng 24/7 cho toàn bộ hệ thống.</p>
+            <div className="promo-badges">
+              <span>Miễn phí vận chuyển</span>
+              <span>Trả góp 0%</span>
+              <span>Hotline 24/7</span>
+            </div>
+          </section>
+
           <section className="side-panel">
             <h2>ĐĂNG NHẬP HỆ THỐNG</h2>
             {auth ? (
               <>
                 <p>
-                  XIN CHÀO <strong>{auth.username.toUpperCase()}</strong>. BẠN ĐANG Ở VAI TRÒ <strong>{getRoleLabel(auth.role)}</strong>.
+                  XIN CHÀO <strong>{auth.username.toUpperCase()}</strong>
+                </p>
+                <p>
+                  Bạn đang ở vai trò <strong>{getRoleLabel(auth.role)}</strong>.
                 </p>
                 <Link href={getRedirectFromRole(auth.role)} className="side-primary">
                   VÀO BẢNG ĐIỀU KHIỂN
@@ -271,9 +312,9 @@ export default function Home() {
 
           <section className="side-panel support-panel">
             <h2>HỖ TRỢ CỬA HÀNG</h2>
-            <p>CẦN KIỂM TRA ĐƠN, SẢN PHẨM HOẶC TỒN KHO? MỞ NHANH KHU VỰC QUẢN LÝ PHÙ HỢP.</p>
+            <p>Kiểm tra nhanh đơn hàng, sản phẩm hoặc kho, phù hợp với vai trò quản lý và giao dịch.</p>
             <Link href={protectedHref(homeProtectedLinks.staff)} className="side-primary">
-              ĐẾN KHU NHÂN VIÊN
+              MỞ KHU NHÂN VIÊN
             </Link>
           </section>
         </aside>

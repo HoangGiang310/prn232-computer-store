@@ -32,6 +32,7 @@ namespace ComputerStoreApi.Controllers
                     p.Name.Contains(term) ||
                     p.ProductCode.Contains(term) ||
                     p.Brand.Contains(term) ||
+                    p.Category.Contains(term) ||
                     p.Specifications.Contains(term));
             }
 
@@ -130,6 +131,7 @@ namespace ComputerStoreApi.Controllers
                 Id = Guid.NewGuid(),
                 ProductCode = dto.ProductCode.Trim(),
                 Name = dto.Name.Trim(),
+                Category = dto.Category.Trim(),
                 Brand = dto.Brand.Trim(),
                 Specifications = dto.Specifications,
                 ImportPrice = dto.ImportPrice,
@@ -168,6 +170,7 @@ namespace ComputerStoreApi.Controllers
 
             existing.ProductCode = dto.ProductCode.Trim();
             existing.Name = dto.Name.Trim();
+            existing.Category = dto.Category.Trim();
             existing.Brand = dto.Brand.Trim();
             existing.Specifications = dto.Specifications;
             existing.ImportPrice = dto.ImportPrice;

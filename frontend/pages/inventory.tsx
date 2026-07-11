@@ -12,6 +12,7 @@ type InventoryProduct = {
   id: string;
   productCode: string;
   name: string;
+  category: string;
   brand: string;
   price: number;
   stockQuantity: number;
@@ -123,7 +124,7 @@ export default function InventoryPage() {
     const term = searchTerm.trim().toLowerCase();
     if (!term) return products;
     return products.filter((product) =>
-      [product.productCode, product.name, product.brand]
+      [product.productCode, product.name, product.brand, product.category]
         .join(" ")
         .toLowerCase()
         .includes(term),
@@ -142,50 +143,22 @@ export default function InventoryPage() {
         <p>Quản lý tồn kho, điều chỉnh xuất nhập và xem lịch sử thay đổi.</p>
       </section>
 
-      <section className="card" style={{ marginBottom: "24px" }}>
-        <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
-          <div
-            style={{
-              flex: 1,
-              minWidth: "220px",
-              padding: "16px",
-              background: "#f8fafc",
-              borderRadius: "12px",
-            }}
-          >
-            <h3>Tổng sản phẩm</h3>
-            <p style={{ fontSize: "32px", margin: "12px 0 0" }}>{products.length}</p>
-          </div>
-          <div
-            style={{
-              flex: 1,
-              minWidth: "220px",
-              padding: "16px",
-              background: "#f8fafc",
-              borderRadius: "12px",
-            }}
-          >
-            <h3>Sản phẩm cảnh báo</h3>
-            <p style={{ fontSize: "32px", margin: "12px 0 0", color: "#b91c1c" }}>
-              {lowStockProducts.length}
-            </p>
-          </div>
-          <div
-            style={{
-              flex: 1,
-              minWidth: "220px",
-              padding: "16px",
-              background: "#f8fafc",
-              borderRadius: "12px",
-            }}
-          >
-            <h3>Thay đổi gần nhất</h3>
-            <p style={{ margin: "12px 0 0" }}>
-              {history.length === 0
-                ? "Chưa có giao dịch"
-                : new Date(history[0].changeDate).toLocaleString("vi-VN")}
-            </p>
-          </div>
+      <section className="card stats-grid stats-grid-three">
+        <div className="stat-card">
+          <span className="stat-label">Tổng sản phẩm</span>
+          <strong>{products.length}</strong>
+        </div>
+        <div className="stat-card">
+          <span className="stat-label">Sản phẩm cảnh báo</span>
+          <strong className="stat-highlight">{lowStockProducts.length}</strong>
+        </div>
+        <div className="stat-card">
+          <span className="stat-label">Thay đổi gần nhất</span>
+          <strong>
+            {history.length === 0
+              ? "Chưa có giao dịch"
+              : new Date(history[0].changeDate).toLocaleString("vi-VN")}
+          </strong>
         </div>
       </section>
 
@@ -199,25 +172,19 @@ export default function InventoryPage() {
               </div>
             </div>
 
-            <div style={{ marginTop: "16px", marginBottom: "16px" }}>
+            <div className="search-box">
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Tìm theo mã, tên, hãng..."
-                style={{
-                  width: "100%",
-                  padding: "12px 16px",
-                  borderRadius: "10px",
-                  border: "1px solid #d1d5db",
-                }}
               />
             </div>
 
             {loading ? (
               <p>Đang tải dữ liệu kho...</p>
             ) : (
-              <div style={{ overflowX: "auto" }}>
+              <div className="table-scroll">
                 <table className="inventory-table">
                   <thead>
                     <tr>
@@ -233,6 +200,7 @@ export default function InventoryPage() {
                       <tr key={product.id} className={product.stockQuantity <= product.lowStockThreshold ? 'low-stock' : ''}>
                         <td>{product.productCode}</td>
                         <td>{product.name}</td>
+                        <td>{product.category}</td>
                         <td>{product.brand}</td>
                         <td className="price-cell" style={{ textAlign: "right" }}>
                           {product.price.toLocaleString("vi-VN", {
@@ -249,13 +217,13 @@ export default function InventoryPage() {
             )}
           </div>
 
-          <div style={{ flex: 1, minWidth: "320px", display: "flex", flexDirection: "column" }}>
-            <div style={{ padding: "16px", borderRadius: "16px", background: "#f8fafc", flex: 1, display: "flex", flexDirection: "column" }}>
-              <div style={{ flex: 1 }}>
+          <div className="inventory-panel">
+            <div className="inventory-panel-card">
+              <div>
                 <h2 className="section-title-center">Chỉnh Sửa Kho Hàng</h2>
                 <p>Chọn sản phẩm, khai báo số lượng và lưu thay đổi.</p>
 
-                <form onSubmit={handleSubmit} className="login-form" style={{ marginTop: "16px" }}>
+                <form onSubmit={handleSubmit} className="login-form">
                   <div className="input-group">
                     <label>
                       Sản phẩm
@@ -312,20 +280,23 @@ export default function InventoryPage() {
                         {selectedProduct.productCode} - {selectedProduct.name}
                       </p>
                       <p style={{ margin: "8px 0 0" }}>
+                        Phân loại: {selectedProduct.category}
+                      </p>
+                      <p style={{ margin: "8px 0 0" }}>
                         Kho Hàng Hiện Tại: {selectedProduct.stockQuantity}
                       </p>
                     </div>
                   ) : null}
 
-                  <div className="buttons-group" style={{ width: "100%" }}>
-                    <button type="submit" className="button login-button" disabled={busy} style={{ width: "100%" }}>
+                  <div className="buttons-group buttons-group-full">
+                    <button type="submit" className="button login-button" disabled={busy}>
                       {busy ? "Đang lưu..." : "Lưu thay đổi"}
                     </button>
                   </div>
                 </form>
               </div>
-              <div style={{ marginTop: "16px", width: "100%", display: "flex", justifyContent: "center" }}>
-                <Link href="/admin" className="button" style={{ display: "inline-flex", justifyContent: "center" }}>
+              <div className="buttons-group buttons-group-full">
+                <Link href="/admin" className="button back-button">
                   Quay lại Admin
                 </Link>
               </div>
@@ -335,7 +306,7 @@ export default function InventoryPage() {
       </section>
 
       <section className="card">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div className="order-card-header">
           <div>
             <h2 className="section-title-center">Lịch Sử Chỉnh Sửa</h2>
             <p>Xem lại các thao tác nhập, xuất và điều chỉnh tồn kho.</p>

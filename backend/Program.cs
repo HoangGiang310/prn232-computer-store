@@ -50,6 +50,9 @@ builder.Services.AddCors(options =>
     });
 });
 
+// // cấu hình mobile app có thể truy cập backend từ localhost
+//builder.WebHost.UseUrls("http://localhost:5000");
+
 // Đăng ký các Service xử lý Logic/Nghiệp vụ
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<DatabaseSeeder>(); // Đăng ký bộ gieo dữ liệu mẫu ở đây

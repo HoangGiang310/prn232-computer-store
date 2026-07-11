@@ -174,7 +174,7 @@ export default function UsersPage() {
         <p>Quản trị tài khoản các nhân viên bán hàng, thủ kho, kế toán và phân quyền truy cập hệ thống.</p>
       </section>
 
-      <div className="buttons-group" style={{ justifyContent: "space-between", marginBottom: "16px" }}>
+<div className="buttons-group user-header-actions">
         <button className="button" onClick={() => router.back()}>
           Quay lại
         </button>
@@ -189,68 +189,66 @@ export default function UsersPage() {
       {showForm ? (
         <section className="card">
           <h2>{editMode ? `Chỉnh sửa thông tin nhân viên: ${username}` : "Tạo tài khoản nhân viên mới"}</h2>
-          <form onSubmit={handleSubmit} className="login-form">
-            <div className="input-group">
+          <form onSubmit={handleSubmit} className="login-form user-form-grid">
+            <label>
+              Tên đăng nhập (Username) *
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                disabled={editMode}
+                required
+              />
+            </label>
+            <label>
+              Họ và tên *
+              <input
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                required
+              />
+            </label>
+            <label>
+              Email nhân viên
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </label>
+            <label>
+              Vai trò hệ thống *
+              <select value={roleName} onChange={(e) => setRoleName(e.target.value)}>
+                {roles.map((r) => (
+                  <option key={r.value} value={r.value}>
+                    {r.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            {!editMode && (
               <label>
-                Tên đăng nhập (Username) *
+                Mật khẩu khởi tạo *
                 <input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  disabled={editMode}
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Mặc định là Staff@123"
                   required
                 />
               </label>
+            )}
+            {editMode && (
               <label>
-                Họ và tên *
-                <input
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  required
-                />
-              </label>
-              <label>
-                Email nhân viên
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </label>
-              <label>
-                Vai trò hệ thống *
-                <select value={roleName} onChange={(e) => setRoleName(e.target.value)}>
-                  {roles.map((r) => (
-                    <option key={r.value} value={r.value}>
-                      {r.label}
-                    </option>
-                  ))}
+                Trạng thái hoạt động *
+                <select value={isActive ? "active" : "inactive"} onChange={(e) => setIsActive(e.target.value === "active")}> 
+                  <option value="active">Đang hoạt động</option>
+                  <option value="inactive">Đang bị khóa / Ngừng việc</option>
                 </select>
               </label>
-              {!editMode && (
-                <label>
-                  Mật khẩu khởi tạo *
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Mặc định là Staff@123"
-                    required
-                  />
-                </label>
-              )}
-              {editMode && (
-                <label>
-                  Trạng thái hoạt động *
-                  <select value={isActive ? "active" : "inactive"} onChange={(e) => setIsActive(e.target.value === "active")}>
-                    <option value="active">Đang hoạt động</option>
-                    <option value="inactive">Đang bị khóa / Ngừng việc</option>
-                  </select>
-                </label>
-              )}
-            </div>
-            <div className="buttons-group" style={{ marginTop: "16px" }}>
+            )}
+            <div className="buttons-group user-form-actions">
               <button type="submit" className="button login-button" disabled={loading}>
                 {loading ? "Đang lưu..." : "Lưu lại"}
               </button>
@@ -264,8 +262,8 @@ export default function UsersPage() {
 
       <section className="card">
         <h2>Danh sách tài khoản hệ thống</h2>
-        <div style={{ overflowX: "auto" }}>
-          <table className="products-table" style={{ width: "100%", fontSize: "14px" }}>
+        <div className="table-scroll">
+          <table className="product-list-table user-table">
             <thead>
               <tr>
                 <th>Tài khoản</th>
@@ -282,59 +280,35 @@ export default function UsersPage() {
                 const roleLabel = roles.find((r) => r.value === u.roleName)?.label || u.roleName;
                 const createdDate = new Date(u.createdAt).toLocaleDateString("vi-VN");
                 return (
-                  <tr key={u.id} style={{ opacity: u.isActive ? 1 : 0.5 }}>
+                  <tr key={u.id} className={u.isActive ? "" : "dimmed-row"}>
                     <td><strong>{u.username}</strong></td>
                     <td>{u.fullName}</td>
                     <td>{u.email || "N/A"}</td>
                     <td>
-                      <span
-                        style={{
-                          fontSize: "12px",
-                          padding: "2px 6px",
-                          borderRadius: "4px",
-                          backgroundColor: "#E0F2FE",
-                          color: "#0369A1",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        {roleLabel}
-                      </span>
+                      <span className="status-pill role-pill">{roleLabel}</span>
                     </td>
                     <td>
-                      <span
-                        style={{
-                          fontSize: "12px",
-                          color: u.isActive ? "#10B981" : "#EF4444",
-                          fontWeight: "bold",
-                        }}
-                      >
+                      <span className={`status-pill ${u.isActive ? "status-active" : "status-inactive"}`}>
                         {u.isActive ? "Hoạt động" : "Đã khóa"}
                       </span>
                     </td>
                     <td>{createdDate}</td>
                     <td>
-                      <div style={{ display: "flex", gap: "8px" }}>
+                      <div className="table-action-buttons">
                         <button
-                          className="button"
-                          style={{ padding: "4px 8px", fontSize: "12px" }}
+                          className="button button-small"
                           onClick={() => handleOpenEdit(u)}
                         >
                           Sửa
                         </button>
                         <button
-                          className="button"
-                          style={{ padding: "4px 8px", fontSize: "12px", backgroundColor: "#F59E0B" }}
+                          className="button button-warning button-small"
                           onClick={() => handleResetPassword(u)}
                         >
                           Reset Pass
                         </button>
                         <button
-                          className="button"
-                          style={{
-                            padding: "4px 8px",
-                            fontSize: "12px",
-                            backgroundColor: u.isActive ? "#EF4444" : "#10B981",
-                          }}
+                          className={`button button-small ${u.isActive ? "button-danger" : "button-success"}`}
                           onClick={() => handleToggleStatus(u)}
                         >
                           {u.isActive ? "Khóa" : "Mở"}

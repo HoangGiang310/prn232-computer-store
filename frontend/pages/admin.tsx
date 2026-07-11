@@ -118,30 +118,29 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="admin-shop-page">
-      <nav className="admin-shop-nav">
-        <Link href="/" className="admin-shop-brand" aria-label="TQG Computer Store">
-          <span className="admin-shop-logo">TQG</span>
+    <main className="dashboard-page dashboard-admin-page">
+      <header className="dashboard-header admin-shop-nav">
+        <Link href="/" className="dashboard-brand admin-shop-brand" aria-label="TQG Computer Store">
+          <span className="dashboard-brand-mark admin-shop-logo">TQG</span>
           <span>
             <strong>CỬA HÀNG MÁY TÍNH</strong>
             <small>BẢNG ĐIỀU KHIỂN ADMIN</small>
           </span>
         </Link>
 
-        <div className="admin-shop-nav-links">
+        <div className="dashboard-actions admin-shop-nav-links">
           <Link href="/products">SẢN PHẨM</Link>
           <Link href="/orders">ĐƠN HÀNG</Link>
           <Link href="/inventory">KHO HÀNG</Link>
           <Link href="/reports">BÁO CÁO</Link>
+          <button className="admin-shop-logout" onClick={handleLogout}>
+            ĐĂNG XUẤT
+          </button>
         </div>
+      </header>
 
-        <button className="admin-shop-logout" onClick={handleLogout}>
-          ĐĂNG XUẤT
-        </button>
-      </nav>
-
-      <section className="admin-shop-hero">
-        <div className="admin-shop-hero-copy">
+      <section className="dashboard-hero admin-shop-hero">
+        <div className="dashboard-hero-copy admin-shop-hero-copy">
           <p>BẢNG ĐIỀU KHIỂN SHOP</p>
           <h1>QUẢN TRỊ TOÀN BỘ HỆ THỐNG BÁN HÀNG</h1>
           <span>
@@ -150,7 +149,7 @@ export default function AdminPage() {
           <div className="role-pill">Vai trò: Quản trị toàn diện</div>
         </div>
 
-        <div className="admin-shop-terminal" aria-hidden="true">
+        <div className="dashboard-hero-visual admin-shop-terminal" aria-hidden="true">
           <div className="terminal-top">
             <span />
             <span />
@@ -165,8 +164,8 @@ export default function AdminPage() {
         </div>
       </section>
 
-      <div className="admin-shop-layout">
-        <section className="admin-shop-main">
+      <div className="dashboard-grid admin-shop-layout">
+        <section className="dashboard-main admin-shop-main">
           <div className="admin-shop-tabs">
             <span className="active">CHỨC NĂNG CHÍNH</span>
             <span>VẬN HÀNH</span>
@@ -174,7 +173,7 @@ export default function AdminPage() {
           </div>
 
           <div className="role-shell">
-            <section className="card role-hero role-hero-admin">
+            <section className="dashboard-card card role-hero role-hero-admin">
               <div className="role-stat-grid">
                 <div className="role-stat-card">
                   <strong>24/7</strong>
@@ -192,7 +191,7 @@ export default function AdminPage() {
             </section>
 
             {adminActionGroups.map((group) => (
-              <section className="card role-group-card" key={group.title}>
+              <section className="dashboard-card card role-group-card" key={group.title}>
                 <h3>{group.title}</h3>
                 <div className="admin-shop-grid">
                   {group.items.map((action) => (
@@ -208,8 +207,8 @@ export default function AdminPage() {
           </div>
         </section>
 
-        <aside className="admin-shop-side">
-          <section className="admin-shop-panel">
+        <aside className="dashboard-sidebar admin-shop-side">
+          <section className="dashboard-card admin-shop-panel">
             <h2>TRẠNG THÁI HỆ THỐNG</h2>
             <div className="admin-shop-status">
               <span>PHIÊN ĐĂNG NHẬP</span>
@@ -225,7 +224,7 @@ export default function AdminPage() {
             </div>
           </section>
 
-          <section className="admin-shop-panel">
+          <section className="dashboard-card admin-shop-panel">
             <h2>ĐIỀU HƯỚNG NHANH</h2>
             <div className="admin-shop-quick">
               <Link href="/">TRANG CHỦ</Link>

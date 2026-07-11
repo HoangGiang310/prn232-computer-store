@@ -5,6 +5,7 @@ export type ProductPayload = {
   id?: string;
   productCode: string;
   name: string;
+  category: string;
   brand: string;
   specifications: string;
   importPrice: number;
