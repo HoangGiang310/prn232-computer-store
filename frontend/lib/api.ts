@@ -1,5 +1,9 @@
+// export const apiBaseUrl =
+//   process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
 export const apiBaseUrl =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://prn232-computer-store-backend-project.onrender.com";
 
 export type ProductPayload = {
   id?: string;
@@ -25,8 +29,10 @@ export async function fetchProducts(params?: {
 
   if (params?.search) query.set("search", params.search);
   if (params?.brand) query.set("brand", params.brand);
-  if (params?.minPrice !== undefined) query.set("minPrice", String(params.minPrice));
-  if (params?.maxPrice !== undefined) query.set("maxPrice", String(params.maxPrice));
+  if (params?.minPrice !== undefined)
+    query.set("minPrice", String(params.minPrice));
+  if (params?.maxPrice !== undefined)
+    query.set("maxPrice", String(params.maxPrice));
   if (params?.stockStatus) query.set("stockStatus", params.stockStatus);
 
   const url = `${apiBaseUrl}/api/products${query.toString() ? `?${query.toString()}` : ""}`;
@@ -260,11 +266,16 @@ export async function createCustomer(customer: any, token?: string) {
     body: JSON.stringify(customer),
   });
   const body = await res.json().catch(() => null);
-  if (!res.ok) throw new Error(extractApiError(body, "Không thể tạo khách hàng."));
+  if (!res.ok)
+    throw new Error(extractApiError(body, "Không thể tạo khách hàng."));
   return body;
 }
 
-export async function updateCustomer(id: string, customer: any, token?: string) {
+export async function updateCustomer(
+  id: string,
+  customer: any,
+  token?: string,
+) {
   const res = await fetch(`${apiBaseUrl}/api/customers/${id}`, {
     method: "PUT",
     headers: authHeaders(token),
@@ -313,7 +324,11 @@ export async function createVoucher(voucher: any, token?: string) {
   return body;
 }
 
-export async function updateVoucher(code: string, voucher: any, token?: string) {
+export async function updateVoucher(
+  code: string,
+  voucher: any,
+  token?: string,
+) {
   const res = await fetch(`${apiBaseUrl}/api/vouchers/${code}`, {
     method: "PUT",
     headers: authHeaders(token),
@@ -358,7 +373,8 @@ export async function createUser(user: any, token?: string) {
     body: JSON.stringify(user),
   });
   const body = await res.json().catch(() => null);
-  if (!res.ok) throw new Error(extractApiError(body, "Không thể tạo nhân viên."));
+  if (!res.ok)
+    throw new Error(extractApiError(body, "Không thể tạo nhân viên."));
   return body;
 }
 
@@ -374,14 +390,19 @@ export async function updateUser(id: string, user: any, token?: string) {
   }
 }
 
-export async function resetUserPassword(id: string, newPassword?: string, token?: string) {
+export async function resetUserPassword(
+  id: string,
+  newPassword?: string,
+  token?: string,
+) {
   const res = await fetch(`${apiBaseUrl}/api/users/${id}/reset-password`, {
     method: "PUT",
     headers: authHeaders(token),
     body: JSON.stringify({ newPassword }),
   });
   const body = await res.json().catch(() => null);
-  if (!res.ok) throw new Error(extractApiError(body, "Không thể đặt lại mật khẩu."));
+  if (!res.ok)
+    throw new Error(extractApiError(body, "Không thể đặt lại mật khẩu."));
   return body;
 }
 
@@ -399,7 +420,11 @@ export async function deleteUser(id: string, token?: string) {
 // ==========================================
 // REPORTS API WRAPPERS
 // ==========================================
-export async function fetchSalesReport(startDate?: string, endDate?: string, token?: string) {
+export async function fetchSalesReport(
+  startDate?: string,
+  endDate?: string,
+  token?: string,
+) {
   const query = `?startDate=${startDate || ""}&endDate=${endDate || ""}`;
   const res = await fetch(`${apiBaseUrl}/api/reports/sales${query}`, {
     headers: authHeaders(token),
@@ -434,25 +459,36 @@ export async function fetchReturns() {
   return res.json();
 }
 
-export async function createReturn(orderId: string, reason: string, token?: string) {
+export async function createReturn(
+  orderId: string,
+  reason: string,
+  token?: string,
+) {
   const res = await fetch(`${apiBaseUrl}/api/returns`, {
     method: "POST",
     headers: authHeaders(token),
     body: JSON.stringify({ orderId, reason }),
   });
   const body = await res.json().catch(() => null);
-  if (!res.ok) throw new Error(extractApiError(body, "Không thể tạo phiếu trả hàng."));
+  if (!res.ok)
+    throw new Error(extractApiError(body, "Không thể tạo phiếu trả hàng."));
   return body;
 }
 
-export async function processReturn(id: string, status: string, processedById?: string, token?: string) {
+export async function processReturn(
+  id: string,
+  status: string,
+  processedById?: string,
+  token?: string,
+) {
   const res = await fetch(`${apiBaseUrl}/api/returns/${id}/process`, {
     method: "PUT",
     headers: authHeaders(token),
     body: JSON.stringify({ status, processedById }),
   });
   const body = await res.json().catch(() => null);
-  if (!res.ok) throw new Error(extractApiError(body, "Không thể duyệt trả hàng."));
+  if (!res.ok)
+    throw new Error(extractApiError(body, "Không thể duyệt trả hàng."));
   return body;
 }
 
@@ -481,12 +517,17 @@ export async function fetchProductReviews(
 }
 
 export async function fetchReviewSummary(productId: string) {
-  const res = await fetch(`${apiBaseUrl}/api/reviews/product/${productId}/summary`);
+  const res = await fetch(
+    `${apiBaseUrl}/api/reviews/product/${productId}/summary`,
+  );
   if (!res.ok) throw new Error("Không thể tải tóm tắt đánh giá");
   return res.json();
 }
 
-export async function fetchReviewEligibility(productId: string, token?: string) {
+export async function fetchReviewEligibility(
+  productId: string,
+  token?: string,
+) {
   const res = await fetch(
     `${apiBaseUrl}/api/reviews/product/${productId}/eligibility`,
     { headers: authHeaders(token) },
@@ -502,7 +543,8 @@ export async function createReview(review: ReviewPayload, token?: string) {
     body: JSON.stringify(review),
   });
   const body = await res.json().catch(() => null);
-  if (!res.ok) throw new Error(extractApiError(body, "Không thể gửi đánh giá."));
+  if (!res.ok)
+    throw new Error(extractApiError(body, "Không thể gửi đánh giá."));
   return body;
 }
 
@@ -517,7 +559,8 @@ export async function updateReview(
     body: JSON.stringify(review),
   });
   const body = await res.json().catch(() => null);
-  if (!res.ok) throw new Error(extractApiError(body, "Không thể cập nhật đánh giá."));
+  if (!res.ok)
+    throw new Error(extractApiError(body, "Không thể cập nhật đánh giá."));
   return body;
 }
 
@@ -538,7 +581,8 @@ export async function markReviewHelpful(id: string) {
     headers: { "Content-Type": "application/json" },
   });
   const body = await res.json().catch(() => null);
-  if (!res.ok) throw new Error(extractApiError(body, "Không thể đánh dấu hữu ích."));
+  if (!res.ok)
+    throw new Error(extractApiError(body, "Không thể đánh dấu hữu ích."));
   return body;
 }
 
@@ -561,6 +605,9 @@ export async function setReviewVisibility(
     body: JSON.stringify({ isHidden }),
   });
   const body = await res.json().catch(() => null);
-  if (!res.ok) throw new Error(extractApiError(body, "Không thể cập nhật trạng thái đánh giá."));
+  if (!res.ok)
+    throw new Error(
+      extractApiError(body, "Không thể cập nhật trạng thái đánh giá."),
+    );
   return body;
 }
