@@ -1552,6 +1552,110 @@ body {
   border: 1px solid rgba(67, 56, 202, 0.16);
 }
 
+/* Clean Search Bar for Customer Role Homepage */
+.store-search-form,
+.store-search-bar {
+  flex: 1;
+  max-width: 620px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.store-search-input {
+  flex: 1;
+  border: 1.5px solid rgba(15, 23, 42, 0.15);
+  border-radius: 999px;
+  padding: 10px 20px;
+  font-size: 0.92rem;
+  color: #1e293b;
+  background: #ffffff;
+  outline: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+}
+
+.store-search-input:focus {
+  border-color: #4338ca;
+  box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.12);
+}
+
+.store-search-input::placeholder {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.store-search-button {
+  background: #4338ca;
+  border: none;
+  color: #ffffff;
+  padding: 11px 22px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(67, 56, 202, 0.18);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.store-search-button:hover {
+  background: #3730a3;
+  transform: translateY(-1px);
+}
+
+.store-search-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff5f2;
+  border: 1px solid #ffd8cf;
+  border-radius: 8px;
+  padding: 12px 18px;
+  margin-bottom: 20px;
+  color: #c2410c;
+  font-size: 0.92rem;
+}
+
+.store-search-clear-btn {
+  background: transparent;
+  border: 1px solid #f97316;
+  color: #ea580c;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.store-search-clear-btn:hover {
+  background: #ea580c;
+  color: #ffffff;
+}
+
+.store-search-empty {
+  text-align: center;
+  padding: 48px 24px;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px dashed #cbd5e1;
+  margin: 20px 0;
+}
+
+.store-search-empty h3 {
+  margin: 12px 0 6px 0;
+  color: #1e293b;
+  font-size: 1.15rem;
+}
+
+.store-search-empty p {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
 .store-hero {
   max-width: 1240px;
   margin: 24px auto 0;
@@ -2067,6 +2171,13 @@ body {
   .home-product-grid {
     grid-template-columns: 1fr;
     width: 100%;
+  }
+
+  .store-search-bar {
+    order: 3;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 8px;
   }
 }
 

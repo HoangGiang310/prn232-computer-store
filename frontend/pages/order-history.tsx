@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import CustomerHeader from "../components/CustomerHeader";
 import { fetchCurrentCustomerOrders } from "../lib/api";
 import { getAuth } from "../lib/auth";
 
@@ -100,18 +101,20 @@ export default function OrderHistoryPage() {
   }
 
   return (
-    <main className="main">
-      <section className="card header">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
-          <div>
-            <h1>Lịch Sử Đơn Hàng</h1>
-            <p>Xem và quản lý các đơn hàng của bạn</p>
+    <>
+      <CustomerHeader />
+      <main className="main">
+        <section className="card header">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
+            <div>
+              <h1>Lịch Sử Đơn Hàng</h1>
+              <p>Xem và quản lý các đơn hàng của bạn</p>
+            </div>
+            <Link href="/">
+              <button className="button">← Quay về trang chủ</button>
+            </Link>
           </div>
-          <Link href="/">
-            <button className="button">← Quay về trang chủ</button>
-          </Link>
-        </div>
-      </section>
+        </section>
 
       {error && (
         <section className="card">
@@ -333,5 +336,6 @@ export default function OrderHistoryPage() {
         )}
       </section>
     </main>
+    </>
   );
 }

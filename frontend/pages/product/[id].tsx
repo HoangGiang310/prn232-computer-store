@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import CustomerHeader from "../../components/CustomerHeader";
 import { getAuth } from "../../lib/auth";
 import {
   fetchProductById,
@@ -266,25 +267,31 @@ export default function ProductDetailPage() {
 
   if (loading) {
     return (
-      <main className="main">
-        <section className="card header">
-          <h1>Đang tải sản phẩm...</h1>
-        </section>
-      </main>
+      <>
+        <CustomerHeader />
+        <main className="main">
+          <section className="card header">
+            <h1>Đang tải sản phẩm...</h1>
+          </section>
+        </main>
+      </>
     );
   }
 
   if (error && !product) {
     return (
-      <main className="main">
-        <section className="card header">
-          <h1>Lỗi</h1>
-          <p className="error">{error}</p>
-          <Link href="/" className="button">
-            Quay Lại Trang Chủ
-          </Link>
-        </section>
-      </main>
+      <>
+        <CustomerHeader />
+        <main className="main">
+          <section className="card header">
+            <h1>Lỗi</h1>
+            <p className="error">{error}</p>
+            <Link href="/" className="button">
+              Quay Lại Trang Chủ
+            </Link>
+          </section>
+        </main>
+      </>
     );
   }
 
@@ -292,18 +299,20 @@ export default function ProductDetailPage() {
   const total = reviewData?.totalReviews ?? 0;
 
   return (
-    <main className="main">
-      <section className="card header">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
-          <div>
-            <h1>{product?.name}</h1>
-            <p>{product?.category} · {product?.brand} · Mã: {product?.productCode}</p>
+    <>
+      <CustomerHeader />
+      <main className="main">
+        <section className="card header">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
+            <div>
+              <h1>{product?.name}</h1>
+              <p>{product?.category} · {product?.brand} · Mã: {product?.productCode}</p>
+            </div>
+            <Link href="/" className="button">
+              ← Quay Lại Trang Chủ
+            </Link>
           </div>
-          <Link href="/" className="button">
-            ← Quay Lại Trang Chủ
-          </Link>
-        </div>
-      </section>
+        </section>
 
       <section className="card">
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24 }}>
@@ -511,5 +520,6 @@ export default function ProductDetailPage() {
         </div>
       </section>
     </main>
+    </>
   );
 }

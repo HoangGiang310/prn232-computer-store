@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import CustomerHeader from "../components/CustomerHeader";
 import { getAuth } from "../lib/auth";
 import { clearCheckoutCart, readCheckoutCart, type CheckoutCartItem } from "../lib/cart";
 
@@ -82,23 +83,22 @@ export default function CartPage() {
   }
 
   return (
-    <main className="main">
-      <section className="card header">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
-          <div>
-            <h1>Giỏ hàng của bạn</h1>
-            <p>Xem lại các sản phẩm bạn đã thêm vào giỏ.</p>
+    <>
+      <CustomerHeader />
+      <main className="main">
+        <section className="card header">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
+            <div>
+              <h1>Giỏ hàng của bạn</h1>
+              <p>Xem lại các sản phẩm bạn đã thêm vào giỏ.</p>
+            </div>
+            <div className="buttons-group">
+              <Link href="/" className="button">
+                ← Quay Về Trang Chủ
+              </Link>
+            </div>
           </div>
-          <div className="buttons-group">
-            <Link href="/" className="button">
-              ← Quay Về Trang Chủ
-            </Link>
-            <button type="button" className="button login-button" onClick={handleProceedToCheckout}>
-              Thanh toán
-            </button>
-          </div>
-        </div>
-      </section>
+        </section>
 
       <section className="card">
         {cartError ? <p className="error">{cartError}</p> : null}
@@ -154,12 +154,44 @@ export default function CartPage() {
               ))}
             </div>
 
-            <div style={{ marginTop: 20, fontWeight: 700, fontSize: 18 }}>
-              Tổng tiền: {totalAmount.toLocaleString("vi-VN")} ₫
+            <div
+              style={{
+                marginTop: 24,
+                paddingTop: 16,
+                borderTop: "1px solid rgba(15, 23, 42, 0.08)",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: 16,
+              }}
+            >
+              <div style={{ fontWeight: 700, fontSize: "1.15rem", color: "#0f172a" }}>
+                Tổng tiền: {totalAmount.toLocaleString("vi-VN")} ₫
+              </div>
+              <button
+                type="button"
+                className="button login-button"
+                onClick={handleProceedToCheckout}
+                style={{
+                  padding: "12px 32px",
+                  fontSize: "0.95rem",
+                  fontWeight: 700,
+                  borderRadius: "999px",
+                  background: "#4338ca",
+                  color: "#ffffff",
+                  border: "none",
+                  boxShadow: "0 8px 24px rgba(67, 56, 202, 0.18)",
+                  cursor: "pointer",
+                }}
+              >
+                Thanh toán
+              </button>
             </div>
           </>
         )}
       </section>
     </main>
+    </>
   );
 }

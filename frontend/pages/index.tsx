@@ -1,5 +1,7 @@
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import CustomerHeader from "../components/CustomerHeader";
 import { getAuth, getRedirectFromRole, logout } from "../lib/auth";
 import { fetchProducts } from "../lib/api";
 
@@ -93,12 +95,15 @@ const homeProtectedLinks = {
 };
 
 export default function Home() {
+  const router = useRouter();
   const [auth, setAuth] = useState<{
     token: string;
     role: string;
     username: string;
   } | null>(null);
   const [liveProducts, setLiveProducts] = useState<any[]>([]);
+  const [searchInput, setSearchInput] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     setAuth(getAuth());
@@ -107,9 +112,27 @@ export default function Home() {
       .catch(() => setLiveProducts([]));
   }, []);
 
+  useEffect(() => {
+    if (router.isReady && router.query.search) {
+      const q = String(router.query.search);
+      setSearchInput(q);
+      setSearchQuery(q);
+    }
+  }, [router.isReady, router.query.search]);
+
   function handleLogout() {
     logout();
     setAuth(null);
+  }
+
+  function handleSearchSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setSearchQuery(searchInput.trim());
+  }
+
+  function handleClearSearch() {
+    setSearchInput("");
+    setSearchQuery("");
   }
 
   function protectedHref(config: {
@@ -127,6 +150,133 @@ export default function Home() {
 
   function getRoleLabel(role: string) {
     return roleLabels[role?.toLowerCase()] ?? role.toUpperCase();
+  }
+
+  const isCustomer = !auth?.role || auth?.role?.toLowerCase() === "customer";
+
+  const filteredProducts = (liveProducts.length > 0 ? liveProducts : []).filter(
+    (product) => {
+      if (!searchQuery.trim()) return true;
+      const q = searchQuery.toLowerCase().trim();
+      return product.name?.toLowerCase().includes(q);
+    }
+  );
+
+  if (isCustomer) {
+    return (
+      <main className="store-home">
+        <CustomerHeader
+          initialSearch={searchQuery}
+          onSearch={(query) => {
+            setSearchInput(query);
+            setSearchQuery(query);
+          }}
+        />
+
+        <div className="store-layout">
+          <section className="store-feed">
+            {searchQuery.trim() && (
+              <div className="store-search-status">
+                <span>
+                  Kết quả tìm kiếm cho: <strong>"{searchQuery}"</strong> ({filteredProducts.length} sản phẩm)
+                </span>
+                <button
+                  type="button"
+                  className="store-search-clear-btn"
+                  onClick={handleClearSearch}
+                >
+                  ✕ Xóa tìm kiếm
+                </button>
+              </div>
+            )}
+
+            <div className="home-product-grid">
+              {filteredProducts.map((product) => {
+                const img =
+                  product.images?.find((i: any) => i.isMain)?.imageUrl ||
+                  product.images?.[0]?.imageUrl;
+
+                return (
+                  <Link
+                    href={`/product/${product.id}`}
+                    className="home-product-card"
+                    key={product.id}
+                  >
+                    <div className="home-product-media">
+                      {img ? (
+                        <img src={img} alt={product.name} loading="lazy" />
+                      ) : (
+                        <span>💻</span>
+                      )}
+
+                      {product.brand && (
+                        <span className="home-product-brand">
+                          {product.brand}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="home-product-info">
+                      <h2>{product.name}</h2>
+
+                      {product.category && (
+                        <p className="home-product-category">
+                          {product.category}
+                        </p>
+                      )}
+
+                      <p>{product.specifications}</p>
+
+                      <strong>
+                        {Number(product.price).toLocaleString("vi-VN")} ₫
+                      </strong>
+                    </div>
+                  </Link>
+                );
+              })}
+
+              {liveProducts.length === 0 &&
+                featuredProducts
+                  .filter((p) =>
+                    !searchQuery.trim()
+                      ? true
+                      : p.name.toLowerCase().includes(searchQuery.toLowerCase().trim())
+                  )
+                  .map((product) => (
+                    <div className="product-tile" key={product.name}>
+                      <span className="product-tag">{product.tag}</span>
+                      <div className="product-device">
+                        <span className="device-screen" />
+                        <span className="device-base" />
+                      </div>
+                      <h2>{product.name}</h2>
+                      <p>{product.spec}</p>
+                      <strong>{product.price}</strong>
+                    </div>
+                  ))}
+            </div>
+
+            {filteredProducts.length === 0 &&
+              liveProducts.length > 0 &&
+              searchQuery.trim() !== "" && (
+                <div className="store-search-empty">
+                  <span style={{ fontSize: "2.5rem" }}>🔍</span>
+                  <h3>Không tìm thấy sản phẩm nào</h3>
+                  <p>Không có sản phẩm nào khớp với tên "{searchQuery}"</p>
+                  <button
+                    type="button"
+                    className="store-nav-button"
+                    onClick={handleClearSearch}
+                    style={{ marginTop: "12px", background: "#4338ca" }}
+                  >
+                    Xem tất cả sản phẩm
+                  </button>
+                </div>
+              )}
+          </section>
+        </div>
+      </main>
+    );
   }
 
   return (
@@ -150,24 +300,6 @@ export default function Home() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          {auth?.role?.toLowerCase() === "customer" ? (
-            <>
-              <Link
-                href="/order-history"
-                className="store-nav-button"
-                style={{ textDecoration: "none" }}
-              >
-                LỊCH SỬ ĐƠN
-              </Link>
-              <Link
-                href="/cart"
-                className="store-nav-button"
-                style={{ textDecoration: "none" }}
-              >
-                GIỎ HÀNG
-              </Link>
-            </>
-          ) : null}
           {auth ? (
             <button className="store-nav-button" onClick={handleLogout}>
               ĐĂNG XUẤT
@@ -197,7 +329,7 @@ export default function Home() {
       <div className="store-layout">
         <section className="store-feed">
           <div className="home-product-grid">
-            {(liveProducts.length > 0 ? liveProducts : []).map((product) => {
+            {liveProducts.map((product) => {
               const img =
                 product.images?.find((i: any) => i.isMain)?.imageUrl ||
                 product.images?.[0]?.imageUrl;
@@ -260,3 +392,4 @@ export default function Home() {
     </main>
   );
 }
+

@@ -47,6 +47,13 @@ export default function CustomerPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [refreshing, setRefreshing] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  function handleSearchSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setSearchQuery(searchInput.trim());
+  }
 
   useEffect(() => {
     const auth = getAuth();
@@ -254,14 +261,37 @@ export default function CustomerPage() {
       </section>
 
       <section className="card">
-        <div className="role-section-title">
-          <h2>Sản phẩm</h2>
-          <p>Khám phá laptop và linh kiện với thông tin giá và tồn kho rõ ràng.</p>
+        <div className="role-section-title" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
+          <div>
+            <h2>Sản phẩm</h2>
+            <p>Khám phá laptop và linh kiện với thông tin giá và tồn kho rõ ràng.</p>
+          </div>
+          <form className="store-search-form" onSubmit={handleSearchSubmit} style={{ maxWidth: "380px" }}>
+            <input
+              type="text"
+              className="store-search-input"
+              placeholder="Nhập tên sản phẩm cần tìm kiếm"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+            />
+            <button type="submit" className="store-search-button" aria-label="Tìm kiếm">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </button>
+          </form>
         </div>
         {error ? <p className="error">{error}</p> : null}
         {success ? <p className="success">{success}</p> : null}
         <div className="shop-grid">
-          {products.map((product) => {
+          {products
+            .filter((product) =>
+              !searchQuery.trim()
+                ? true
+                : product.name.toLowerCase().includes(searchQuery.toLowerCase().trim())
+            )
+            .map((product) => {
             const mainImage =
               product.images?.find((img) => img.isMain)?.imageUrl ||
               product.images?.[0]?.imageUrl;
