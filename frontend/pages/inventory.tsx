@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
+import AdminHeader from "../components/AdminHeader";
 import { getAuth } from "../lib/auth";
 import {
   adjustInventory,
@@ -137,7 +138,9 @@ export default function InventoryPage() {
   );
 
   return (
-    <main className="main">
+    <>
+      <AdminHeader />
+      <main className="main">
       <section className="card header">
         <h1>Quản Lý Kho Hàng</h1>
         <p>Quản lý tồn kho, điều chỉnh xuất nhập và xem lịch sử thay đổi.</p>
@@ -358,5 +361,6 @@ export default function InventoryPage() {
         )}
       </section>
     </main>
+    </>
   );
 }
