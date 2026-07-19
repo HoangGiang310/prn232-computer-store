@@ -111,6 +111,15 @@ export default function CustomerHeader({
             </Link>
           </>
         ) : null}
+        {auth?.role?.toLowerCase() === "admin" ? (
+          <Link
+            href="/admin"
+            className="store-nav-button"
+            style={{ textDecoration: "none" }}
+          >
+            BẢNG ĐIỀU KHIỂN
+          </Link>
+        ) : null}
         {auth ? (
           <button className="store-nav-button" onClick={handleLogout}>
             ĐĂNG XUẤT

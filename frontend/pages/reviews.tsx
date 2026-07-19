@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import AdminHeader from "../components/AdminHeader";
 import { getAuth, getRedirectFromRole, logout } from "../lib/auth";
 import { fetchAllReviewsForAdmin, setReviewVisibility } from "../lib/api";
 
@@ -77,7 +78,9 @@ export default function AdminReviewsPage() {
   });
 
   return (
-    <main className="main">
+    <>
+      <AdminHeader />
+      <main className="main">
       <section className="card header">
         <div className="order-card-header">
           <div>
@@ -147,5 +150,6 @@ export default function AdminReviewsPage() {
         )}
       </section>
     </main>
+    </>
   );
 }

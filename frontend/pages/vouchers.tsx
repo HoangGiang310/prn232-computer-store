@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import AdminHeader from "../components/AdminHeader";
 import {
   fetchVouchers,
   createVoucher,
@@ -152,7 +153,9 @@ export default function VouchersPage() {
   }
 
   return (
-    <main className="main">
+    <>
+      <AdminHeader />
+      <main className="main">
       <section className="card header">
         <h1>Quản lý Khuyến mãi & Voucher</h1>
         <p>Quản lý các mã giảm giá áp dụng khi thanh toán đơn hàng POS trực tiếp hoặc đặt hàng Online.</p>
@@ -341,5 +344,6 @@ export default function VouchersPage() {
         </div>
       </section>
     </main>
+    </>
   );
 }

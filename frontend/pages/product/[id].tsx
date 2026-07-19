@@ -70,6 +70,7 @@ export default function ProductDetailPage() {
   // Auth & eligibility
   const [token, setToken] = useState<string | null>(null);
   const [isCustomer, setIsCustomer] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [canReview, setCanReview] = useState(false);
   const [hasReviewed, setHasReviewed] = useState(false);
   const [existingReviewId, setExistingReviewId] = useState<string | null>(null);
@@ -88,7 +89,8 @@ export default function ProductDetailPage() {
     const auth = getAuth();
     if (auth?.token) {
       setToken(auth.token);
-      setIsCustomer(auth.role === "customer");
+      setIsCustomer(auth.role?.toLowerCase() === "customer");
+      setIsAdmin(auth.role?.toLowerCase() === "admin");
     }
   }, []);
 
@@ -343,15 +345,23 @@ export default function ProductDetailPage() {
               </span>
             </div>
             <div className="buttons-group" style={{ marginTop: 16, justifyContent: "flex-start" }}>
-              <button className="button login-button" onClick={handleBuyNow} disabled={Number(product?.stockQuantity ?? 0) <= 0}>
-                {Number(product?.stockQuantity ?? 0) <= 0 ? "Hết hàng" : "Mua Ngay"}
-              </button>
-              <button className="button" onClick={handleAddToCart} disabled={Number(product?.stockQuantity ?? 0) <= 0}>
-                {Number(product?.stockQuantity ?? 0) <= 0 ? "Hết hàng" : "Thêm Giỏ Hàng"}
-              </button>
-              <Link href="/cart" className="button">
-                Xem Giỏ Hàng
-              </Link>
+              {isAdmin ? (
+                <Link href="/products" className="button login-button">
+                  Xem
+                </Link>
+              ) : (
+                <>
+                  <button className="button login-button" onClick={handleBuyNow} disabled={Number(product?.stockQuantity ?? 0) <= 0}>
+                    {Number(product?.stockQuantity ?? 0) <= 0 ? "Hết hàng" : "Mua Ngay"}
+                  </button>
+                  <button className="button" onClick={handleAddToCart} disabled={Number(product?.stockQuantity ?? 0) <= 0}>
+                    {Number(product?.stockQuantity ?? 0) <= 0 ? "Hết hàng" : "Thêm Giỏ Hàng"}
+                  </button>
+                  <Link href="/cart" className="button">
+                    Xem Giỏ Hàng
+                  </Link>
+                </>
+              )}
             </div>
             {cartMessage ? (
               <p style={{ marginTop: 12, color: cartMessage.includes("thành công") ? "#15803d" : "#b91c1c" }}>

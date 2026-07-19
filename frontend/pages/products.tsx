@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
+import AdminHeader from "../components/AdminHeader";
 import {
   createProduct,
   deleteProduct,
@@ -177,7 +178,9 @@ export default function ProductsPage() {
   );
 
   return (
-    <main className="main products-page">
+    <>
+      <AdminHeader />
+      <main className="main products-page">
       <section className="card header">
         <h1>Quản lý sản phẩm</h1>
         <p>Quản lý danh sách sản phẩm, giá bán và tồn kho theo phong cách showroom.</p>
@@ -484,5 +487,6 @@ export default function ProductsPage() {
         )}
       </section>
     </main>
+    </>
   );
 }

@@ -2720,35 +2720,38 @@ body {
   top: 0;
   z-index: 10;
   min-height: 72px;
-  padding: 0 7vw;
+  padding: 12px 36px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  background: #743300;
-  box-shadow: 0 4px 0 rgba(80, 32, 0, 0.4);
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.06);
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .admin-shop-brand {
   min-width: 250px;
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  color: #fff7d6;
+  gap: 14px;
+  color: #0f172a;
   text-decoration: none;
 }
 
 .admin-shop-logo {
-  width: 58px;
-  height: 44px;
+  width: 52px;
+  height: 40px;
   border-radius: 8px;
   display: grid;
   place-items: center;
-  color: #7a3100;
+  color: #ffffff;
   font-weight: 900;
-  background: linear-gradient(135deg, #ffe45c, #ff7433);
-  border: 2px solid #fff2a6;
-  box-shadow: 0 4px 0 #401900;
+  font-size: 0.95rem;
+  background: linear-gradient(135deg, #4f46e5, #4338ca);
+  border: none;
+  box-shadow: 0 4px 12px rgba(67, 56, 202, 0.25);
+  margin-left: 4px;
 }
 
 .admin-shop-brand strong,
@@ -2758,45 +2761,62 @@ body {
 
 .admin-shop-brand strong {
   font-size: 0.95rem;
+  font-weight: 800;
+  color: #0f172a;
 }
 
 .admin-shop-brand small {
   margin-top: 2px;
-  color: #ffd59a;
+  color: #64748b;
   font-size: 0.75rem;
+  font-weight: 600;
 }
 
 .admin-shop-nav-links {
   display: flex;
-  justify-content: center;
-  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
   flex: 1;
 }
 
 .admin-shop-nav-links a,
 .admin-shop-logout {
-  min-height: 42px;
-  padding: 12px 18px;
-  border-radius: 6px;
-  color: #fff7d6;
+  min-height: 40px;
+  padding: 8px 20px;
+  border-radius: 999px;
+  color: #0f172a;
   text-decoration: none;
-  font-size: 0.86rem;
-  font-weight: 900;
-  border: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 1px solid #cbd5e1;
   cursor: pointer;
-  background: transparent;
+  background: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .admin-shop-nav-links a:hover,
-.admin-shop-logout:hover {
-  background: #ff9a3c;
-  color: white;
+.admin-shop-nav-links a.active {
+  background: #4338ca;
+  color: #ffffff;
+  border-color: #4338ca;
+  box-shadow: 0 4px 12px rgba(67, 56, 202, 0.2);
 }
 
 .admin-shop-logout {
-  color: white;
-  background: #ff4e51;
-  box-shadow: 0 3px 0 #4c1e00;
+  color: #ffffff;
+  background: #4338ca;
+  border-color: #4338ca;
+  box-shadow: 0 4px 12px rgba(67, 56, 202, 0.2);
+}
+
+.admin-shop-logout:hover {
+  background: #3730a3;
+  border-color: #3730a3;
 }
 
 .admin-shop-hero {
