@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import CustomerHeader from "../components/CustomerHeader";
 import { getAuth, logout } from "../lib/auth";
 
 const allowedRoles = ["manager", "warehouse"];
@@ -45,8 +46,10 @@ export default function ManagerPage() {
   }
 
   return (
-    <main className="dashboard-page dashboard-manager-page">
-      <section className="dashboard-hero role-hero role-hero-warehouse">
+    <main className="dashboard-page dashboard-manager-page" style={{ padding: 0 }}>
+      <CustomerHeader />
+      <div style={{ padding: "24px 20px 40px" }}>
+        <section className="dashboard-hero role-hero role-hero-warehouse">
         <div className="dashboard-hero-copy">
           <div className="role-pill">Vai trò: Quản lý kho</div>
           <h1>Kiểm soát hàng tồn, nhập xuất và cảnh báo thiếu hàng</h1>
@@ -113,6 +116,7 @@ export default function ManagerPage() {
           Quay lại trang chủ
         </Link>
       </section>
+      </div>
     </main>
   );
 }
