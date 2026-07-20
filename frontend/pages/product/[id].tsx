@@ -97,6 +97,7 @@ export default function ProductDetailPage() {
   }, []);
 
   const isStaff = ["staff", "sales"].includes(userRole.toLowerCase());
+  const isBookkeeper = ["bookkeeper", "accountant"].includes(userRole.toLowerCase());
 
   useEffect(() => {
     if (!productId) return;
@@ -356,6 +357,10 @@ export default function ProductDetailPage() {
               ) : isStaff ? (
                 <Link href="/create-order" className="button login-button">
                   Tạo đơn bán hàng
+                </Link>
+              ) : isBookkeeper ? (
+                <Link href="/reports" className="button login-button">
+                  Báo cáo &amp; Thống kê
                 </Link>
               ) : (
                 <>
