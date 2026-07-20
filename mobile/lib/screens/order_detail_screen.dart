@@ -30,7 +30,18 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     if (token == null || token.isEmpty) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Bạn cần đăng nhập để đánh giá sản phẩm.')),
+        SnackBar(
+          content: const Row(
+            children: [
+              Icon(Icons.info_outline, color: Colors.white),
+              SizedBox(width: 10),
+              Expanded(child: Text('Bạn cần đăng nhập để đánh giá sản phẩm.')),
+            ],
+          ),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          backgroundColor: const Color(0xFFEF4444),
+        ),
       );
       return;
     }
@@ -53,6 +64,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 ? 'Bạn đã đánh giá sản phẩm này rồi.'
                 : 'Bạn chỉ có thể đánh giá sản phẩm đã mua và được giao thành công.',
           ),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          backgroundColor: const Color(0xFFEF4444),
         ),
       );
       return;
@@ -65,21 +79,36 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         return StatefulBuilder(
           builder: (dialogContext, setDialogState) {
             return AlertDialog(
-              title: Text('Đánh giá: $productName'),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              title: Row(
+                children: [
+                  const Icon(Icons.rate_review_rounded, color: Color(0xFF1D4ED8)),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Đánh giá: $productName',
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Chọn số sao:'),
-                    const SizedBox(height: 8),
+                    const Text('Chọn số sao:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                    const SizedBox(height: 6),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(5, (index) {
                         final starValue = index + 1;
                         return IconButton(
                           onPressed: () => setDialogState(() => selectedRating = starValue),
                           icon: Icon(
-                            Icons.star,
+                            Icons.star_rounded,
                             color: starValue <= selectedRating ? Colors.amber : Colors.grey.shade300,
                             size: 32,
                           ),
@@ -89,9 +118,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     const SizedBox(height: 12),
                     TextField(
                       controller: titleController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Tiêu đề đánh giá',
-                        border: OutlineInputBorder(),
+                        hintText: 'Ví dụ: Sản phẩm rất tốt',
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -99,9 +129,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       controller: contentController,
                       minLines: 3,
                       maxLines: 5,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Nội dung đánh giá',
-                        border: OutlineInputBorder(),
+                        hintText: 'Nêu cảm nhận chi tiết của bạn về sản phẩm...',
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                       ),
                     ),
                   ],
@@ -112,7 +143,12 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   onPressed: () => Navigator.pop(dialogContext),
                   child: const Text('Hủy'),
                 ),
-                FilledButton(
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF1D4ED8),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
                   onPressed: () async {
                     final title = titleController.text.trim();
                     final content = contentController.text.trim();
@@ -133,19 +169,35 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         Navigator.pop(dialogContext);
                       }
                       dialogMessenger.showSnackBar(
-                        const SnackBar(content: Text('Đánh giá của bạn đã được gửi thành công.')),
+                        SnackBar(
+                          content: const Row(
+                            children: [
+                              Icon(Icons.check_circle_outline, color: Colors.white),
+                              SizedBox(width: 10),
+                              Text('Đánh giá của bạn đã được gửi thành công.'),
+                            ],
+                          ),
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          backgroundColor: const Color(0xFF059669),
+                        ),
                       );
                     } catch (error) {
                       if (!mounted) return;
                       dialogMessenger.showSnackBar(
-                        SnackBar(content: Text(error.toString())),
+                        SnackBar(
+                          content: Text(error.toString()),
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          backgroundColor: const Color(0xFFEF4444),
+                        ),
                       );
                     } finally {
                       if (mounted) setState(() => _isSubmitting = false);
                     }
                   },
                   child: _isSubmitting
-                      ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2))
+                      ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
                       : const Text('Gửi đánh giá'),
                 ),
               ],
@@ -156,6 +208,37 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     );
   }
 
+  Color _getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'delivered':
+        return const Color(0xFF059669);
+      case 'confirmed':
+      case 'processing':
+        return const Color(0xFF1D4ED8);
+      case 'cancelled':
+        return const Color(0xFFDC2626);
+      default:
+        return const Color(0xFFD97706);
+    }
+  }
+
+  String _formatStatusLabel(String status) {
+    switch (status.toLowerCase()) {
+      case 'delivered':
+        return 'ĐÃ GIAO HÀNG THÀNH CÔNG';
+      case 'confirmed':
+        return 'ĐƠN HÀNG ĐÃ ĐƯỢC XÁC NHẬN';
+      case 'processing':
+        return 'ĐANG XỬ LÝ & ĐÓNG GÓI';
+      case 'cancelled':
+        return 'ĐƠN HÀNG ĐÃ BỊ HỦY';
+      case 'new':
+        return 'ĐƠN HÀNG MỚI TẠO';
+      default:
+        return status.toUpperCase();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final orderId = widget.order['id']?.toString() ?? '...';
@@ -164,48 +247,147 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     final shippingName = widget.order['shippingName']?.toString() ?? '---';
     final shippingAddress = widget.order['shippingAddress']?.toString() ?? '---';
     final shippingPhone = widget.order['shippingPhone']?.toString() ?? '---';
+    final paymentMethod = widget.order['paymentMethod']?.toString() ?? 'E-Wallet';
     final status = _status ?? 'New';
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Chi tiết đơn hàng')),
+      backgroundColor: const Color(0xFFF1F5F9),
+      appBar: AppBar(
+        title: const Text('Chi tiết đơn hàng'),
+        backgroundColor: const Color(0xFF0F172A),
+        foregroundColor: Colors.white,
+        elevation: 0,
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Order Status Banner Card
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(18),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [const Color(0xFF0F172A), _getStatusColor(status)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(16),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withAlpha(30),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            'ĐƠN HÀNG #${orderId.length > 8 ? orderId.substring(0, 8) : orderId}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1,
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            paymentMethod,
+                            style: const TextStyle(
+                              color: Color(0xFF0F172A),
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    Text(
+                      _formatStatusLabel(status),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Shipping Info Card
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
-                  boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10)],
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(10),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Đơn hàng ${orderId.substring(0, 8)}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFDBEAFE),
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                      child: Text(status, style: const TextStyle(color: Color(0xFF1D4ED8), fontWeight: FontWeight.bold)),
+                    const Row(
+                      children: [
+                        Icon(Icons.location_on_rounded, color: Color(0xFF1D4ED8), size: 20),
+                        SizedBox(width: 8),
+                        Text(
+                          'Thông tin nhận hàng',
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 12),
-                    _detailRow('Người nhận', shippingName),
-                    _detailRow('SĐT', shippingPhone),
-                    _detailRow('Địa chỉ', shippingAddress),
-                    _detailRow('Tổng tiền', '$finalAmount ₫'),
+                    _infoRow(Icons.person_outline_rounded, 'Người nhận', shippingName),
+                    _infoRow(Icons.phone_outlined, 'Số điện thoại', shippingPhone),
+                    _infoRow(Icons.map_outlined, 'Địa chỉ', shippingAddress),
                   ],
                 ),
               ),
               const SizedBox(height: 16),
-              const Text('Sản phẩm trong đơn', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+
+              // Order Items Header
+              const Row(
+                children: [
+                  Icon(Icons.shopping_bag_rounded, color: Color(0xFF1D4ED8), size: 20),
+                  SizedBox(width: 8),
+                  Text(
+                    'Sản phẩm trong đơn',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                  ),
+                ],
+              ),
               const SizedBox(height: 10),
+
+              // Order Items List
               ...items.map((item) {
                 final product = item['product'] as Map<String, dynamic>? ?? {};
                 final productName = product['name']?.toString() ?? item['name']?.toString() ?? 'Sản phẩm';
@@ -219,30 +401,132 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(18),
-                    boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10)],
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withAlpha(8),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
                   ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Column(
                     children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 52,
+                            height: 52,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFEFF6FF),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(Icons.laptop_mac_rounded, color: Color(0xFF1D4ED8)),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  productName,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13,
+                                    color: Color(0xFF0F172A),
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'SL: $quantity × ${unitPrice.toStringAsFixed(0)} ₫',
+                                  style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Text(
+                            '${(quantity * unitPrice).toStringAsFixed(0)} ₫',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 14,
+                              color: Color(0xFF1D4ED8),
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (status == 'Delivered' || status == 'Confirmed') ...[
+                        const SizedBox(height: 10),
+                        const Divider(height: 1, color: Color(0xFFF1F5F9)),
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Text(productName, style: const TextStyle(fontWeight: FontWeight.bold)),
-                            const SizedBox(height: 4),
-                            Text('SL: $quantity • Giá: ${unitPrice.toStringAsFixed(0)} ₫'),
+                            OutlinedButton.icon(
+                              onPressed: () => _showReviewDialog(
+                                productId: productId,
+                                productName: productName,
+                              ),
+                              icon: const Icon(Icons.star_outline_rounded, size: 16),
+                              label: const Text('Viết đánh giá'),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: const Color(0xFF1D4ED8),
+                                side: const BorderSide(color: Color(0xFF93C5FD)),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                              ),
+                            ),
                           ],
                         ),
-                      ),
-                      if (status == 'Delivered' || status == 'Confirmed')
-                        TextButton(
-                          onPressed: () => _showReviewDialog(productId: productId, productName: productName),
-                          child: const Text('Đánh giá'),
-                        ),
+                      ],
                     ],
                   ),
                 );
-              }).toList(),
+              }),
+              const SizedBox(height: 12),
+
+              // Payment Summary Card
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(10),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    _priceRow('Tạm tính', '$finalAmount ₫'),
+                    _priceRow('Phí vận chuyển', 'Miễn phí'),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: Divider(height: 1, color: Color(0xFFF1F5F9)),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Tổng thanh toán',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                        ),
+                        Text(
+                          '$finalAmount ₫',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w900,
+                            color: Color(0xFF1D4ED8),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
             ],
           ),
         ),
@@ -250,14 +534,37 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     );
   }
 
-  Widget _detailRow(String label, String value) {
+  Widget _infoRow(IconData icon, String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(width: 90, child: Text(label, style: const TextStyle(fontWeight: FontWeight.w600))),
-          Expanded(child: Text(value)),
+          Icon(icon, size: 16, color: const Color(0xFF64748B)),
+          const SizedBox(width: 8),
+          SizedBox(
+            width: 90,
+            child: Text(label, style: const TextStyle(fontSize: 12, color: Color(0xFF64748B))),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF0F172A)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _priceRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: const TextStyle(fontSize: 12, color: Color(0xFF64748B))),
+          Text(value, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
         ],
       ),
     );
