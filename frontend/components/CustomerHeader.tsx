@@ -1,11 +1,29 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { getAuth, logout } from "../lib/auth";
+import { getAuth, getRedirectFromRole, logout } from "../lib/auth";
 
 type CustomerHeaderProps = {
   initialSearch?: string;
   onSearch?: (query: string) => void;
+};
+
+const homeProtectedLinks = {
+  products: {
+    target: "/products",
+    loginRole: "manager",
+    roles: ["manager", "warehouse", "admin"],
+  },
+  orders: {
+    target: "/orders",
+    loginRole: "staff",
+    roles: ["staff", "sales", "admin"],
+  },
+  reports: {
+    target: "/reports",
+    loginRole: "bookkeeper",
+    roles: ["bookkeeper", "accountant", "admin"],
+  },
 };
 
 export default function CustomerHeader({
@@ -42,6 +60,19 @@ export default function CustomerHeader({
     } else {
       router.push(`/?search=${encodeURIComponent(query)}`);
     }
+  }
+
+  function protectedHref(config: {
+    target: string;
+    loginRole: string;
+    roles: string[];
+  }) {
+    const currentRole = auth?.role?.toLowerCase();
+    if (auth?.token && currentRole && config.roles.includes(currentRole)) {
+      return config.target;
+    }
+
+    return `/login?redirect=${config.loginRole}`;
   }
 
   const isCustomer = !auth?.role || auth?.role?.toLowerCase() === "customer";
@@ -90,7 +121,16 @@ export default function CustomerHeader({
             </svg>
           </button>
         </form>
-      ) : null}
+      ) : (
+        <div className="store-nav-links">
+          <Link href="/">TRANG CHỦ</Link>
+          <Link href={protectedHref(homeProtectedLinks.products)}>
+            SẢN PHẨM
+          </Link>
+          <Link href={protectedHref(homeProtectedLinks.orders)}>ĐƠN HÀNG</Link>
+          <Link href={protectedHref(homeProtectedLinks.reports)}>BÁO CÁO</Link>
+        </div>
+      )}
 
       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
         {auth?.role?.toLowerCase() === "customer" ? (
@@ -111,9 +151,9 @@ export default function CustomerHeader({
             </Link>
           </>
         ) : null}
-        {auth?.role?.toLowerCase() === "admin" ? (
+        {auth?.role && auth.role.toLowerCase() !== "customer" ? (
           <Link
-            href="/admin"
+            href={getRedirectFromRole(auth.role)}
             className="store-nav-button"
             style={{ textDecoration: "none" }}
           >

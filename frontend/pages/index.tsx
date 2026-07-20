@@ -281,45 +281,7 @@ export default function Home() {
 
   return (
     <main className="store-home">
-      <nav className="store-nav">
-        <Link href="/" className="store-logo" aria-label="TQG Computer Store">
-          <span className="store-logo-chip">TQG</span>
-          <span>
-            <strong>CỬA HÀNG MÁY TÍNH</strong>
-            <small>LAPTOP - PC - LINH KIỆN</small>
-          </span>
-        </Link>
-
-        <div className="store-nav-links">
-          <Link href="/">TRANG CHỦ</Link>
-          <Link href={protectedHref(homeProtectedLinks.products)}>
-            SẢN PHẨM
-          </Link>
-          <Link href={protectedHref(homeProtectedLinks.orders)}>ĐƠN HÀNG</Link>
-          <Link href={protectedHref(homeProtectedLinks.reports)}>BÁO CÁO</Link>
-        </div>
-
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          {auth?.role?.toLowerCase() === "admin" ? (
-            <Link
-              href="/admin"
-              className="store-nav-button"
-              style={{ textDecoration: "none" }}
-            >
-              BẢNG ĐIỀU KHIỂN
-            </Link>
-          ) : null}
-          {auth ? (
-            <button className="store-nav-button" onClick={handleLogout}>
-              ĐĂNG XUẤT
-            </button>
-          ) : (
-            <Link href="/login" className="store-nav-button">
-              ĐĂNG NHẬP
-            </Link>
-          )}
-        </div>
-      </nav>
+      <CustomerHeader />
 
       <section className="store-tabs" aria-label="ĐIỀU HƯỚNG NHANH">
         <Link

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import CustomerHeader from "../components/CustomerHeader";
 import { getAuth, logout } from "../lib/auth";
 
 const allowedRoles = ["staff", "sales"];
@@ -68,8 +69,10 @@ export default function StaffPage() {
   }
 
   return (
-    <main className="dashboard-page dashboard-staff-page">
-      <section className="dashboard-hero role-hero role-hero-sales">
+    <main className="dashboard-page dashboard-staff-page" style={{ padding: 0 }}>
+      <CustomerHeader />
+      <div style={{ padding: "24px 20px 40px" }}>
+        <section className="dashboard-hero role-hero role-hero-sales">
         <div className="dashboard-hero-copy">
           <div className="role-pill">Vai trò: Nhân viên bán hàng</div>
           <h1>Bán hàng nhanh, rõ ràng và tập trung vào khách hàng</h1>
@@ -130,6 +133,7 @@ export default function StaffPage() {
           Quay lại trang chủ
         </Link>
       </section>
+      </div>
     </main>
   );
 }

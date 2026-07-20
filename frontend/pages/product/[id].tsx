@@ -69,6 +69,7 @@ export default function ProductDetailPage() {
 
   // Auth & eligibility
   const [token, setToken] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState("");
   const [isCustomer, setIsCustomer] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [canReview, setCanReview] = useState(false);
@@ -89,10 +90,13 @@ export default function ProductDetailPage() {
     const auth = getAuth();
     if (auth?.token) {
       setToken(auth.token);
+      setUserRole(auth.role || "");
       setIsCustomer(auth.role?.toLowerCase() === "customer");
       setIsAdmin(auth.role?.toLowerCase() === "admin");
     }
   }, []);
+
+  const isStaff = ["staff", "sales"].includes(userRole.toLowerCase());
 
   useEffect(() => {
     if (!productId) return;
@@ -348,6 +352,10 @@ export default function ProductDetailPage() {
               {isAdmin ? (
                 <Link href="/products" className="button login-button">
                   Xem
+                </Link>
+              ) : isStaff ? (
+                <Link href="/create-order" className="button login-button">
+                  Tạo đơn bán hàng
                 </Link>
               ) : (
                 <>
