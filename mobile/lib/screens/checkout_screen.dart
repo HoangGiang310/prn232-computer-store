@@ -8,7 +8,9 @@ import '../services/cart_service.dart';
 import 'order_success_screen.dart';
 
 class CheckoutScreen extends StatefulWidget {
-  const CheckoutScreen({super.key});
+  final List<CartItem>? selectedItems;
+
+  const CheckoutScreen({super.key, this.selectedItems});
 
   @override
   State<CheckoutScreen> createState() => _CheckoutScreenState();
@@ -33,7 +35,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   Future<void> _loadUserAndCart() async {
     final user = await AuthService.getCurrentUser();
-    final items = await CartService.getCart();
+    final items = widget.selectedItems ?? await CartService.getCart();
     if (!mounted) return;
     setState(() {
       _currentUser = user;
@@ -49,7 +51,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     if (!_formKey.currentState!.validate()) return;
     if (_items.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Giỏ hàng đang trống.')),
+        const SnackBar(content: Text('Không có sản phẩm nào để thanh toán.')),
       );
       return;
     }
@@ -90,16 +92,31 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         token: token,
       );
 
-      await CartService.clearCart();
+      // Remove ONLY the checked out items from the stored cart
+      final allCartItems = await CartService.getCart();
+      final remainingCartItems = allCartItems.where((cartItem) {
+        return !_items.any((orderedItem) => orderedItem.productId == cartItem.productId);
+      }).toList();
+      await CartService.saveCart(remainingCartItems);
+
       if (!mounted) return;
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => OrderSuccessScreen(order: response is Map<String, dynamic> ? response : {})),
+        MaterialPageRoute(
+          builder: (_) => OrderSuccessScreen(
+            order: response is Map<String, dynamic> ? response : {},
+          ),
+        ),
       );
     } catch (error) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error.toString())),
+        SnackBar(
+          content: Text(error.toString()),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          backgroundColor: const Color(0xFFEF4444),
+        ),
       );
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
@@ -109,7 +126,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Thanh toán')),
+      backgroundColor: const Color(0xFFF1F5F9),
+      appBar: AppBar(
+        title: const Text('Thanh toán đơn hàng'),
+        backgroundColor: const Color(0xFF0F172A),
+        foregroundColor: Colors.white,
+        elevation: 0,
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -118,61 +141,175 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Sản phẩm: ${_items.length}', style: const TextStyle(fontWeight: FontWeight.bold)),
-                const SizedBox(height: 12),
-                ..._items.map((item) => Container(
-                  margin: const EdgeInsets.only(bottom: 10),
-                  padding: const EdgeInsets.all(12),
+                // Ordered Items Summary Card
+                Container(
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(item.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                            Text('${item.quantity} x ${item.price.toStringAsFixed(0)} ₫'),
-                          ],
-                        ),
+                    borderRadius: BorderRadius.circular(18),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withAlpha(10),
+                        blurRadius: 10,
+                        offset: const Offset(0, 3),
                       ),
-                      Text('${(item.quantity * item.price).toStringAsFixed(0)} ₫'),
                     ],
                   ),
-                )),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _shippingNameController,
-                  decoration: const InputDecoration(labelText: 'Tên người nhận', border: OutlineInputBorder()),
-                  validator: (value) => (value == null || value.trim().isEmpty) ? 'Vui lòng nhập tên người nhận' : null,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.shopping_bag_rounded, color: Color(0xFF1D4ED8), size: 20),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Sản phẩm đã chọn (${_items.length})',
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      ..._items.map((item) => Container(
+                        margin: const EdgeInsets.only(bottom: 8),
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF8FAFC),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: const Color(0xFFE2E8F0)),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    item.name,
+                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                  ),
+                                  Text(
+                                    'Số lượng: ${item.quantity} x ${item.price.toStringAsFixed(0)} ₫',
+                                    style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Text(
+                              '${(item.quantity * item.price).toStringAsFixed(0)} ₫',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF1D4ED8),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _shippingPhoneController,
-                  keyboardType: TextInputType.phone,
-                  decoration: const InputDecoration(labelText: 'Số điện thoại', border: OutlineInputBorder()),
-                  validator: (value) => (value == null || value.trim().isEmpty) ? 'Vui lòng nhập số điện thoại' : null,
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _shippingAddressController,
-                  maxLines: 3,
-                  decoration: const InputDecoration(labelText: 'Địa chỉ nhận hàng', border: OutlineInputBorder()),
-                  validator: (value) => (value == null || value.trim().isEmpty) ? 'Vui lòng nhập địa chỉ' : null,
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _voucherController,
-                  decoration: const InputDecoration(labelText: 'Mã voucher (nếu có)', border: OutlineInputBorder()),
+                const SizedBox(height: 16),
+
+                // Shipping Details Card
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(18),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withAlpha(10),
+                        blurRadius: 10,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Row(
+                        children: [
+                          Icon(Icons.local_shipping_rounded, color: Color(0xFF1D4ED8), size: 20),
+                          SizedBox(width: 8),
+                          Text(
+                            'Thông tin giao hàng',
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 14),
+                      TextFormField(
+                        controller: _shippingNameController,
+                        decoration: InputDecoration(
+                          labelText: 'Tên người nhận',
+                          prefixIcon: const Icon(Icons.person_outline_rounded),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        validator: (value) => (value == null || value.trim().isEmpty)
+                            ? 'Vui lòng nhập tên người nhận'
+                            : null,
+                      ),
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        controller: _shippingPhoneController,
+                        keyboardType: TextInputType.phone,
+                        decoration: InputDecoration(
+                          labelText: 'Số điện thoại',
+                          prefixIcon: const Icon(Icons.phone_outlined),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        validator: (value) => (value == null || value.trim().isEmpty)
+                            ? 'Vui lòng nhập số điện thoại'
+                            : null,
+                      ),
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        controller: _shippingAddressController,
+                        maxLines: 2,
+                        decoration: InputDecoration(
+                          labelText: 'Địa chỉ nhận hàng',
+                          prefixIcon: const Icon(Icons.location_on_outlined),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        validator: (value) => (value == null || value.trim().isEmpty)
+                            ? 'Vui lòng nhập địa chỉ'
+                            : null,
+                      ),
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        controller: _voucherController,
+                        decoration: InputDecoration(
+                          labelText: 'Mã voucher (nếu có)',
+                          prefixIcon: const Icon(Icons.discount_outlined),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 24),
+
+                // Submit Button
                 SizedBox(
                   width: double.infinity,
+                  height: 48,
                   child: ElevatedButton(
                     onPressed: _isSubmitting ? null : _submitOrder,
-                    child: Text(_isSubmitting ? 'Đang xử lý...' : 'Xác nhận đặt hàng'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF1D4ED8),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                      elevation: 2,
+                    ),
+                    child: _isSubmitting
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white),
+                          )
+                        : const Text(
+                            'Xác nhận đặt hàng',
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
                   ),
                 ),
               ],
