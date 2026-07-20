@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import CustomerHeader from "../components/CustomerHeader";
 import { getAuth, logout } from "../lib/auth";
 
 const allowedRoles = ["bookkeeper", "accountant"];
@@ -45,8 +46,10 @@ export default function BookkeeperPage() {
   }
 
   return (
-    <main className="dashboard-page dashboard-bookkeeper-page">
-      <section className="dashboard-hero role-hero role-hero-accounting">
+    <main className="dashboard-page dashboard-bookkeeper-page" style={{ padding: 0 }}>
+      <CustomerHeader />
+      <div style={{ padding: "24px 20px 40px" }}>
+        <section className="dashboard-hero role-hero role-hero-accounting">
         <div className="dashboard-hero-copy">
           <div className="role-pill">Vai trò: Kế toán & báo cáo</div>
           <h1>Giám sát số liệu kinh doanh và chi phí một cách rõ ràng</h1>
@@ -113,6 +116,7 @@ export default function BookkeeperPage() {
           Quay lại trang chủ
         </Link>
       </section>
+      </div>
     </main>
   );
 }
