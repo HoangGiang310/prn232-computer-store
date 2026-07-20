@@ -1,39 +1,56 @@
-node_modules/
-**/node_modules/
-.next/
-dist/
-build/
-bin/
-obj/
-lib/
-.env
-
-# Flutter
+# Flutter/Dart
 .dart_tool/
+.packages
+.pub/
+build/
 .flutter-plugins
 .flutter-plugins-dependencies
-.packages
 .pub-cache/
-.pub/
+.pub-cache/
+coverage/
 
-# Build
-build/
+# Generated files
+*.g.dart
+*.freezed.dart
 
-# IDE
-.idea/
-.vscode/
-
-# Android
+# Android build
 android/.gradle/
+android/local.properties
 android/app/debug
 android/app/profile
 android/app/release
 
-# iOS
+# iOS build
 ios/Pods/
 ios/.symlinks/
 ios/Flutter/Flutter.framework
 ios/Flutter/Flutter.podspec
+ios/Runner/GeneratedPluginRegistrant.*
+
+# Xcode
+*.xcworkspace
+xcuserdata/
+*.xcuserstate
+DerivedData/
+
+# VS Code
+.vscode/
+
+# IntelliJ / Android Studio
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Environment variables
+.env
+.env.*
 
 # Logs
 *.log
