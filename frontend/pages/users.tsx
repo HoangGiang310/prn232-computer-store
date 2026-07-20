@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import AdminHeader from "../components/AdminHeader";
 import {
   fetchUsers,
   createUser,
@@ -168,7 +169,9 @@ export default function UsersPage() {
   }
 
   return (
-    <main className="main">
+    <>
+      <AdminHeader />
+      <main className="main">
       <section className="card header">
         <h1>Quản lý người dùng & Nhân viên</h1>
         <p>Quản trị tài khoản các nhân viên bán hàng, thủ kho, kế toán và phân quyền truy cập hệ thống.</p>
@@ -323,5 +326,6 @@ export default function UsersPage() {
         </div>
       </section>
     </main>
+    </>
   );
 }

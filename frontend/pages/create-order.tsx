@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
+import AdminHeader from "../components/AdminHeader";
 import {
   createOrder,
   fetchProducts,
@@ -139,7 +140,9 @@ export default function CreateOrderPage() {
   }
 
   return (
-    <main className="main">
+    <>
+      <AdminHeader />
+      <main className="main">
       <section className="card header">
         <h1>Tạo Đơn Hàng Mới</h1>
         <p>
@@ -373,5 +376,6 @@ export default function CreateOrderPage() {
         </form>
       </section>
     </main>
+    </>
   );
 }

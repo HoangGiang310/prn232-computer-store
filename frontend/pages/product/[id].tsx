@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import CustomerHeader from "../../components/CustomerHeader";
 import { getAuth } from "../../lib/auth";
 import {
   fetchProductById,
@@ -68,7 +69,9 @@ export default function ProductDetailPage() {
 
   // Auth & eligibility
   const [token, setToken] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState("");
   const [isCustomer, setIsCustomer] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [canReview, setCanReview] = useState(false);
   const [hasReviewed, setHasReviewed] = useState(false);
   const [existingReviewId, setExistingReviewId] = useState<string | null>(null);
@@ -87,9 +90,15 @@ export default function ProductDetailPage() {
     const auth = getAuth();
     if (auth?.token) {
       setToken(auth.token);
-      setIsCustomer(auth.role === "customer");
+      setUserRole(auth.role || "");
+      setIsCustomer(auth.role?.toLowerCase() === "customer");
+      setIsAdmin(auth.role?.toLowerCase() === "admin");
     }
   }, []);
+
+  const isStaff = ["staff", "sales"].includes(userRole.toLowerCase());
+  const isBookkeeper = ["bookkeeper", "accountant"].includes(userRole.toLowerCase());
+  const isManager = ["manager", "warehouse"].includes(userRole.toLowerCase());
 
   useEffect(() => {
     if (!productId) return;
@@ -266,25 +275,31 @@ export default function ProductDetailPage() {
 
   if (loading) {
     return (
-      <main className="main">
-        <section className="card header">
-          <h1>Đang tải sản phẩm...</h1>
-        </section>
-      </main>
+      <>
+        <CustomerHeader />
+        <main className="main">
+          <section className="card header">
+            <h1>Đang tải sản phẩm...</h1>
+          </section>
+        </main>
+      </>
     );
   }
 
   if (error && !product) {
     return (
-      <main className="main">
-        <section className="card header">
-          <h1>Lỗi</h1>
-          <p className="error">{error}</p>
-          <Link href="/" className="button">
-            Quay Lại Trang Chủ
-          </Link>
-        </section>
-      </main>
+      <>
+        <CustomerHeader />
+        <main className="main">
+          <section className="card header">
+            <h1>Lỗi</h1>
+            <p className="error">{error}</p>
+            <Link href="/" className="button">
+              Quay Lại Trang Chủ
+            </Link>
+          </section>
+        </main>
+      </>
     );
   }
 
@@ -292,18 +307,20 @@ export default function ProductDetailPage() {
   const total = reviewData?.totalReviews ?? 0;
 
   return (
-    <main className="main">
-      <section className="card header">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
-          <div>
-            <h1>{product?.name}</h1>
-            <p>{product?.category} · {product?.brand} · Mã: {product?.productCode}</p>
+    <>
+      <CustomerHeader />
+      <main className="main">
+        <section className="card header">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
+            <div>
+              <h1>{product?.name}</h1>
+              <p>{product?.category} · {product?.brand} · Mã: {product?.productCode}</p>
+            </div>
+            <Link href="/" className="button">
+              ← Quay Lại Trang Chủ
+            </Link>
           </div>
-          <Link href="/" className="button">
-            ← Quay Lại Trang Chủ
-          </Link>
-        </div>
-      </section>
+        </section>
 
       <section className="card">
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24 }}>
@@ -334,15 +351,35 @@ export default function ProductDetailPage() {
               </span>
             </div>
             <div className="buttons-group" style={{ marginTop: 16, justifyContent: "flex-start" }}>
-              <button className="button login-button" onClick={handleBuyNow} disabled={Number(product?.stockQuantity ?? 0) <= 0}>
-                {Number(product?.stockQuantity ?? 0) <= 0 ? "Hết hàng" : "Mua Ngay"}
-              </button>
-              <button className="button" onClick={handleAddToCart} disabled={Number(product?.stockQuantity ?? 0) <= 0}>
-                {Number(product?.stockQuantity ?? 0) <= 0 ? "Hết hàng" : "Thêm Giỏ Hàng"}
-              </button>
-              <Link href="/cart" className="button">
-                Xem Giỏ Hàng
-              </Link>
+              {isAdmin ? (
+                <Link href="/products" className="button login-button">
+                  Xem
+                </Link>
+              ) : isStaff ? (
+                <Link href="/create-order" className="button login-button">
+                  Tạo đơn bán hàng
+                </Link>
+              ) : isBookkeeper ? (
+                <Link href="/reports" className="button login-button">
+                  Báo cáo &amp; Thống kê
+                </Link>
+              ) : isManager ? (
+                <Link href="/inventory" className="button login-button">
+                  Quản lý kho
+                </Link>
+              ) : (
+                <>
+                  <button className="button login-button" onClick={handleBuyNow} disabled={Number(product?.stockQuantity ?? 0) <= 0}>
+                    {Number(product?.stockQuantity ?? 0) <= 0 ? "Hết hàng" : "Mua Ngay"}
+                  </button>
+                  <button className="button" onClick={handleAddToCart} disabled={Number(product?.stockQuantity ?? 0) <= 0}>
+                    {Number(product?.stockQuantity ?? 0) <= 0 ? "Hết hàng" : "Thêm Giỏ Hàng"}
+                  </button>
+                  <Link href="/cart" className="button">
+                    Xem Giỏ Hàng
+                  </Link>
+                </>
+              )}
             </div>
             {cartMessage ? (
               <p style={{ marginTop: 12, color: cartMessage.includes("thành công") ? "#15803d" : "#b91c1c" }}>
@@ -511,5 +548,6 @@ export default function ProductDetailPage() {
         </div>
       </section>
     </main>
+    </>
   );
 }

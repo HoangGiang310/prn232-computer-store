@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import AdminHeader from "../components/AdminHeader";
 import { getAuth, getRedirectFromRole, logout } from "../lib/auth";
 
 const adminActionGroups = [
@@ -119,25 +120,7 @@ export default function AdminPage() {
 
   return (
     <main className="dashboard-page dashboard-admin-page">
-      <header className="dashboard-header admin-shop-nav">
-        <Link href="/" className="dashboard-brand admin-shop-brand" aria-label="TQG Computer Store">
-          <span className="dashboard-brand-mark admin-shop-logo">TQG</span>
-          <span>
-            <strong>CỬA HÀNG MÁY TÍNH</strong>
-            <small>BẢNG ĐIỀU KHIỂN ADMIN</small>
-          </span>
-        </Link>
-
-        <div className="dashboard-actions admin-shop-nav-links">
-          <Link href="/products">SẢN PHẨM</Link>
-          <Link href="/orders">ĐƠN HÀNG</Link>
-          <Link href="/inventory">KHO HÀNG</Link>
-          <Link href="/reports">BÁO CÁO</Link>
-          <button className="admin-shop-logout" onClick={handleLogout}>
-            ĐĂNG XUẤT
-          </button>
-        </div>
-      </header>
+      <AdminHeader />
 
       <section className="dashboard-hero admin-shop-hero">
         <div className="dashboard-hero-copy admin-shop-hero-copy">

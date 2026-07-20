@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
+import AdminHeader from "../components/AdminHeader";
 import { fetchOrders, updateOrderStatus, fetchReturns, createReturn, processReturn } from "../lib/api";
 import { getAuth } from "../lib/auth";
 
@@ -159,7 +160,9 @@ export default function OrdersPage() {
   const totalRevenue = orders.reduce((acc, order) => acc + order.finalAmount, 0);
 
   return (
-    <main className="main">
+    <>
+      <AdminHeader />
+      <main className="main">
       <section className="card header">
         <h1>Quản Lý Đơn Hàng</h1>
         <p>
@@ -388,5 +391,6 @@ export default function OrdersPage() {
         )}
       </section>
     </main>
+    </>
   );
 }
