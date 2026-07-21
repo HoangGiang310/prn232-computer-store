@@ -10,6 +10,11 @@ type OrderItem = {
   productName?: string;
   quantity: number;
   unitPrice: number;
+  imageUrl?: string;
+  productImage?: string;
+  product?: {
+    images?: Array<{ id: string; imageUrl: string; isMain?: boolean }>;
+  };
 };
 
 type Order = {
@@ -104,11 +109,11 @@ export default function OrderHistoryPage() {
     <>
       <CustomerHeader />
       <main className="main">
-        <section className="card header">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
+        <section className="card header" style={{ textAlign: "center" }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 12 }}>
             <div>
               <h1>Lịch Sử Đơn Hàng</h1>
-              <p>Xem và quản lý các đơn hàng của bạn</p>
+              <p style={{ margin: "4px 0 0 0" }}>Xem và quản lý các đơn hàng của bạn</p>
             </div>
             <Link href="/">
               <button className="button">← Quay về trang chủ</button>
@@ -266,30 +271,49 @@ export default function OrderHistoryPage() {
                         <div style={{ borderTop: "1px solid #eee", paddingTop: "12px" }}>
                           <span style={{ fontWeight: 600, display: "block", marginBottom: "8px" }}>Sản phẩm ({order.orderItems.length} mặt hàng):</span>
                           <div style={{ display: "grid", gap: "8px" }}>
-                            {order.orderItems.map((item, idx) => (
-                              <div
-                                key={idx}
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  padding: "8px",
-                                  backgroundColor: "#f9f9f9",
-                                  borderRadius: "4px",
-                                  fontSize: "14px",
-                                }}
-                              >
-                                <div>
-                                  <div style={{ fontWeight: 600 }}>{item.productName || `Sản phẩm ${item.productId}`}</div>
-                                  <div style={{ color: "#999" }}>Số lượng: {item.quantity}</div>
-                                </div>
-                                <div style={{ textAlign: "right" }}>
-                                  <div>{item.unitPrice.toLocaleString("vi-VN")} ₫</div>
-                                  <div style={{ fontWeight: 700, color: "#d32f2f" }}>
-                                    {(item.quantity * item.unitPrice).toLocaleString("vi-VN")} ₫
+                            {order.orderItems.map((item, idx) => {
+                              const mainImage =
+                                item.product?.images?.find((img: any) => img.isMain)?.imageUrl ||
+                                item.product?.images?.[0]?.imageUrl ||
+                                item.imageUrl ||
+                                item.productImage;
+                              return (
+                                <div
+                                  key={idx}
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    padding: "8px 12px",
+                                    backgroundColor: "#f8fafc",
+                                    borderRadius: "8px",
+                                    border: "1px solid #e2e8f0",
+                                    fontSize: "14px",
+                                    gap: "12px",
+                                  }}
+                                >
+                                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                    <div className="cart-item-media" style={{ width: 44, height: 44, minWidth: 44, borderRadius: 8 }}>
+                                      {mainImage ? (
+                                        <img src={mainImage} alt={item.productName || "Product"} />
+                                      ) : (
+                                        <div className="cart-item-media-fallback" style={{ fontSize: 20 }}>💻</div>
+                                      )}
+                                    </div>
+                                    <div>
+                                      <div style={{ fontWeight: 600, color: "#0f172a" }}>{item.productName || `Sản phẩm ${item.productId}`}</div>
+                                      <div style={{ color: "#64748b", fontSize: "12px" }}>Số lượng: {item.quantity}</div>
+                                    </div>
+                                  </div>
+                                  <div style={{ textAlign: "right" }}>
+                                    <div style={{ fontSize: "12px", color: "#64748b" }}>{item.unitPrice.toLocaleString("vi-VN")} ₫</div>
+                                    <div style={{ fontWeight: 700, color: "#1d4ed8" }}>
+                                      {(item.quantity * item.unitPrice).toLocaleString("vi-VN")} ₫
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            ))}
+                              );
+                            })}
                           </div>
                         </div>
                       )}
