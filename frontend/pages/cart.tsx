@@ -86,13 +86,13 @@ export default function CartPage() {
     <>
       <CustomerHeader />
       <main className="main">
-        <section className="card header">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
+        <section className="card header" style={{ textAlign: "center" }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 12 }}>
             <div>
-              <h1>Giỏ hàng của bạn</h1>
-              <p>Xem lại các sản phẩm bạn đã thêm vào giỏ.</p>
+              <h1>Giỏ Hàng Của Bạn</h1>
+              <p style={{ margin: "4px 0 0 0" }}>Xem lại các sản phẩm bạn đã thêm vào giỏ.</p>
             </div>
-            <div className="buttons-group">
+            <div className="buttons-group" style={{ justifyContent: "center" }}>
               <Link href="/" className="button">
                 ← Quay Về Trang Chủ
               </Link>
@@ -119,21 +119,30 @@ export default function CartPage() {
             <div style={{ display: "grid", gap: 16 }}>
               {items.map((item) => (
                 <div key={item.productId} className="cart-item-row">
-                  <div>
-                    <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <input
-                        type="checkbox"
-                        checked={item.selected !== false}
-                        onChange={() => handleToggleSelect(item.productId)}
-                      />
-                      <strong>{item.name}</strong>
-                    </label>
-                    <p>Mã: {item.productCode || "-"}</p>
-                    <p>Phân loại: {item.category || "-"}</p>
-                    <p>Giá: {Number(item.price).toLocaleString("vi-VN")} ₫</p>
-                    <p>Số lượng: {item.quantity}</p>
+                  <div className="cart-item-content">
+                    <input
+                      type="checkbox"
+                      checked={item.selected !== false}
+                      onChange={() => handleToggleSelect(item.productId)}
+                    />
+                    <div className="cart-item-media">
+                      {item.mainImage ? (
+                        <img src={item.mainImage} alt={item.name} />
+                      ) : (
+                        <div className="cart-item-media-fallback">💻</div>
+                      )}
+                    </div>
+                    <div>
+                      <strong style={{ fontSize: "1.05rem", color: "#0f172a" }}>{item.name}</strong>
+                      <p style={{ margin: "2px 0", fontSize: "0.88rem", color: "#64748b" }}>
+                        Mã: {item.productCode || "-"} | Phân loại: {item.category || "-"}
+                      </p>
+                      <p style={{ margin: "2px 0", fontWeight: 600, color: "#1d4ed8" }}>
+                        Giá: {Number(item.price).toLocaleString("vi-VN")} ₫
+                      </p>
+                    </div>
                   </div>
-                  <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+                  <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       <button className="button" onClick={() => handleQuantityChange(item.productId, -1)} aria-label={`Giảm số lượng ${item.name}`}>
                         −
@@ -143,7 +152,7 @@ export default function CartPage() {
                         +
                       </button>
                     </div>
-                    <span style={{ fontWeight: 600 }}>
+                    <span style={{ fontWeight: 700, minWidth: 90, textAlign: "right", color: "#0f172a" }}>
                       {(item.price * item.quantity).toLocaleString("vi-VN")} ₫
                     </span>
                     <button className="button" onClick={() => handleRemove(item.productId)}>

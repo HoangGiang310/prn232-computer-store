@@ -134,11 +134,11 @@ export default function CheckoutPage() {
 
   return (
     <main className="main">
-      <section className="card header">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
+      <section className="card header" style={{ textAlign: "center" }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 12 }}>
           <div>
             <h1>Thanh toán</h1>
-            <p>Xác nhận sản phẩm và nhập thông tin giao nhận.</p>
+            <p style={{ margin: "4px 0 0 0" }}>Xác nhận sản phẩm và nhập thông tin giao nhận.</p>
           </div>
           <button className="button" onClick={handleGoBack}>
             ← Quay lại
@@ -153,15 +153,29 @@ export default function CheckoutPage() {
         <div style={{ display: "grid", gap: 16 }}>
           {selectedItems.map((item) => (
             <div key={item.productId} className="cart-item-row">
-              <div>
-                <strong>{item.name}</strong>
-                <p>Mã: {item.productCode || "-"}</p>
-                <p>Phân loại: {item.category || "-"}</p>
-                <p>Giá: {Number(item.price).toLocaleString("vi-VN")} ₫</p>
+              <div className="cart-item-content">
+                <div className="cart-item-media">
+                  {item.mainImage ? (
+                    <img src={item.mainImage} alt={item.name} />
+                  ) : (
+                    <div className="cart-item-media-fallback">💻</div>
+                  )}
+                </div>
+                <div>
+                  <strong style={{ fontSize: "1.05rem", color: "#0f172a" }}>{item.name}</strong>
+                  <p style={{ margin: "2px 0", fontSize: "0.88rem", color: "#64748b" }}>
+                    Mã: {item.productCode || "-"} | Phân loại: {item.category || "-"}
+                  </p>
+                  <p style={{ margin: "2px 0", fontWeight: 600, color: "#1d4ed8" }}>
+                    Giá: {Number(item.price).toLocaleString("vi-VN")} ₫
+                  </p>
+                </div>
               </div>
-              <div>
-                <p>Số lượng: {item.quantity}</p>
-                <p>Tạm tính: {(item.price * item.quantity).toLocaleString("vi-VN")} ₫</p>
+              <div style={{ textAlign: "right" }}>
+                <p style={{ margin: "2px 0", color: "#64748b" }}>Số lượng: <strong>{item.quantity}</strong></p>
+                <p style={{ margin: "2px 0", fontWeight: 700, color: "#0f172a" }}>
+                  Tạm tính: {(item.price * item.quantity).toLocaleString("vi-VN")} ₫
+                </p>
               </div>
             </div>
           ))}

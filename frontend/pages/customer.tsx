@@ -13,9 +13,11 @@ import {
 type CartItem = {
   productId: string;
   name: string;
+  category?: string;
   quantity: number;
   unitPrice: number;
   stockQuantity: number;
+  mainImage?: string;
 };
 
 type ProductOption = {
@@ -100,6 +102,10 @@ export default function CustomerPage() {
   ).length;
 
   function addToCart(product: ProductOption) {
+    const mainImage =
+      product.images?.find((img) => img.isMain)?.imageUrl ||
+      product.images?.[0]?.imageUrl;
+
     setCart((current) => {
       const existing = current.find((item) => item.productId === product.id);
       if (existing) {
@@ -121,6 +127,7 @@ export default function CustomerPage() {
           quantity: 1,
           unitPrice: product.price,
           stockQuantity: product.stockQuantity,
+          mainImage,
         },
       ];
     });
@@ -345,10 +352,19 @@ export default function CustomerPage() {
           <div>
             {cart.map((item) => (
               <div key={item.productId} className="cart-item-row">
-                <div className="cart-item-details">
-                  <strong>{item.name}</strong>
-                  <p>Giá: {item.unitPrice.toLocaleString("vi-VN")} ₫</p>
-                  <p>Kho: {item.stockQuantity}</p>
+                <div className="cart-item-content">
+                  <div className="cart-item-media">
+                    {item.mainImage ? (
+                      <img src={item.mainImage} alt={item.name} />
+                    ) : (
+                      <div className="cart-item-media-fallback">💻</div>
+                    )}
+                  </div>
+                  <div className="cart-item-details">
+                    <strong style={{ fontSize: "1.05rem", color: "#0f172a" }}>{item.name}</strong>
+                    <p style={{ margin: "2px 0", fontSize: "0.88rem", color: "#64748b" }}>Giá: {item.unitPrice.toLocaleString("vi-VN")} ₫</p>
+                    <p style={{ margin: "2px 0", fontSize: "0.82rem", color: "#94a3b8" }}>Tồn kho: {item.stockQuantity}</p>
+                  </div>
                 </div>
                 <div className="cart-item-actions">
                   <label className="cart-quantity-label">
