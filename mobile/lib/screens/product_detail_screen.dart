@@ -146,7 +146,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        const Icon(Icons.computer_rounded, size: 86, color: Colors.white),
+                        if (widget.product.firstImageUrl.isNotEmpty)
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(24),
+                            child: Image.network(
+                              widget.product.firstImageUrl,
+                              width: double.infinity,
+                              height: 220,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => const Icon(Icons.computer_rounded, size: 86, color: Colors.white),
+                            ),
+                          )
+                        else
+                          const Icon(Icons.computer_rounded, size: 86, color: Colors.white),
                         Positioned(
                           top: 14,
                           left: 14,

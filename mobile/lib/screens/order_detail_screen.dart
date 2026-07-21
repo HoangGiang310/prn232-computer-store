@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../services/review_service.dart';
 
@@ -394,6 +395,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 final productId = product['id']?.toString() ?? item['productId']?.toString() ?? '';
                 final quantity = (item['quantity'] as num?)?.toInt() ?? 0;
                 final unitPrice = (item['unitPrice'] as num?)?.toDouble() ?? 0;
+                final images = product['images'] as List?;
+                final firstImage = (images != null && images.isNotEmpty && images[0] is Map)
+                    ? images[0]['imageUrl']?.toString() ?? ''
+                    : item['imageUrl']?.toString() ?? '';
 
                 return Container(
                   margin: const EdgeInsets.only(bottom: 12),
@@ -421,7 +426,18 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                               color: const Color(0xFFEFF6FF),
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: const Icon(Icons.laptop_mac_rounded, color: Color(0xFF1D4ED8)),
+                            child: firstImage.isNotEmpty
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Image.network(
+                                      firstImage,
+                                      width: 52,
+                                      height: 52,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (_, __, ___) => const Icon(Icons.laptop_mac_rounded, color: Color(0xFF1D4ED8)),
+                                    ),
+                                  )
+                                : const Icon(Icons.laptop_mac_rounded, color: Color(0xFF1D4ED8)),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
@@ -526,12 +542,106 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   ],
                 ),
               ),
+              if (status == 'New') ...[
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFEF4444),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      elevation: 2,
+                    ),
+                    onPressed: _cancelOrder,
+                    icon: const Icon(Icons.cancel_outlined),
+                    label: const Text(
+                      'HỦY ĐƠN HÀNG NÀY',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                    ),
+                  ),
+                ),
+              ],
               const SizedBox(height: 24),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _cancelOrder() async {
+    final orderId = widget.order['id']?.toString();
+    if (orderId == null) return;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Row(
+          children: [
+            Icon(Icons.warning_amber_rounded, color: Color(0xFFEF4444)),
+            SizedBox(width: 8),
+            Text('Xác nhận hủy đơn'),
+          ],
+        ),
+        content: const Text('Bạn có chắc chắn muốn hủy đơn hàng này không? Sản phẩm sẽ được hoàn tự động về kho.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Bỏ qua'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFEF4444),
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Hủy đơn hàng'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    try {
+      final user = await AuthService.getCurrentUser();
+      if (user?.token == null) return;
+
+      final orderChannel = widget.order['orderChannel']?.toString() ?? 'Online';
+      final paymentMethod = widget.order['paymentMethod']?.toString() ?? 'E-Wallet';
+
+      await ApiService.put(
+        '/api/orders/$orderId',
+        body: {
+          'orderStatus': 'Cancelled',
+          'orderChannel': orderChannel,
+          'paymentMethod': paymentMethod,
+        },
+        token: user!.token,
+      );
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Hủy đơn hàng thành công!'),
+          backgroundColor: Color(0xFF059669),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      Navigator.pop(context);
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.toString()),
+          backgroundColor: const Color(0xFFEF4444),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 
   Widget _infoRow(IconData icon, String label, String value) {

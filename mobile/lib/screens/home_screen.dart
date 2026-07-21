@@ -975,7 +975,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      const Icon(Icons.laptop_mac_rounded, size: 36, color: Color(0xFF2563EB)),
+                      if (product.firstImageUrl.isNotEmpty)
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(14),
+                          child: Image.network(
+                            product.firstImageUrl,
+                            width: 72,
+                            height: 72,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => const Icon(Icons.laptop_mac_rounded, size: 36, color: Color(0xFF2563EB)),
+                          ),
+                        )
+                      else
+                        const Icon(Icons.laptop_mac_rounded, size: 36, color: Color(0xFF2563EB)),
                       Positioned(
                         bottom: 4,
                         left: 4,

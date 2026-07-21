@@ -224,7 +224,7 @@ class _CartScreenState extends State<CartScreen> {
                                   ),
                                   const SizedBox(width: 4),
 
-                                  // Product Icon
+                                  // Product Image Thumbnail
                                   Container(
                                     width: 54,
                                     height: 54,
@@ -232,7 +232,18 @@ class _CartScreenState extends State<CartScreen> {
                                       color: const Color(0xFFEFF6FF),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
-                                    child: const Icon(Icons.laptop_mac_rounded, color: Color(0xFF1D4ED8)),
+                                    child: item.imageUrl.isNotEmpty
+                                        ? ClipRRect(
+                                            borderRadius: BorderRadius.circular(12),
+                                            child: Image.network(
+                                              item.imageUrl,
+                                              width: 54,
+                                              height: 54,
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (_, __, ___) => const Icon(Icons.laptop_mac_rounded, color: Color(0xFF1D4ED8)),
+                                            ),
+                                          )
+                                        : const Icon(Icons.laptop_mac_rounded, color: Color(0xFF1D4ED8)),
                                   ),
                                   const SizedBox(width: 12),
 

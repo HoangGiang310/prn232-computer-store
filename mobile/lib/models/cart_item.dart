@@ -8,6 +8,7 @@ class CartItem {
   final double price;
   final int quantity;
   final int stockQuantity;
+  final String imageUrl;
 
   const CartItem({
     required this.productId,
@@ -17,6 +18,7 @@ class CartItem {
     required this.price,
     required this.quantity,
     required this.stockQuantity,
+    this.imageUrl = '',
   });
 
   CartItem copyWith({
@@ -27,6 +29,7 @@ class CartItem {
     double? price,
     int? quantity,
     int? stockQuantity,
+    String? imageUrl,
   }) {
     return CartItem(
       productId: productId ?? this.productId,
@@ -36,6 +39,7 @@ class CartItem {
       price: price ?? this.price,
       quantity: quantity ?? this.quantity,
       stockQuantity: stockQuantity ?? this.stockQuantity,
+      imageUrl: imageUrl ?? this.imageUrl,
     );
   }
 
@@ -48,6 +52,7 @@ class CartItem {
       'price': price,
       'quantity': quantity,
       'stockQuantity': stockQuantity,
+      'imageUrl': imageUrl,
     };
   }
 
@@ -60,6 +65,7 @@ class CartItem {
       price: (json['price'] as num?)?.toDouble() ?? 0,
       quantity: (json['quantity'] as num?)?.toInt() ?? 1,
       stockQuantity: (json['stockQuantity'] as num?)?.toInt() ?? 0,
+      imageUrl: json['imageUrl']?.toString() ?? '',
     );
   }
 
@@ -72,6 +78,7 @@ class CartItem {
       price: product.price,
       quantity: 1,
       stockQuantity: product.stockQuantity,
+      imageUrl: product.firstImageUrl,
     );
   }
 }
