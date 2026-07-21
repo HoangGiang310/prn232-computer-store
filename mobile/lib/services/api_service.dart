@@ -63,4 +63,31 @@ class ApiService {
 
     throw Exception('Request failed.');
   }
+
+  static Future<dynamic> put(
+    String path, {
+    required Map<String, dynamic> body,
+    String? token,
+  }) async {
+    final uri = Uri.parse('$apiBaseUrl$path');
+    final response = await http.put(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(body),
+    );
+
+    final decoded = _decodeBody(response);
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return decoded;
+    }
+
+    if (decoded is Map<String, dynamic>) {
+      throw Exception(decoded['message'] ?? 'Request failed.');
+    }
+
+    throw Exception('Request failed.');
+  }
 }
