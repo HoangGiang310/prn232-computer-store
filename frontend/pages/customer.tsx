@@ -7,6 +7,7 @@ import {
   fetchCurrentCustomer,
   fetchCurrentCustomerOrders,
   fetchProducts,
+  cancelCustomerOrder,
   type OrderItemPayload,
 } from "../lib/api";
 
@@ -199,12 +200,27 @@ export default function CustomerPage() {
       setVoucherCode("");
       if (authToken) {
         const orderHistory = await fetchCurrentCustomerOrders(authToken);
-        setOrders(orderHistory);
+        setOrders(Array.isArray(orderHistory) ? orderHistory : []);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Không thể tạo đơn hàng.");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleCancelOrder(order: any) {
+    const confirmed = window.confirm("Bạn có chắc chắn muốn hủy đơn hàng này không? Sản phẩm sẽ được hoàn tự động về kho.");
+    if (!confirmed) return;
+    if (!authToken) return;
+
+    try {
+      await cancelCustomerOrder(order, authToken);
+      setSuccess("Hủy đơn hàng thành công!");
+      const updatedOrders = await fetchCurrentCustomerOrders(authToken);
+      setOrders(Array.isArray(updatedOrders) ? updatedOrders : []);
+    } catch (err: any) {
+      setError(err.message || "Không thể hủy đơn hàng.");
     }
   }
 
@@ -454,9 +470,30 @@ export default function CustomerPage() {
           <div className="order-list-grid">
             {orders.map((order) => (
               <div key={order.id} className="order-card">
-                <div className="order-card-header">
+                <div className="order-card-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <strong>Đơn hàng #{order.id.substring(0, 8)}</strong>
-                  <span>{order.orderStatus}</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <span>{order.orderStatus}</span>
+                    {order.orderStatus === "New" && (
+                      <button
+                        type="button"
+                        className="button"
+                        style={{
+                          backgroundColor: "#ef4444",
+                          color: "#ffffff",
+                          border: "none",
+                          fontSize: "11px",
+                          padding: "4px 8px",
+                          borderRadius: "4px",
+                          fontWeight: 600,
+                          cursor: "pointer",
+                        }}
+                        onClick={() => handleCancelOrder(order)}
+                      >
+                        Hủy đơn
+                      </button>
+                    )}
+                  </div>
                 </div>
                 <p>Ngày tạo: {new Date(order.createdAt).toLocaleString("vi-VN")}</p>
                 <p>Phương thức: {order.paymentMethod}</p>

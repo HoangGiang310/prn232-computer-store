@@ -611,3 +611,22 @@ export async function setReviewVisibility(
     );
   return body;
 }
+
+export async function cancelCustomerOrder(
+  order: { id: string; orderChannel?: string; paymentMethod?: string },
+  token?: string
+) {
+  const res = await fetch(`${apiBaseUrl}/api/orders/${order.id}`, {
+    method: "PUT",
+    headers: authHeaders(token),
+    body: JSON.stringify({
+      orderStatus: "Cancelled",
+      orderChannel: order.orderChannel || "Online",
+      paymentMethod: order.paymentMethod || "E-Wallet",
+    }),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    throw new Error(extractApiError(body, "Không thể hủy đơn hàng."));
+  }
+}

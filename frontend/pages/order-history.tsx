@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import CustomerHeader from "../components/CustomerHeader";
-import { fetchCurrentCustomerOrders } from "../lib/api";
+import { fetchCurrentCustomerOrders, cancelCustomerOrder } from "../lib/api";
 import { getAuth } from "../lib/auth";
 
 type OrderItem = {
@@ -50,6 +50,27 @@ export default function OrderHistoryPage() {
   const [error, setError] = useState("");
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("all");
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
+
+  async function handleCancelOrder(order: Order, event: React.MouseEvent) {
+    event.stopPropagation();
+    const confirmed = window.confirm("Bạn có chắc chắn muốn hủy đơn hàng này không? Sản phẩm sẽ được hoàn tự động về kho.");
+    if (!confirmed) return;
+
+    const auth = getAuth();
+    if (!auth?.token) return;
+
+    try {
+      setCancellingId(order.id);
+      await cancelCustomerOrder(order, auth.token);
+      alert("Hủy đơn hàng thành công!");
+      await loadOrders(auth.token);
+    } catch (err: any) {
+      alert(err.message || "Không thể hủy đơn hàng.");
+    } finally {
+      setCancellingId(null);
+    }
+  }
 
   useEffect(() => {
     const auth = getAuth();
@@ -212,7 +233,27 @@ export default function OrderHistoryPage() {
                         <strong>{order.finalAmount.toLocaleString("vi-VN")} ₫</strong>
                       </div>
                     </div>
-                    <div style={{ textAlign: "right" }}>
+                    <div style={{ textAlign: "right", display: "flex", alignItems: "center", gap: "10px" }}>
+                      {order.orderStatus === "New" && (
+                        <button
+                          type="button"
+                          className="button"
+                          style={{
+                            backgroundColor: "#ef4444",
+                            color: "#ffffff",
+                            border: "none",
+                            fontSize: "12px",
+                            padding: "6px 12px",
+                            borderRadius: "6px",
+                            fontWeight: 600,
+                            cursor: cancellingId === order.id ? "wait" : "pointer",
+                          }}
+                          disabled={cancellingId === order.id}
+                          onClick={(e) => handleCancelOrder(order, e)}
+                        >
+                          {cancellingId === order.id ? "Đang hủy..." : "Hủy đơn hàng"}
+                        </button>
+                      )}
                       <div style={{ fontSize: "20px", color: "#999" }}>{isExpanded ? "▼" : "▶"}</div>
                     </div>
                   </div>
