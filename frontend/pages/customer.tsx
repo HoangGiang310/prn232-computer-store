@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { getAuth, logout } from "../lib/auth";
+import AddressSelector from "../components/AddressSelector";
 import {
   createOrder,
   fetchCurrentCustomer,
@@ -439,15 +440,10 @@ export default function CustomerPage() {
                 required
               />
             </label>
-            <label className="auth-field input-group">
-              <span>Địa chỉ giao hàng</span>
-              <textarea
-                value={shippingAddress}
-                onChange={(e) => setShippingAddress(e.target.value)}
-                rows={3}
-                required
-              />
-            </label>
+            <div className="auth-field input-group" style={{ gridColumn: "span 2" }}>
+              <span style={{ fontSize: "14px", fontWeight: "bold", color: "#475569" }}>Địa chỉ giao hàng *</span>
+              <AddressSelector initialAddress={shippingAddress} onChange={setShippingAddress} />
+            </div>
             <label className="auth-field input-group">
               <span>Phương thức thanh toán</span>
               <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>

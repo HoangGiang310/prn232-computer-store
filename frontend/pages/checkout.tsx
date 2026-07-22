@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { createOrder, fetchVouchers } from "../lib/api";
 import { getAuth } from "../lib/auth";
 import { clearCheckoutCart, readCheckoutCart, readBuyNowCart, clearBuyNowCart, type CheckoutCartItem } from "../lib/cart";
+import AddressSelector from "../components/AddressSelector";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -208,10 +209,10 @@ export default function CheckoutPage() {
               Số điện thoại
               <input value={shippingPhone} onChange={(e) => setShippingPhone(e.target.value)} required />
             </label>
-            <label>
-              Địa chỉ nhận hàng
-              <textarea value={shippingAddress} onChange={(e) => setShippingAddress(e.target.value)} rows={3} required />
-            </label>
+            <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+              <span style={{ fontSize: "14px", fontWeight: "bold", color: "#475569" }}>Địa chỉ nhận hàng *</span>
+              <AddressSelector initialAddress={shippingAddress} onChange={setShippingAddress} />
+            </div>
             <label>
               Phương thức thanh toán
               <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
