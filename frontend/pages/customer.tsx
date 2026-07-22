@@ -526,20 +526,24 @@ export default function CustomerPage() {
                   <strong>Sản phẩm:</strong>
                   <div style={{ display: "grid", gap: "8px", marginTop: "6px" }}>
                     {order.orderItems?.map((item: any) => {
+                      const matchedProduct = products.find((p) => p.id === item.productId);
+                      const productImages = matchedProduct?.images || item.product?.images;
                       const mainImage =
-                        item.product?.images?.find((img: any) => img.isMain)?.imageUrl ||
-                        item.product?.images?.[0]?.imageUrl;
+                        productImages?.find((img: any) => img.isMain)?.imageUrl ||
+                        productImages?.[0]?.imageUrl ||
+                        item.imageUrl ||
+                        item.productImage;
                       return (
                         <div key={item.productId} style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px" }}>
                           <div style={{ width: 32, height: 32, minWidth: 32, borderRadius: 4, overflow: 'hidden', border: '1px solid #eee' }}>
                             {mainImage ? (
-                              <img src={mainImage} alt={item.product?.name || "Product"} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                              <img src={mainImage} alt={item.product?.name || item.productName || matchedProduct?.name || "Product"} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                             ) : (
                               <div style={{ fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', backgroundColor: '#f1f5f9' }}>💻</div>
                             )}
                           </div>
                           <div style={{ flex: 1 }}>
-                            <span style={{ fontWeight: 600 }}>{item.product?.name || `Sản phẩm ${item.productId}`}</span>
+                            <span style={{ fontWeight: 600 }}>{item.product?.name || item.productName || matchedProduct?.name || `Sản phẩm ${item.productId}`}</span>
                             <span style={{ color: "#666", fontSize: "12px", marginLeft: "6px" }}>x{item.quantity}</span>
                           </div>
                           {(order.orderStatus === "Delivered" || order.orderStatus === "Confirmed") && item.productId ? (

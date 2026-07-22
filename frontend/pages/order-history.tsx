@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import CustomerHeader from "../components/CustomerHeader";
-import { fetchCurrentCustomerOrders, cancelCustomerOrder } from "../lib/api";
+import { fetchCurrentCustomerOrders, cancelCustomerOrder, fetchProducts } from "../lib/api";
 import { getAuth } from "../lib/auth";
 
 type OrderItem = {
@@ -52,6 +52,7 @@ export default function OrderHistoryPage() {
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("all");
   const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [products, setProducts] = useState<any[]>([]);
 
   async function handleCancelOrder(order: Order, event: React.MouseEvent) {
     event.stopPropagation();
@@ -81,7 +82,17 @@ export default function OrderHistoryPage() {
     }
 
     loadOrders(auth.token);
+    loadProducts();
   }, [router]);
+
+  async function loadProducts() {
+    try {
+      const data = await fetchProducts();
+      setProducts(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Không thể tải danh sách sản phẩm để lấy ảnh", err);
+    }
+  }
 
   async function loadOrders(token: string) {
     try {
@@ -233,6 +244,48 @@ export default function OrderHistoryPage() {
                         Ngày đặt: {orderDate.toLocaleDateString("vi-VN")} · Tổng cộng:{" "}
                         <strong>{order.finalAmount.toLocaleString("vi-VN")} ₫</strong>
                       </div>
+                      {order.orderItems && order.orderItems.length > 0 && (
+                        <div style={{ display: "flex", gap: "8px", marginTop: "12px", flexWrap: "wrap" }}>
+                          {order.orderItems.map((item, idx) => {
+                            const matchedProduct = products.find(p => p.id === item.productId);
+                            const productImages = matchedProduct?.images || item.product?.images;
+                            const mainImage =
+                              productImages?.find((img: any) => img.isMain)?.imageUrl ||
+                              productImages?.[0]?.imageUrl ||
+                              item.imageUrl ||
+                              item.productImage;
+                            return (
+                              <div
+                                key={idx}
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "6px",
+                                  backgroundColor: "#ffffff",
+                                  padding: "4px 8px",
+                                  borderRadius: "6px",
+                                  border: "1px solid #e5e7eb",
+                                }}
+                                title={item.product?.name || item.productName || matchedProduct?.name || `Sản phẩm ${item.productId}`}
+                              >
+                                <div style={{ width: "32px", height: "32px", borderRadius: "4px", overflow: "hidden", border: "1px solid #f3f4f6", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                  {mainImage ? (
+                                    <img src={mainImage} alt={item.product?.name || item.productName || matchedProduct?.name || "Product"} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                  ) : (
+                                    <div style={{ fontSize: "14px", display: "flex", alignItems: "center", justifyContent: "center", height: "100%", backgroundColor: "#f1f5f9" }}>💻</div>
+                                  )}
+                                </div>
+                                <span style={{ fontSize: "12px", fontWeight: 500, color: "#374151", maxWidth: "150px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                                  {item.product?.name || item.productName || matchedProduct?.name || `Sản phẩm ${item.productId}`}
+                                </span>
+                                <span style={{ fontSize: "11px", fontWeight: 600, color: "#6b7280", marginLeft: "2px" }}>
+                                  x{item.quantity}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                     <div style={{ textAlign: "right", display: "flex", alignItems: "center", gap: "10px" }}>
                       {order.orderStatus === "New" && (
@@ -314,9 +367,11 @@ export default function OrderHistoryPage() {
                           <span style={{ fontWeight: 600, display: "block", marginBottom: "8px" }}>Sản phẩm ({order.orderItems.length} mặt hàng):</span>
                           <div style={{ display: "grid", gap: "8px" }}>
                             {order.orderItems.map((item, idx) => {
+                              const matchedProduct = products.find(p => p.id === item.productId);
+                              const productImages = matchedProduct?.images || item.product?.images;
                               const mainImage =
-                                item.product?.images?.find((img: any) => img.isMain)?.imageUrl ||
-                                item.product?.images?.[0]?.imageUrl ||
+                                productImages?.find((img: any) => img.isMain)?.imageUrl ||
+                                productImages?.[0]?.imageUrl ||
                                 item.imageUrl ||
                                 item.productImage;
                               return (
@@ -337,13 +392,13 @@ export default function OrderHistoryPage() {
                                   <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                       <div className="cart-item-media" style={{ width: 44, height: 44, minWidth: 44, borderRadius: 8, overflow: 'hidden' }}>
                                         {mainImage ? (
-                                          <img src={mainImage} alt={item.product?.name || item.productName || "Product"} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                          <img src={mainImage} alt={item.product?.name || item.productName || matchedProduct?.name || "Product"} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                         ) : (
                                           <div className="cart-item-media-fallback" style={{ fontSize: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', backgroundColor: '#f1f5f9' }}>💻</div>
                                         )}
                                       </div>
                                       <div>
-                                        <div style={{ fontWeight: 600, color: "#0f172a" }}>{item.product?.name || item.productName || `Sản phẩm ${item.productId}`}</div>
+                                        <div style={{ fontWeight: 600, color: "#0f172a" }}>{item.product?.name || item.productName || matchedProduct?.name || `Sản phẩm ${item.productId}`}</div>
                                       <div style={{ color: "#64748b", fontSize: "12px" }}>Số lượng: {item.quantity}</div>
                                     </div>
                                   </div>
