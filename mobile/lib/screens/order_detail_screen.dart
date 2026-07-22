@@ -244,6 +244,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   Widget build(BuildContext context) {
     final orderId = widget.order['id']?.toString() ?? '...';
     final finalAmount = (widget.order['finalAmount'] as num?)?.toStringAsFixed(0) ?? '0';
+    final totalAmount = (widget.order['totalAmount'] as num?)?.toStringAsFixed(0) ?? finalAmount;
+    final discountAmount = (widget.order['discountAmount'] as num?)?.toDouble() ?? 0.0;
+    final voucherCode = widget.order['voucherCode']?.toString() ?? '';
     final items = (widget.order['orderItems'] as List?) ?? [];
     final shippingName = widget.order['shippingName']?.toString() ?? '---';
     final shippingAddress = widget.order['shippingAddress']?.toString() ?? '---';
@@ -516,7 +519,13 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 ),
                 child: Column(
                   children: [
-                    _priceRow('Tạm tính', '$finalAmount ₫'),
+                    _priceRow('Tạm tính', '$totalAmount ₫'),
+                    if (discountAmount > 0)
+                      _priceRow(
+                        'Giảm giá ${voucherCode.isNotEmpty ? "(Voucher: $voucherCode)" : ""}',
+                        '-${discountAmount.toStringAsFixed(0)} ₫',
+                        valueColor: const Color(0xFF059669),
+                      ),
                     _priceRow('Phí vận chuyển', 'Miễn phí'),
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 8),
@@ -667,14 +676,14 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     );
   }
 
-  Widget _priceRow(String label, String value) {
+  Widget _priceRow(String label, String value, {Color? valueColor}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(label, style: const TextStyle(fontSize: 12, color: Color(0xFF64748B))),
-          Text(value, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+          Text(value, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: valueColor)),
         ],
       ),
     );

@@ -33,6 +33,7 @@ type Order = {
   shippingName?: string;
   shippingPhone?: string;
   shippingAddress?: string;
+  voucherCode?: string;
 };
 
 const statusColors: Record<string, { bg: string; text: string; label: string }> = {
@@ -423,7 +424,7 @@ export default function OrderHistoryPage() {
                         </div>
                         {order.discountAmount > 0 && (
                           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px", color: "#2e7d32" }}>
-                            <span>Giảm giá:</span>
+                            <span>Giảm giá {order.voucherCode ? `(Voucher: ${order.voucherCode})` : ""}:</span>
                             <span>-{order.discountAmount.toLocaleString("vi-VN")} ₫</span>
                           </div>
                         )}
