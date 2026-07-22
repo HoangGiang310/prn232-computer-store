@@ -8,6 +8,7 @@ import {
   fetchCurrentCustomerOrders,
   fetchProducts,
   cancelCustomerOrder,
+  fetchVouchers,
   type OrderItemPayload,
 } from "../lib/api";
 
@@ -46,6 +47,7 @@ export default function CustomerPage() {
   const [shippingAddress, setShippingAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("E-Wallet");
   const [voucherCode, setVoucherCode] = useState("");
+  const [vouchers, setVouchers] = useState<any[]>([]);
   const [isPaid, setIsPaid] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -74,10 +76,11 @@ export default function CustomerPage() {
     setLoading(true);
     setError("");
     try {
-      const [customer, productList, orderHistory] = await Promise.all([
+      const [customer, productList, orderHistory, voucherList] = await Promise.all([
         fetchCurrentCustomer(token),
         fetchProducts(),
         fetchCurrentCustomerOrders(token),
+        fetchVouchers(),
       ]);
 
       setCustomerName(customer.fullName || customer.webUsername || customer.email || "Khách hàng");
@@ -86,6 +89,14 @@ export default function CustomerPage() {
       setShippingAddress(customer.address || "");
       setProducts(productList);
       setOrders(orderHistory);
+
+      const now = new Date();
+      const active = (voucherList || []).filter((v: any) => {
+        const start = new Date(v.startDate);
+        const end = new Date(v.endDate);
+        return now >= start && now <= end && v.usedCount < v.totalUsageLimit;
+      });
+      setVouchers(active);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Không thể tải dữ liệu khách hàng.");
     } finally {
@@ -446,12 +457,24 @@ export default function CustomerPage() {
               </select>
             </label>
             <label className="auth-field input-group">
-              <span>Voucher (tuỳ chọn)</span>
-              <input
-                type="text"
+              <span>Chọn Voucher (tuỳ chọn)</span>
+              <select
                 value={voucherCode}
                 onChange={(e) => setVoucherCode(e.target.value)}
-              />
+                style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+              >
+                <option value="">-- Không sử dụng voucher --</option>
+                {vouchers.map((v: any) => {
+                  const isEligible = cartTotal >= v.minOrderValue;
+                  const discountDesc = v.discountType === "Percentage" ? `${v.discountValue}%` : `${Number(v.discountValue).toLocaleString("vi-VN")} ₫`;
+                  const condDesc = v.minOrderValue > 0 ? ` (Đơn tối thiểu ${Number(v.minOrderValue).toLocaleString("vi-VN")} ₫)` : "";
+                  return (
+                    <option key={v.code} value={v.code} disabled={!isEligible}>
+                      {v.code} - Giảm {discountDesc}{condDesc} {!isEligible ? " [Không đủ điều kiện]" : ""}
+                    </option>
+                  );
+                })}
+              </select>
             </label>
           </div>
           <div className="buttons-group">

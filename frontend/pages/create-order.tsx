@@ -4,6 +4,7 @@ import AdminHeader from "../components/AdminHeader";
 import {
   createOrder,
   fetchProducts,
+  fetchVouchers,
   type OrderItemPayload,
   type OrderPayload,
 } from "../lib/api";
@@ -44,6 +45,7 @@ export default function CreateOrderPage() {
   const [orderChannel, setOrderChannel] = useState("Online");
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [voucherCode, setVoucherCode] = useState("");
+  const [vouchers, setVouchers] = useState<any[]>([]);
   const [isPaid, setIsPaid] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -51,7 +53,23 @@ export default function CreateOrderPage() {
 
   useEffect(() => {
     loadProducts();
+    loadVouchers();
   }, []);
+
+  async function loadVouchers() {
+    try {
+      const data = await fetchVouchers();
+      const now = new Date();
+      const active = (data || []).filter((v: any) => {
+        const start = new Date(v.startDate);
+        const end = new Date(v.endDate);
+        return now >= start && now <= end && v.usedCount < v.totalUsageLimit;
+      });
+      setVouchers(active);
+    } catch (err) {
+      console.error("Không thể tải danh sách voucher", err);
+    }
+  }
 
   async function loadProducts() {
     try {
@@ -338,12 +356,24 @@ export default function CreateOrderPage() {
             <h2 className="section-title-center">Voucher</h2>
             <div className="input-group">
               <label>
-                Mã voucher
-                <input
-                  type="text"
+                Chọn voucher (tùy chọn)
+                <select
                   value={voucherCode}
                   onChange={(e) => setVoucherCode(e.target.value)}
-                />
+                  style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+                >
+                  <option value="">-- Không sử dụng voucher --</option>
+                  {vouchers.map((v: any) => {
+                    const isEligible = totalAmount >= v.minOrderValue;
+                    const discountDesc = v.discountType === "Percentage" ? `${v.discountValue}%` : `${Number(v.discountValue).toLocaleString("vi-VN")} ₫`;
+                    const condDesc = v.minOrderValue > 0 ? ` (Đơn tối thiểu ${Number(v.minOrderValue).toLocaleString("vi-VN")} ₫)` : "";
+                    return (
+                      <option key={v.code} value={v.code} disabled={!isEligible}>
+                        {v.code} - Giảm {discountDesc}{condDesc} {!isEligible ? " [Không đủ điều kiện]" : ""}
+                      </option>
+                    );
+                  })}
+                </select>
               </label>
             </div>
           </div>
