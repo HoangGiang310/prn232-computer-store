@@ -499,20 +499,35 @@ export default function CustomerPage() {
                 <p>Phương thức: {order.paymentMethod}</p>
                 <p>Thành tiền: {Number(order.finalAmount).toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
                 <p>Giao đến: {order.shippingAddress}</p>
-                <div className="order-items-section">
+                <div className="order-items-section" style={{ marginTop: "12px" }}>
                   <strong>Sản phẩm:</strong>
-                  <ul className="order-item-list">
-                    {order.orderItems?.map((item: any) => (
-                      <li key={item.productId}>
-                        {item.product?.name ?? "Sản phẩm"} x{item.quantity}
-                        {(order.orderStatus === "Delivered" || order.orderStatus === "Confirmed") && item.productId ? (
-                          <Link href={`/product/${item.productId}`} className="order-item-link">
-                            [Đánh giá]
-                          </Link>
-                        ) : null}
-                      </li>
-                    ))}
-                  </ul>
+                  <div style={{ display: "grid", gap: "8px", marginTop: "6px" }}>
+                    {order.orderItems?.map((item: any) => {
+                      const mainImage =
+                        item.product?.images?.find((img: any) => img.isMain)?.imageUrl ||
+                        item.product?.images?.[0]?.imageUrl;
+                      return (
+                        <div key={item.productId} style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px" }}>
+                          <div style={{ width: 32, height: 32, minWidth: 32, borderRadius: 4, overflow: 'hidden', border: '1px solid #eee' }}>
+                            {mainImage ? (
+                              <img src={mainImage} alt={item.product?.name || "Product"} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                            ) : (
+                              <div style={{ fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', backgroundColor: '#f1f5f9' }}>💻</div>
+                            )}
+                          </div>
+                          <div style={{ flex: 1 }}>
+                            <span style={{ fontWeight: 600 }}>{item.product?.name || `Sản phẩm ${item.productId}`}</span>
+                            <span style={{ color: "#666", fontSize: "12px", marginLeft: "6px" }}>x{item.quantity}</span>
+                          </div>
+                          {(order.orderStatus === "Delivered" || order.orderStatus === "Confirmed") && item.productId ? (
+                            <Link href={`/product/${item.productId}`} className="order-item-link" style={{ fontSize: "12px", color: "#1d4ed8" }}>
+                              [Đánh giá]
+                            </Link>
+                          ) : null}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             ))}

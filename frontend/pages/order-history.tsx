@@ -13,6 +13,7 @@ type OrderItem = {
   imageUrl?: string;
   productImage?: string;
   product?: {
+    name?: string;
     images?: Array<{ id: string; imageUrl: string; isMain?: boolean }>;
   };
 };
@@ -334,15 +335,15 @@ export default function OrderHistoryPage() {
                                   }}
                                 >
                                   <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                    <div className="cart-item-media" style={{ width: 44, height: 44, minWidth: 44, borderRadius: 8 }}>
-                                      {mainImage ? (
-                                        <img src={mainImage} alt={item.productName || "Product"} />
-                                      ) : (
-                                        <div className="cart-item-media-fallback" style={{ fontSize: 20 }}>💻</div>
-                                      )}
-                                    </div>
-                                    <div>
-                                      <div style={{ fontWeight: 600, color: "#0f172a" }}>{item.productName || `Sản phẩm ${item.productId}`}</div>
+                                      <div className="cart-item-media" style={{ width: 44, height: 44, minWidth: 44, borderRadius: 8, overflow: 'hidden' }}>
+                                        {mainImage ? (
+                                          <img src={mainImage} alt={item.product?.name || item.productName || "Product"} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                        ) : (
+                                          <div className="cart-item-media-fallback" style={{ fontSize: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', backgroundColor: '#f1f5f9' }}>💻</div>
+                                        )}
+                                      </div>
+                                      <div>
+                                        <div style={{ fontWeight: 600, color: "#0f172a" }}>{item.product?.name || item.productName || `Sản phẩm ${item.productId}`}</div>
                                       <div style={{ color: "#64748b", fontSize: "12px" }}>Số lượng: {item.quantity}</div>
                                     </div>
                                   </div>

@@ -23,6 +23,10 @@ type OrderData = {
     productName?: string;
     quantity: number;
     unitPrice: number;
+    product?: {
+      name?: string;
+      images?: Array<{ id: string; imageUrl: string; isMain?: boolean }>;
+    };
   }>;
 };
 
@@ -159,34 +163,50 @@ export default function OrderSuccessPage() {
         <h2>Chi tiết sản phẩm</h2>
         <div style={{ display: "grid", gap: "12px" }}>
           {order.orderItems && order.orderItems.length > 0 ? (
-            order.orderItems.map((item, index) => (
-              <div
-                key={index}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  padding: "12px",
-                  backgroundColor: "#f5f5f5",
-                  borderRadius: "4px",
-                }}
-              >
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 600 }}>{item.productName || `Sản phẩm ${item.productId}`}</div>
-                  <div style={{ fontSize: "14px", color: "#666" }}>Mã sản phẩm: {item.productId}</div>
+            order.orderItems.map((item, index) => {
+              const mainImage =
+                item.product?.images?.find((img: any) => img.isMain)?.imageUrl ||
+                item.product?.images?.[0]?.imageUrl;
+              return (
+                <div
+                  key={index}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "8px 12px",
+                    backgroundColor: "#f8fafc",
+                    borderRadius: "8px",
+                    border: "1px solid #e2e8f0",
+                    fontSize: "14px",
+                    gap: "12px",
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <div className="cart-item-media" style={{ width: 44, height: 44, minWidth: 44, borderRadius: 8, overflow: 'hidden' }}>
+                      {mainImage ? (
+                        <img src={mainImage} alt={item.product?.name || item.productName || "Product"} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      ) : (
+                        <div className="cart-item-media-fallback" style={{ fontSize: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', backgroundColor: '#f1f5f9' }}>💻</div>
+                      )}
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 600, color: "#0f172a" }}>
+                        {item.product?.name || item.productName || `Sản phẩm ${item.productId}`}
+                      </div>
+                      <div style={{ fontSize: "12px", color: "#64748b" }}>Mã sản phẩm: {item.productId}</div>
+                      <div style={{ color: "#64748b", fontSize: "12px" }}>Số lượng: {item.quantity}</div>
+                    </div>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontSize: "12px", color: "#64748b" }}>{item.unitPrice.toLocaleString("vi-VN")} ₫</div>
+                    <div style={{ fontWeight: 700, color: "#1d4ed8" }}>
+                      {(item.quantity * item.unitPrice).toLocaleString("vi-VN")} ₫
+                    </div>
+                  </div>
                 </div>
-                <div style={{ textAlign: "right" }}>
-                  <div style={{ marginBottom: "4px" }}>
-                    Số lượng: <strong>{item.quantity}</strong>
-                  </div>
-                  <div>
-                    Giá: <strong>{item.unitPrice.toLocaleString("vi-VN")} ₫</strong>
-                  </div>
-                  <div style={{ fontWeight: 700, color: "#d32f2f" }}>
-                    {(item.quantity * item.unitPrice).toLocaleString("vi-VN")} ₫
-                  </div>
-                </div>
-              </div>
-            ))
+              );
+            })
           ) : (
             <div style={{ padding: "12px", textAlign: "center", color: "#999" }}>Không có sản phẩm</div>
           )}

@@ -142,12 +142,14 @@ export default function OrdersPage() {
   }
 
   const filteredOrders = useMemo(() => {
-    return orders.filter((order) => {
-      if (selectedStatus && order.orderStatus !== selectedStatus) return false;
-      if (selectedChannel && order.orderChannel !== selectedChannel)
-        return false;
-      return true;
-    });
+    return orders
+      .filter((order) => {
+        if (selectedStatus && order.orderStatus !== selectedStatus) return false;
+        if (selectedChannel && order.orderChannel !== selectedChannel)
+          return false;
+        return true;
+      })
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }, [orders, selectedStatus, selectedChannel]);
 
   const totalOrders = orders.length;
