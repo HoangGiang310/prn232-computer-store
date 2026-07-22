@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
-import { createOrder } from "../lib/api";
+import { createOrder, fetchVouchers } from "../lib/api";
 import { getAuth } from "../lib/auth";
 import { clearCheckoutCart, readCheckoutCart, readBuyNowCart, clearBuyNowCart, type CheckoutCartItem } from "../lib/cart";
 
@@ -17,6 +17,7 @@ export default function CheckoutPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [authToken, setAuthToken] = useState<string | null>(null);
+  const [vouchers, setVouchers] = useState<any[]>([]);
 
   useEffect(() => {
     const auth = getAuth();
@@ -32,10 +33,20 @@ export default function CheckoutPage() {
     setShippingName(auth.username || "");
     setAuthToken(auth.token);
 
-    // Cleanup: xóa Buy Now cart khi người dùng quay lại trang này
-    return () => {
-      // Không xóa ngay, để cho người dùng hoàn thành đơn hàng trước
-    };
+    // Tải danh sách voucher
+    fetchVouchers()
+      .then((data) => {
+        const now = new Date();
+        const active = (data || []).filter((v: any) => {
+          const start = new Date(v.startDate);
+          const end = new Date(v.endDate);
+          return now >= start && now <= end && v.usedCount < v.totalUsageLimit;
+        });
+        setVouchers(active);
+      })
+      .catch((err) => console.error("Không thể tải danh sách voucher", err));
+
+    return () => {};
   }, [router]);
 
   const selectedItems = useMemo(
@@ -210,8 +221,24 @@ export default function CheckoutPage() {
               </select>
             </label>
             <label>
-              Voucher (tuỳ chọn)
-              <input value={voucherCode} onChange={(e) => setVoucherCode(e.target.value)} />
+              Chọn Voucher (tuỳ chọn)
+              <select
+                value={voucherCode}
+                onChange={(e) => setVoucherCode(e.target.value)}
+                style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+              >
+                <option value="">-- Không sử dụng voucher --</option>
+                {vouchers.map((v: any) => {
+                  const isEligible = totalAmount >= v.minOrderValue;
+                  const discountDesc = v.discountType === "Percentage" ? `${v.discountValue}%` : `${Number(v.discountValue).toLocaleString("vi-VN")} ₫`;
+                  const condDesc = v.minOrderValue > 0 ? ` (Đơn tối thiểu ${Number(v.minOrderValue).toLocaleString("vi-VN")} ₫)` : "";
+                  return (
+                    <option key={v.code} value={v.code} disabled={!isEligible}>
+                      {v.code} - Giảm {discountDesc}{condDesc} {!isEligible ? " [Không đủ điều kiện]" : ""}
+                    </option>
+                  );
+                })}
+              </select>
             </label>
           </div>
 
