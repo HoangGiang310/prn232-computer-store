@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import AdminHeader from "../components/AdminHeader";
+import AddressSelector from "../components/AddressSelector";
 import {
   createOrder,
   fetchProducts,
@@ -260,16 +261,10 @@ export default function CreateOrderPage() {
                   style={{ width: "100%" }}
                 />
               </label>
-              <label style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "0" }}>
-                <span>Địa chỉ giao hàng</span>
-                <textarea
-                  value={shippingAddress}
-                  onChange={(e) => setShippingAddress(e.target.value)}
-                  rows={3}
-                  required
-                  style={{ width: "100%", resize: "vertical" }}
-                />
-              </label>
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "16px" }}>
+                <span style={{ fontSize: "14px", fontWeight: "bold", color: "#475569" }}>Địa chỉ giao hàng *</span>
+                <AddressSelector initialAddress={shippingAddress} onChange={setShippingAddress} />
+              </div>
             </div>
           </div>
 
