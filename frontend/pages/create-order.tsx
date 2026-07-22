@@ -23,6 +23,7 @@ type OrderLineItem = {
   productId: string;
   quantity: number;
   unitPrice: number;
+  searchQuery?: string;
 };
 
 const defaultLineItem = (): OrderLineItem => ({
@@ -30,6 +31,7 @@ const defaultLineItem = (): OrderLineItem => ({
   productId: "",
   quantity: 1,
   unitPrice: 0,
+  searchQuery: "",
 });
 
 const orderChannels = ["Online", "Offline"];
@@ -284,8 +286,24 @@ export default function CreateOrderPage() {
                   marginBottom: "16px",
                 }}
               >
-                <label style={{ display: "flex", flexDirection: "column" }}>
-                  Sản phẩm
+                <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                  <label style={{ display: "flex", flexDirection: "column", fontWeight: 600, fontSize: "14px" }}>
+                    Sản phẩm
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Tìm tên hoặc mã SP..."
+                    value={item.searchQuery || ""}
+                    onChange={(e) => updateItem(item.id, { searchQuery: e.target.value })}
+                    style={{
+                      padding: "6px 10px",
+                      borderRadius: "6px",
+                      border: "1px solid #cbd5e1",
+                      fontSize: "14px",
+                      width: "100%",
+                      boxSizing: "border-box"
+                    }}
+                  />
                   <select
                     value={item.productId}
                     onChange={(e) => {
@@ -298,16 +316,27 @@ export default function CreateOrderPage() {
                       });
                     }}
                     required
+                    style={{ width: "100%" }}
                   >
                     <option value="">Chọn sản phẩm</option>
-                    {products.map((product) => (
-                      <option key={product.id} value={product.id}>
-                        {product.productCode} - {product.name} ({product.category ?? "Không rõ"}) (
-                        {product.stockQuantity} tồn)
-                      </option>
-                    ))}
+                    {(() => {
+                      const selectedProduct = products.find((p) => p.id === item.productId);
+                      const filtered = products.filter((p) => {
+                        const query = (item.searchQuery || "").trim().toLowerCase();
+                        if (!query) return true;
+                        return p.name.toLowerCase().includes(query) || p.productCode.toLowerCase().includes(query);
+                      });
+                      if (selectedProduct && !filtered.some((p) => p.id === selectedProduct.id)) {
+                        filtered.push(selectedProduct);
+                      }
+                      return filtered.map((product) => (
+                        <option key={product.id} value={product.id}>
+                          {product.productCode} - {product.name} ({product.category ?? "Không rõ"}) ({product.stockQuantity} tồn)
+                        </option>
+                      ));
+                    })()}
                   </select>
-                </label>
+                </div>
                 <label style={{ display: "flex", flexDirection: "column" }}>
                   Số lượng
                   <input
