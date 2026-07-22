@@ -24,9 +24,11 @@ namespace ComputerStoreApi.Controllers
         {
             var orders = await _dbContext.Orders
                 .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product)
+                    .ThenInclude(oi => oi.Product)
+                        .ThenInclude(p => p.Images)
                 .Include(o => o.Shipment)
                 .Include(o => o.Customer)
+                .OrderByDescending(o => o.CreatedAt)
                 .ToListAsync();
             return Ok(orders);
         }
@@ -37,7 +39,8 @@ namespace ComputerStoreApi.Controllers
         {
             var order = await _dbContext.Orders
                 .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product)
+                    .ThenInclude(oi => oi.Product)
+                        .ThenInclude(p => p.Images)
                 .Include(o => o.Shipment)
                 .Include(o => o.Customer)
                 .FirstOrDefaultAsync(o => o.Id == id);
@@ -179,7 +182,15 @@ namespace ComputerStoreApi.Controllers
                 await _dbContext.SaveChangesAsync();
 
                 await transaction.CommitAsync();
-                return CreatedAtAction(nameof(GetById), new { id = order.Id }, order);
+                var createdOrder = await _dbContext.Orders
+                    .Include(o => o.OrderItems)
+                        .ThenInclude(oi => oi.Product)
+                            .ThenInclude(p => p.Images)
+                    .Include(o => o.Shipment)
+                    .Include(o => o.Customer)
+                    .FirstOrDefaultAsync(o => o.Id == order.Id);
+
+                return CreatedAtAction(nameof(GetById), new { id = order.Id }, createdOrder ?? order);
             }
             catch (Exception ex)
             {

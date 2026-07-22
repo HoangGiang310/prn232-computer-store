@@ -74,7 +74,8 @@ namespace ComputerStoreApi.Controllers
             var orders = await _dbContext.Orders
                 .Where(o => o.CustomerId == customer.Id)
                 .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product)
+                    .ThenInclude(oi => oi.Product)
+                        .ThenInclude(p => p.Images)
                 .OrderByDescending(o => o.CreatedAt)
                 .ToListAsync();
 
@@ -91,7 +92,8 @@ namespace ComputerStoreApi.Controllers
             var orders = await _dbContext.Orders
                 .Where(o => o.CustomerId == id)
                 .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product)
+                    .ThenInclude(oi => oi.Product)
+                        .ThenInclude(p => p.Images)
                 .OrderByDescending(o => o.CreatedAt)
                 .ToListAsync();
 
