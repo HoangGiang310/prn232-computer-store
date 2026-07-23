@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-const String apiBaseUrl = 'http://localhost:5000';
+const String apiBaseUrl = 'http://10.0.2.2:5000';
 
 class ApiService {
   static dynamic _decodeBody(http.Response response) {
