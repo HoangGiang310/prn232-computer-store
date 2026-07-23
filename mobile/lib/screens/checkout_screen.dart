@@ -339,6 +339,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         throw Exception('Bạn cần đăng nhập để đặt hàng.');
       }
 
+      // Kiểm tra lại tồn kho ngay trước khi tạo đơn (tránh mua sản phẩm đã hết hàng trong lúc đang thanh toán)
+      final outOfStockItems = _items.where((item) => item.stockQuantity <= 0 || item.quantity > item.stockQuantity).toList();
+      if (outOfStockItems.isNotEmpty) {
+        throw Exception('Một số sản phẩm đã hết hàng hoặc không đủ tồn kho. Vui lòng cập nhật lại giỏ hàng.');
+      }
+
       const paymentMethod = 'E-Wallet';
       final totalAmount = _calculateTotalAmount();
 
@@ -402,10 +408,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: const Color(0xFFF6F7F9),
       appBar: AppBar(
         title: const Text('Thanh toán đơn hàng'),
-        backgroundColor: const Color(0xFFB22204),
+        backgroundColor: const Color(0xFF171A20),
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -436,7 +442,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.shopping_bag_rounded, color: Color(0xFFEE4D2D), size: 20),
+                          const Icon(Icons.shopping_bag_rounded, color: Color(0xFFF04A24), size: 20),
                           const SizedBox(width: 8),
                           Text(
                             'Sản phẩm đã chọn (${_items.length})',
@@ -451,7 +457,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         decoration: BoxDecoration(
                           color: const Color(0xFFF9F9F9),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: const Color(0xFFE8E8E8)),
+                          border: Border.all(color: const Color(0xFFE6E8EC)),
                         ),
                         child: Row(
                           children: [
@@ -465,7 +471,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   ),
                                   Text(
                                     'Số lượng: ${item.quantity} x ${item.price.toStringAsFixed(0)} ₫',
-                                    style: const TextStyle(fontSize: 11, color: Color(0xFF757575)),
+                                    style: const TextStyle(fontSize: 11, color: Color(0xFF6F7785)),
                                   ),
                                 ],
                               ),
@@ -474,7 +480,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               '${(item.quantity * item.price).toStringAsFixed(0)} ₫',
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFFEE4D2D),
+                                color: Color(0xFFF04A24),
                               ),
                             ),
                           ],
@@ -504,7 +510,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     children: [
                       const Row(
                         children: [
-                          Icon(Icons.local_shipping_rounded, color: Color(0xFFEE4D2D), size: 20),
+                          Icon(Icons.local_shipping_rounded, color: Color(0xFFF04A24), size: 20),
                           SizedBox(width: 8),
                           Text(
                             'Thông tin giao hàng',
@@ -696,7 +702,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     children: [
                       const Row(
                         children: [
-                          Icon(Icons.receipt_long_rounded, color: Color(0xFFEE4D2D), size: 20),
+                          Icon(Icons.receipt_long_rounded, color: Color(0xFFF04A24), size: 20),
                           SizedBox(width: 8),
                           Text(
                             'Chi tiết thanh toán',
@@ -708,7 +714,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Tổng tiền hàng', style: TextStyle(color: Color(0xFF757575))),
+                          const Text('Tổng tiền hàng', style: TextStyle(color: Color(0xFF6F7785))),
                           Text(
                             '${_calculateTotalAmount().toStringAsFixed(0)} ₫',
                             style: const TextStyle(fontWeight: FontWeight.w600),
@@ -722,16 +728,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           children: [
                             Text(
                               'Giảm giá từ voucher (${_selectedVoucher?['code'] ?? ''})',
-                              style: const TextStyle(color: Color(0xFF26AA99)),
+                              style: const TextStyle(color: Color(0xFF0F9D79)),
                             ),
                             Text(
                               '-${_discountAmount.toStringAsFixed(0)} ₫',
-                              style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF26AA99)),
+                              style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF0F9D79)),
                             ),
                           ],
                         ),
                       ],
-                      const Divider(height: 24, thickness: 1, color: Color(0xFFF5F5F5)),
+                      const Divider(height: 24, thickness: 1, color: Color(0xFFF6F7F9)),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -744,7 +750,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
-                              color: Color(0xFFEE4D2D),
+                              color: Color(0xFFF04A24),
                             ),
                           ),
                         ],
@@ -761,7 +767,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   child: ElevatedButton(
                     onPressed: _isSubmitting ? null : _submitOrder,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFEE4D2D),
+                      backgroundColor: const Color(0xFFF04A24),
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                       elevation: 2,
