@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'screens/home_screen.dart';
+import 'theme/app_theme.dart';
 
 void main() {
   runApp(const ComputerStoreApp());
@@ -14,11 +15,7 @@ class ComputerStoreApp extends StatelessWidget {
     return MaterialApp(
       title: 'TQG Computer Store',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1D4ED8)),
-        useMaterial3: true,
-        scaffoldBackgroundColor: const Color(0xFFF8FAFC),
-      ),
+      theme: AppTheme.light,
       home: const HomeScreen(),
     );
   }

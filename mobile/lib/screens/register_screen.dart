@@ -41,7 +41,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          backgroundColor: const Color(0xFF059669),
+          backgroundColor: const Color(0xFF26AA99),
         ),
       );
       Navigator.of(context).pop(true);
@@ -52,7 +52,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           content: Text(error.toString()),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          backgroundColor: const Color(0xFFEF4444),
+          backgroundColor: const Color(0xFFBA1A1A),
         ),
       );
     } finally {
@@ -63,11 +63,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF1F5F9),
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        foregroundColor: const Color(0xFF0F172A),
+        foregroundColor: const Color(0xFF222222),
       ),
       body: SafeArea(
         child: Center(
@@ -81,14 +81,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xFF2563EB), Color(0xFF4F46E5)],
+                      colors: [Color(0xFFEE4D2D), Color(0xFFEE4D2D)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF2563EB).withAlpha(70),
+                        color: const Color(0xFFEE4D2D).withAlpha(70),
                         blurRadius: 16,
                         offset: const Offset(0, 6),
                       ),
@@ -106,7 +106,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF0F172A),
+                    color: Color(0xFF222222),
                     letterSpacing: -0.5,
                   ),
                 ),
@@ -115,7 +115,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   'Tham gia TQG Store để mua sắm máy tính dễ dàng',
                   style: TextStyle(
                     fontSize: 13,
-                    color: Color(0xFF64748B),
+                    color: Color(0xFF757575),
                   ),
                 ),
                 const SizedBox(height: 28),
@@ -144,7 +144,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF334155),
+                            color: Color(0xFF222222),
                           ),
                         ),
                         const SizedBox(height: 6),
@@ -152,21 +152,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           controller: _fullNameController,
                           decoration: InputDecoration(
                             hintText: 'Nhập họ và tên',
-                            prefixIcon: const Icon(Icons.badge_outlined, color: Color(0xFF64748B)),
+                            prefixIcon: const Icon(Icons.badge_outlined, color: Color(0xFF757575)),
                             filled: true,
-                            fillColor: const Color(0xFFF8FAFC),
+                            fillColor: const Color(0xFFF9F9F9),
                             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
-                              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                              borderSide: const BorderSide(color: Color(0xFFE8E8E8)),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
-                              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                              borderSide: const BorderSide(color: Color(0xFFE8E8E8)),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
-                              borderSide: const BorderSide(color: Color(0xFF2563EB), width: 1.5),
+                              borderSide: const BorderSide(color: Color(0xFFEE4D2D), width: 1.5),
                             ),
                           ),
                           validator: (value) => (value == null || value.trim().isEmpty)
@@ -179,7 +179,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF334155),
+                            color: Color(0xFF222222),
                           ),
                         ),
                         const SizedBox(height: 6),
@@ -187,21 +187,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           controller: _usernameController,
                           decoration: InputDecoration(
                             hintText: 'Nhập tên đăng nhập',
-                            prefixIcon: const Icon(Icons.person_outline_rounded, color: Color(0xFF64748B)),
+                            prefixIcon: const Icon(Icons.person_outline_rounded, color: Color(0xFF757575)),
                             filled: true,
-                            fillColor: const Color(0xFFF8FAFC),
+                            fillColor: const Color(0xFFF9F9F9),
                             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
-                              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                              borderSide: const BorderSide(color: Color(0xFFE8E8E8)),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
-                              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                              borderSide: const BorderSide(color: Color(0xFFE8E8E8)),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
-                              borderSide: const BorderSide(color: Color(0xFF2563EB), width: 1.5),
+                              borderSide: const BorderSide(color: Color(0xFFEE4D2D), width: 1.5),
                             ),
                           ),
                           validator: (value) => (value == null || value.trim().isEmpty)
@@ -214,7 +214,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF334155),
+                            color: Color(0xFF222222),
                           ),
                         ),
                         const SizedBox(height: 6),
@@ -223,21 +223,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                             hintText: 'Nhập địa chỉ email',
-                            prefixIcon: const Icon(Icons.email_outlined, color: Color(0xFF64748B)),
+                            prefixIcon: const Icon(Icons.email_outlined, color: Color(0xFF757575)),
                             filled: true,
-                            fillColor: const Color(0xFFF8FAFC),
+                            fillColor: const Color(0xFFF9F9F9),
                             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
-                              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                              borderSide: const BorderSide(color: Color(0xFFE8E8E8)),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
-                              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                              borderSide: const BorderSide(color: Color(0xFFE8E8E8)),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
-                              borderSide: const BorderSide(color: Color(0xFF2563EB), width: 1.5),
+                              borderSide: const BorderSide(color: Color(0xFFEE4D2D), width: 1.5),
                             ),
                           ),
                           validator: (value) => (value == null || value.trim().isEmpty)
@@ -250,7 +250,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF334155),
+                            color: Color(0xFF222222),
                           ),
                         ),
                         const SizedBox(height: 6),
@@ -259,32 +259,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           obscureText: _obscurePassword,
                           decoration: InputDecoration(
                             hintText: 'Tạo mật khẩu',
-                            prefixIcon: const Icon(Icons.lock_outline_rounded, color: Color(0xFF64748B)),
+                            prefixIcon: const Icon(Icons.lock_outline_rounded, color: Color(0xFF757575)),
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _obscurePassword
                                     ? Icons.visibility_off_outlined
                                     : Icons.visibility_outlined,
-                                color: const Color(0xFF64748B),
+                                color: const Color(0xFF757575),
                               ),
                               onPressed: () {
                                 setState(() => _obscurePassword = !_obscurePassword);
                               },
                             ),
                             filled: true,
-                            fillColor: const Color(0xFFF8FAFC),
+                            fillColor: const Color(0xFFF9F9F9),
                             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
-                              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                              borderSide: const BorderSide(color: Color(0xFFE8E8E8)),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
-                              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                              borderSide: const BorderSide(color: Color(0xFFE8E8E8)),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
-                              borderSide: const BorderSide(color: Color(0xFF2563EB), width: 1.5),
+                              borderSide: const BorderSide(color: Color(0xFFEE4D2D), width: 1.5),
                             ),
                           ),
                           validator: (value) => (value == null || value.trim().isEmpty)
@@ -298,7 +298,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           child: ElevatedButton(
                             onPressed: _isSubmitting ? null : _submit,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF2563EB),
+                              backgroundColor: const Color(0xFFEE4D2D),
                               foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(14),
@@ -341,7 +341,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   children: [
                     const Text(
                       'Đã có tài khoản? ',
-                      style: TextStyle(color: Color(0xFF64748B), fontSize: 13),
+                      style: TextStyle(color: Color(0xFF757575), fontSize: 13),
                     ),
                     GestureDetector(
                       onTap: () {
@@ -353,7 +353,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: const Text(
                         'Đăng nhập ngay',
                         style: TextStyle(
-                          color: Color(0xFF2563EB),
+                          color: Color(0xFFEE4D2D),
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
                         ),

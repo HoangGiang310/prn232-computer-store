@@ -15,7 +15,7 @@ class OrderSuccessScreen extends StatelessWidget {
     final shippingName = order['shippingName']?.toString() ?? 'Khách hàng';
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: const Color(0xFFF9F9F9),
       appBar: AppBar(title: const Text('Đặt hàng thành công')),
       body: SafeArea(
         child: Padding(
@@ -44,10 +44,10 @@ class OrderSuccessScreen extends StatelessWidget {
                           width: 88,
                           height: 88,
                           decoration: const BoxDecoration(
-                            color: Color(0xFFDCFCE7),
+                            color: Color(0xFFE1F5F1),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.check_circle, size: 56, color: Color(0xFF15803D)),
+                          child: const Icon(Icons.check_circle, size: 56, color: Color(0xFF1B8577)),
                         ),
                         const SizedBox(height: 18),
                         const Text(

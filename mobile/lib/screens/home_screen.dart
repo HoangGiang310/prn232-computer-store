@@ -111,14 +111,14 @@ class _HomeScreenState extends State<HomeScreen> {
       title: 'Sản phẩm',
       subtitle: 'Khám phá laptop & linh kiện',
       destination: const ProductsScreen(),
-      color: const Color(0xFF2563EB),
+      color: const Color(0xFFEE4D2D),
     );
     addCard(
       icon: Icons.shopping_bag_outlined,
       title: 'Giỏ hàng',
       subtitle: 'Quản lý sản phẩm',
       destination: const CartScreen(),
-      color: const Color(0xFF7C3AED),
+      color: const Color(0xFFFF5722),
       badgeText: _totalCartCount > 0 ? '$_totalCartCount' : null,
       customOnTap: () {
         if (_currentUser == null) {
@@ -133,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              backgroundColor: const Color(0xFFEF4444),
+              backgroundColor: const Color(0xFFBA1A1A),
               duration: const Duration(seconds: 3),
             ),
           );
@@ -150,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
       title: 'Lịch sử đơn',
       subtitle: 'Theo dõi đơn hàng',
       destination: const OrderHistoryScreen(),
-      color: const Color(0xFF059669),
+      color: const Color(0xFF26AA99),
     );
 
     return cards;
@@ -169,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          backgroundColor: const Color(0xFFEF4444),
+          backgroundColor: const Color(0xFFBA1A1A),
           duration: const Duration(seconds: 3),
         ),
       );
@@ -209,18 +209,18 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF1F5F9),
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
         elevation: 0,
         toolbarHeight: 64,
-        backgroundColor: const Color(0xFF0F172A),
+        backgroundColor: const Color(0xFFB22204),
         title: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF3B82F6), Color(0xFF1D4ED8)],
+                  colors: [Color(0xFFFF7A54), Color(0xFFEE4D2D)],
                 ),
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -244,7 +244,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   'Máy tính & Linh kiện chính hãng',
                   style: TextStyle(
                     fontSize: 10,
-                    color: Color(0xFF94A3B8),
+                    color: Color(0xFF9E9E9E),
                   ),
                 ),
               ],
@@ -271,7 +271,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         behavior: SnackBarBehavior.floating,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        backgroundColor: const Color(0xFFEF4444),
+                        backgroundColor: const Color(0xFFBA1A1A),
                         duration: const Duration(seconds: 3),
                       ),
                     );
@@ -290,7 +290,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Container(
                     padding: const EdgeInsets.all(4),
                     decoration: const BoxDecoration(
-                      color: Color(0xFFEF4444),
+                      color: Color(0xFFBA1A1A),
                       shape: BoxShape.circle,
                     ),
                     constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
@@ -309,13 +309,13 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           if (_currentUser != null)
             IconButton(
-              icon: const Icon(Icons.logout_rounded, color: Color(0xFFF87171)),
+              icon: const Icon(Icons.logout_rounded, color: Color(0xFFEE4D2D)),
               tooltip: 'Đăng xuất',
               onPressed: _logout,
             )
           else
             IconButton(
-              icon: const Icon(Icons.login_rounded, color: Color(0xFF60A5FA)),
+              icon: const Icon(Icons.login_rounded, color: Color(0xFFFF7A54)),
               tooltip: 'Đăng nhập',
               onPressed: () {
                 Navigator.push(
@@ -329,7 +329,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: SafeArea(
         child: RefreshIndicator(
-          color: const Color(0xFF1D4ED8),
+          color: const Color(0xFFEE4D2D),
           onRefresh: () async {
             await _loadUser();
             await _loadProducts();
@@ -358,13 +358,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF0F172A),
+                              color: Color(0xFF222222),
                             ),
                           ),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFE2E8F0),
+                              color: const Color(0xFFE8E8E8),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(
@@ -374,7 +374,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               style: const TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF475569),
+                                color: Color(0xFF616161),
                               ),
                             ),
                           ),
@@ -399,7 +399,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             width: 4,
                             height: 20,
                             decoration: BoxDecoration(
-                              color: const Color(0xFF2563EB),
+                              color: const Color(0xFFEE4D2D),
                               borderRadius: BorderRadius.circular(2),
                             ),
                           ),
@@ -410,7 +410,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF0F172A),
+                                color: Color(0xFF222222),
                               ),
                             ),
                           ),
@@ -422,7 +422,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             icon: const Icon(Icons.arrow_forward_rounded, size: 16),
                             label: const Text('Xem thêm'),
                             style: TextButton.styleFrom(
-                              foregroundColor: const Color(0xFF2563EB),
+                              foregroundColor: const Color(0xFFEE4D2D),
                               textStyle: const TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
@@ -462,7 +462,7 @@ class _HomeScreenState extends State<HomeScreen> {
       width: double.infinity,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF0F172A), Color(0xFF1E3A8A), Color(0xFF1D4ED8)],
+          colors: [Color(0xFFB22204), Color(0xFFEE4D2D), Color(0xFFFF7A54)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -486,7 +486,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ? '👋 XIN CHÀO, ${_currentUser!.fullName?.toUpperCase() ?? _currentUser!.username.toUpperCase()}'
                     : '👋 CHÀO MỪNG BẠN',
                 style: const TextStyle(
-                  color: Color(0xFF93C5FD),
+                  color: Color(0xFFFFDAD3),
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.2,
@@ -496,7 +496,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFFEF4444), Color(0xFFF59E0B)],
+                    colors: [Color(0xFFBA1A1A), Color(0xFFFFBA3F)],
                   ),
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
@@ -542,7 +542,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ? 'Duyệt bộ sưu tập laptop mới nhất, thêm vào giỏ hàng và thanh toán nhanh chóng.'
                 : 'Đăng nhập hoặc đăng ký tài khoản để trải nghiệm mua sắm và nhận ưu đãi độc quyền.',
             textAlign: TextAlign.center,
-            style: const TextStyle(color: Color(0xFFCBD5E1), fontSize: 13, height: 1.4),
+            style: const TextStyle(color: Color(0xFFE8E8E8), fontSize: 13, height: 1.4),
           ),
           const SizedBox(height: 16),
           Wrap(
@@ -571,7 +571,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
-                      foregroundColor: const Color(0xFF0F172A),
+                      foregroundColor: const Color(0xFF222222),
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       elevation: 2,
@@ -617,7 +617,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: const Color(0xFF93C5FD), size: 14),
+          Icon(icon, color: const Color(0xFFFFDAD3), size: 14),
           const SizedBox(width: 6),
           Text(
             text,
@@ -636,13 +636,13 @@ class _HomeScreenState extends State<HomeScreen> {
           MaterialPageRoute(builder: (_) => const ProductsScreen()),
         );
       },
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(30),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFE2E8F0)),
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: const Color(0xFFE8E8E8)),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withAlpha(8),
@@ -653,15 +653,15 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: const Row(
           children: [
-            Icon(Icons.search_rounded, color: Color(0xFF64748B)),
+            Icon(Icons.search_rounded, color: Color(0xFF757575)),
             SizedBox(width: 12),
             Expanded(
               child: Text(
                 'Tìm kiếm laptop, Asus, Dell, MSI, RAM, SSD...',
-                style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+                style: TextStyle(color: Color(0xFF9E9E9E), fontSize: 13),
               ),
             ),
-            Icon(Icons.tune_rounded, color: Color(0xFF2563EB), size: 20),
+            Icon(Icons.tune_rounded, color: Color(0xFFEE4D2D), size: 20),
           ],
         ),
       ),
@@ -697,15 +697,15 @@ class _HomeScreenState extends State<HomeScreen> {
               duration: const Duration(milliseconds: 200),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
-                color: isSelected ? const Color(0xFF1D4ED8) : Colors.white,
+                color: isSelected ? const Color(0xFFEE4D2D) : Colors.white,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: isSelected ? const Color(0xFF1D4ED8) : const Color(0xFFE2E8F0),
+                  color: isSelected ? const Color(0xFFEE4D2D) : const Color(0xFFE8E8E8),
                 ),
                 boxShadow: isSelected
                     ? [
                         BoxShadow(
-                          color: const Color(0xFF1D4ED8).withAlpha(75),
+                          color: const Color(0xFFEE4D2D).withAlpha(75),
                           blurRadius: 6,
                           offset: const Offset(0, 2),
                         )
@@ -716,7 +716,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Text(
                   categories[index]['label'] as String,
                   style: TextStyle(
-                    color: isSelected ? Colors.white : const Color(0xFF475569),
+                    color: isSelected ? Colors.white : const Color(0xFF616161),
                     fontSize: 12,
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                   ),
@@ -745,18 +745,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 context,
                 MaterialPageRoute(builder: (_) => destination),
               ),
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(16),
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(color: const Color(0xFFF1F5F9)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(10),
-              blurRadius: 10,
-              offset: const Offset(0, 3),
+              color: Colors.black.withValues(alpha: 0.03),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
@@ -780,7 +780,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 13,
-                    color: Color(0xFF0F172A),
+                    color: Color(0xFF222222),
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -788,7 +788,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   subtitle,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                  style: const TextStyle(fontSize: 10, color: Color(0xFF757575)),
                 ),
               ],
             ),
@@ -799,7 +799,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFEF4444),
+                    color: const Color(0xFFBA1A1A),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
@@ -824,12 +824,12 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFFEFF6FF), Color(0xFFDBEAFE)],
+          colors: [Color(0xFFFFF5F2), Color(0xFFFFF5F2)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFBFDBFE)),
+        border: Border.all(color: const Color(0xFFFFDAD3)),
       ),
       child: Row(
         children: [
@@ -842,7 +842,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF1D4ED8),
+                        color: const Color(0xFFEE4D2D),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Text(
@@ -860,7 +860,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF1E40AF),
+                        color: Color(0xFFB22204),
                       ),
                     ),
                   ],
@@ -870,7 +870,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   'Giảm 10% cho đơn hàng trên 8 triệu và miễn phí giao hàng.',
                   style: TextStyle(
                     fontSize: 12,
-                    color: Color(0xFF1E293B),
+                    color: Color(0xFF222222),
                     height: 1.3,
                   ),
                 ),
@@ -888,11 +888,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF1D4ED8),
+                          color: Color(0xFFEE4D2D),
                         ),
                       ),
                       SizedBox(width: 4),
-                      Icon(Icons.arrow_forward_rounded, size: 14, color: Color(0xFF1D4ED8)),
+                      Icon(Icons.arrow_forward_rounded, size: 14, color: Color(0xFFEE4D2D)),
                     ],
                   ),
                 ),
@@ -908,7 +908,7 @@ class _HomeScreenState extends State<HomeScreen> {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF1D4ED8).withAlpha(30),
+                  color: const Color(0xFFEE4D2D).withAlpha(30),
                   blurRadius: 8,
                 ),
               ],
@@ -916,14 +916,14 @@ class _HomeScreenState extends State<HomeScreen> {
             child: const Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.discount_rounded, size: 30, color: Color(0xFF1D4ED8)),
+                Icon(Icons.discount_rounded, size: 30, color: Color(0xFFEE4D2D)),
                 SizedBox(height: 2),
                 Text(
                   '-10%',
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w900,
-                    color: Color(0xFF1D4ED8),
+                    color: Color(0xFFEE4D2D),
                   ),
                 ),
               ],
@@ -938,12 +938,12 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: const Color(0xFFF1F5F9)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(10),
-            blurRadius: 10,
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 12,
             offset: const Offset(0, 4),
           ),
         ],
@@ -955,7 +955,7 @@ class _HomeScreenState extends State<HomeScreen> {
             context,
             MaterialPageRoute(builder: (_) => ProductDetailScreen(product: product)),
           ),
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(16),
           child: Padding(
             padding: const EdgeInsets.all(12),
             child: Row(
@@ -965,12 +965,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 72,
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xFFF8FAFC), Color(0xFFEFF6FF)],
+                      colors: [Color(0xFFF9F9F9), Color(0xFFFFF5F2)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                    border: Border.all(color: const Color(0xFFE8E8E8)),
                   ),
                   child: Stack(
                     alignment: Alignment.center,
@@ -983,18 +983,18 @@ class _HomeScreenState extends State<HomeScreen> {
                             width: 72,
                             height: 72,
                             fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => const Icon(Icons.laptop_mac_rounded, size: 36, color: Color(0xFF2563EB)),
+                            errorBuilder: (_, __, ___) => const Icon(Icons.laptop_mac_rounded, size: 36, color: Color(0xFFEE4D2D)),
                           ),
                         )
                       else
-                        const Icon(Icons.laptop_mac_rounded, size: 36, color: Color(0xFF2563EB)),
+                        const Icon(Icons.laptop_mac_rounded, size: 36, color: Color(0xFFEE4D2D)),
                       Positioned(
                         bottom: 4,
                         left: 4,
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF0F172A),
+                            color: const Color(0xFF222222),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(
@@ -1022,7 +1022,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
-                          color: Color(0xFF0F172A),
+                          color: Color(0xFF222222),
                           height: 1.25,
                         ),
                       ),
@@ -1032,14 +1032,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFF1F5F9),
+                              color: const Color(0xFFF5F5F5),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
                               product.category,
                               style: const TextStyle(
                                 fontSize: 10,
-                                color: Color(0xFF64748B),
+                                color: Color(0xFF757575),
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -1048,12 +1048,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           if (product.stockQuantity > 0)
                             Text(
                               'Còn ${product.stockQuantity}',
-                              style: const TextStyle(fontSize: 10, color: Color(0xFF059669)),
+                              style: const TextStyle(fontSize: 10, color: Color(0xFF26AA99)),
                             )
                           else
                             const Text(
                               'Hết hàng',
-                              style: TextStyle(fontSize: 10, color: Color(0xFFEF4444)),
+                              style: TextStyle(fontSize: 10, color: Color(0xFFBA1A1A)),
                             ),
                         ],
                       ),
@@ -1061,7 +1061,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Text(
                         product.formattedPrice,
                         style: const TextStyle(
-                          color: Color(0xFF1D4ED8),
+                          color: Color(0xFFEE4D2D),
                           fontSize: 15,
                           fontWeight: FontWeight.w800,
                         ),
@@ -1076,13 +1076,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFEFF6FF),
+                      color: const Color(0xFFFFF5F2),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFFBFDBFE)),
+                      border: Border.all(color: const Color(0xFFFFDAD3)),
                     ),
                     child: const Icon(
                       Icons.add_shopping_cart_rounded,
-                      color: Color(0xFF1D4ED8),
+                      color: Color(0xFFEE4D2D),
                       size: 20,
                     ),
                   ),
@@ -1112,7 +1112,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: 72,
                 height: 72,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE2E8F0),
+                  color: const Color(0xFFE8E8E8),
                   borderRadius: BorderRadius.circular(14),
                 ),
               ),
@@ -1125,7 +1125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: double.infinity,
                       height: 14,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE2E8F0),
+                        color: const Color(0xFFE8E8E8),
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
@@ -1134,7 +1134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: 100,
                       height: 10,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE2E8F0),
+                        color: const Color(0xFFE8E8E8),
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
@@ -1143,7 +1143,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: 80,
                       height: 14,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE2E8F0),
+                        color: const Color(0xFFE8E8E8),
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
@@ -1164,16 +1164,16 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFFECACA)),
+        border: Border.all(color: const Color(0xFFFFDAD3)),
       ),
       child: Column(
         children: [
-          const Icon(Icons.error_outline_rounded, color: Color(0xFFEF4444), size: 40),
+          const Icon(Icons.error_outline_rounded, color: Color(0xFFBA1A1A), size: 40),
           const SizedBox(height: 8),
           Text(
             _error ?? 'Không thể tải dữ liệu sản phẩm',
             textAlign: TextAlign.center,
-            style: const TextStyle(color: Color(0xFFDC2626), fontSize: 13),
+            style: const TextStyle(color: Color(0xFFBA1A1A), fontSize: 13),
           ),
           const SizedBox(height: 12),
           ElevatedButton.icon(
@@ -1181,7 +1181,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: const Icon(Icons.refresh_rounded, size: 16),
             label: const Text('Thử lại'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF1D4ED8),
+              backgroundColor: const Color(0xFFEE4D2D),
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             ),
@@ -1198,15 +1198,15 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: const Color(0xFFE8E8E8)),
       ),
       child: const Column(
         children: [
-          Icon(Icons.inbox_rounded, color: Color(0xFF94A3B8), size: 44),
+          Icon(Icons.inbox_rounded, color: Color(0xFF9E9E9E), size: 44),
           SizedBox(height: 8),
           Text(
             'Chưa có dữ liệu sản phẩm từ backend.',
-            style: TextStyle(color: Color(0xFF64748B), fontSize: 13),
+            style: TextStyle(color: Color(0xFF757575), fontSize: 13),
           ),
         ],
       ),

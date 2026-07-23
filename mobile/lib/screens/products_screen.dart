@@ -71,10 +71,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
     final filtered = _filteredProducts;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF1F5F9),
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
         title: const Text('Danh sách Sản phẩm'),
-        backgroundColor: const Color(0xFF0F172A),
+        backgroundColor: const Color(0xFFB22204),
         foregroundColor: Colors.white,
         elevation: 0,
         actions: [
@@ -109,11 +109,11 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     onChanged: (_) => setState(() {}),
                     decoration: InputDecoration(
                       hintText: 'Tìm kiếm theo tên, hãng, danh mục...',
-                      hintStyle: const TextStyle(fontSize: 13, color: Color(0xFF94A3B8)),
-                      prefixIcon: const Icon(Icons.search_rounded, color: Color(0xFF64748B)),
+                      hintStyle: const TextStyle(fontSize: 13, color: Color(0xFF9E9E9E)),
+                      prefixIcon: const Icon(Icons.search_rounded, color: Color(0xFF757575)),
                       suffixIcon: _searchController.text.isNotEmpty
                           ? IconButton(
-                              icon: const Icon(Icons.clear_rounded, color: Color(0xFF64748B), size: 18),
+                              icon: const Icon(Icons.clear_rounded, color: Color(0xFF757575), size: 18),
                               onPressed: () {
                                 _searchController.clear();
                                 setState(() {});
@@ -121,19 +121,19 @@ class _ProductsScreenState extends State<ProductsScreen> {
                             )
                           : null,
                       filled: true,
-                      fillColor: const Color(0xFFF8FAFC),
+                      fillColor: const Color(0xFFF9F9F9),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                        borderSide: const BorderSide(color: Color(0xFFE8E8E8)),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                        borderSide: const BorderSide(color: Color(0xFFE8E8E8)),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: const BorderSide(color: Color(0xFF1D4ED8), width: 1.5),
+                        borderSide: const BorderSide(color: Color(0xFFEE4D2D), width: 1.5),
                       ),
                     ),
                   ),
@@ -157,17 +157,17 @@ class _ProductsScreenState extends State<ProductsScreen> {
                             duration: const Duration(milliseconds: 200),
                             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                             decoration: BoxDecoration(
-                              color: isSelected ? const Color(0xFF1D4ED8) : const Color(0xFFF1F5F9),
+                              color: isSelected ? const Color(0xFFEE4D2D) : const Color(0xFFF5F5F5),
                               borderRadius: BorderRadius.circular(18),
                               border: Border.all(
-                                color: isSelected ? const Color(0xFF1D4ED8) : const Color(0xFFE2E8F0),
+                                color: isSelected ? const Color(0xFFEE4D2D) : const Color(0xFFE8E8E8),
                               ),
                             ),
                             child: Center(
                               child: Text(
                                 category,
                                 style: TextStyle(
-                                  color: isSelected ? Colors.white : const Color(0xFF475569),
+                                  color: isSelected ? Colors.white : const Color(0xFF616161),
                                   fontSize: 12,
                                   fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                                 ),
@@ -192,7 +192,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF64748B),
+                      color: Color(0xFF757575),
                     ),
                   ),
                 ],
@@ -228,7 +228,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFF1F5F9)),
+        border: Border.all(color: const Color(0xFFF5F5F5)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(10),
@@ -257,12 +257,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   height: 74,
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xFFF8FAFC), Color(0xFFEFF6FF)],
+                      colors: [Color(0xFFF9F9F9), Color(0xFFFFF5F2)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                    border: Border.all(color: const Color(0xFFE8E8E8)),
                   ),
                   child: Stack(
                     alignment: Alignment.center,
@@ -275,18 +275,18 @@ class _ProductsScreenState extends State<ProductsScreen> {
                             width: 74,
                             height: 74,
                             fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => const Icon(Icons.laptop_mac_rounded, size: 38, color: Color(0xFF2563EB)),
+                            errorBuilder: (_, __, ___) => const Icon(Icons.laptop_mac_rounded, size: 38, color: Color(0xFFEE4D2D)),
                           ),
                         )
                       else
-                        const Icon(Icons.laptop_mac_rounded, size: 38, color: Color(0xFF2563EB)),
+                        const Icon(Icons.laptop_mac_rounded, size: 38, color: Color(0xFFEE4D2D)),
                       Positioned(
                         bottom: 4,
                         left: 4,
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF0F172A),
+                            color: const Color(0xFF222222),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(
@@ -316,7 +316,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
-                          color: Color(0xFF0F172A),
+                          color: Color(0xFF222222),
                           height: 1.25,
                         ),
                       ),
@@ -326,14 +326,14 @@ class _ProductsScreenState extends State<ProductsScreen> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFF1F5F9),
+                              color: const Color(0xFFF5F5F5),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
                               product.category,
                               style: const TextStyle(
                                 fontSize: 10,
-                                color: Color(0xFF64748B),
+                                color: Color(0xFF757575),
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -342,12 +342,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
                           if (product.stockQuantity > 0)
                             Text(
                               'Còn ${product.stockQuantity}',
-                              style: const TextStyle(fontSize: 10, color: Color(0xFF059669)),
+                              style: const TextStyle(fontSize: 10, color: Color(0xFF26AA99)),
                             )
                           else
                             const Text(
                               'Hết hàng',
-                              style: TextStyle(fontSize: 10, color: Color(0xFFEF4444)),
+                              style: TextStyle(fontSize: 10, color: Color(0xFFBA1A1A)),
                             ),
                         ],
                       ),
@@ -355,7 +355,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                       Text(
                         product.formattedPrice,
                         style: const TextStyle(
-                          color: Color(0xFF1D4ED8),
+                          color: Color(0xFFEE4D2D),
                           fontSize: 15,
                           fontWeight: FontWeight.w800,
                         ),
@@ -364,7 +364,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   ),
                 ),
                 const SizedBox(width: 6),
-                const Icon(Icons.chevron_right_rounded, color: Color(0xFF94A3B8)),
+                const Icon(Icons.chevron_right_rounded, color: Color(0xFF9E9E9E)),
               ],
             ),
           ),
@@ -390,7 +390,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
               width: 74,
               height: 74,
               decoration: BoxDecoration(
-                color: const Color(0xFFE2E8F0),
+                color: const Color(0xFFE8E8E8),
                 borderRadius: BorderRadius.circular(14),
               ),
             ),
@@ -403,7 +403,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     width: double.infinity,
                     height: 14,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFE2E8F0),
+                      color: const Color(0xFFE8E8E8),
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -412,7 +412,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     width: 100,
                     height: 10,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFE2E8F0),
+                      color: const Color(0xFFE8E8E8),
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -421,7 +421,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     width: 80,
                     height: 14,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFE2E8F0),
+                      color: const Color(0xFFE8E8E8),
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -442,17 +442,17 @@ class _ProductsScreenState extends State<ProductsScreen> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFFFECACA)),
+          border: Border.all(color: const Color(0xFFFFDAD3)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.error_outline_rounded, color: Color(0xFFEF4444), size: 44),
+            const Icon(Icons.error_outline_rounded, color: Color(0xFFBA1A1A), size: 44),
             const SizedBox(height: 10),
             Text(
               _error ?? 'Có lỗi xảy ra khi tải danh sách sản phẩm',
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Color(0xFFDC2626), fontSize: 13),
+              style: const TextStyle(color: Color(0xFFBA1A1A), fontSize: 13),
             ),
             const SizedBox(height: 14),
             ElevatedButton.icon(
@@ -460,7 +460,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
               icon: const Icon(Icons.refresh_rounded, size: 16),
               label: const Text('Thử lại'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF1D4ED8),
+                backgroundColor: const Color(0xFFEE4D2D),
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
@@ -476,16 +476,16 @@ class _ProductsScreenState extends State<ProductsScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.search_off_rounded, size: 54, color: Color(0xFF94A3B8)),
+          Icon(Icons.search_off_rounded, size: 54, color: Color(0xFF9E9E9E)),
           SizedBox(height: 12),
           Text(
             'Không tìm thấy sản phẩm phù hợp.',
-            style: TextStyle(color: Color(0xFF64748B), fontSize: 14, fontWeight: FontWeight.bold),
+            style: TextStyle(color: Color(0xFF757575), fontSize: 14, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 4),
           Text(
             'Thử từ khóa khác hoặc đổi danh mục tìm kiếm.',
-            style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+            style: TextStyle(color: Color(0xFF9E9E9E), fontSize: 12),
           ),
         ],
       ),

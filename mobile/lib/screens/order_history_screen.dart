@@ -66,28 +66,28 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
   Color _getStatusBgColor(String status) {
     switch (status.toLowerCase()) {
       case 'delivered':
-        return const Color(0xFFDCFCE7);
+        return const Color(0xFFE1F5F1);
       case 'confirmed':
       case 'processing':
-        return const Color(0xFFDBEAFE);
+        return const Color(0xFFFFF5F2);
       case 'cancelled':
-        return const Color(0xFFFEE2E2);
+        return const Color(0xFFFFDAD3);
       default:
-        return const Color(0xFFFEF3C7);
+        return const Color(0xFFFFF3D6);
     }
   }
 
   Color _getStatusTextColor(String status) {
     switch (status.toLowerCase()) {
       case 'delivered':
-        return const Color(0xFF15803D);
+        return const Color(0xFF1B8577);
       case 'confirmed':
       case 'processing':
-        return const Color(0xFF1D4ED8);
+        return const Color(0xFFEE4D2D);
       case 'cancelled':
-        return const Color(0xFFB91C1C);
+        return const Color(0xFFBA1A1A);
       default:
-        return const Color(0xFFB45309);
+        return const Color(0xFF7C5400);
     }
   }
 
@@ -113,10 +113,10 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
     final filtered = _filteredOrders;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF1F5F9),
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
         title: const Text('Lịch sử đơn hàng'),
-        backgroundColor: const Color(0xFF0F172A),
+        backgroundColor: const Color(0xFFB22204),
         foregroundColor: Colors.white,
         elevation: 0,
         actions: [
@@ -152,17 +152,17 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                       duration: const Duration(milliseconds: 200),
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                       decoration: BoxDecoration(
-                        color: isSelected ? const Color(0xFF1D4ED8) : const Color(0xFFF1F5F9),
+                        color: isSelected ? const Color(0xFFEE4D2D) : const Color(0xFFF5F5F5),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: isSelected ? const Color(0xFF1D4ED8) : const Color(0xFFE2E8F0),
+                          color: isSelected ? const Color(0xFFEE4D2D) : const Color(0xFFE8E8E8),
                         ),
                       ),
                       child: Center(
                         child: Text(
                           _formatFilterName(filter),
                           style: TextStyle(
-                            color: isSelected ? Colors.white : const Color(0xFF475569),
+                            color: isSelected ? Colors.white : const Color(0xFF616161),
                             fontSize: 12,
                             fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                           ),
@@ -225,7 +225,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFF1F5F9)),
+        border: Border.all(color: const Color(0xFFF5F5F5)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(10),
@@ -252,10 +252,10 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFEFF6FF),
+                        color: const Color(0xFFFFF5F2),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(Icons.receipt_rounded, color: Color(0xFF1D4ED8), size: 18),
+                      child: const Icon(Icons.receipt_rounded, color: Color(0xFFEE4D2D), size: 18),
                     ),
                     const SizedBox(width: 10),
                     Expanded(
@@ -264,7 +264,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
-                          color: Color(0xFF0F172A),
+                          color: Color(0xFF222222),
                         ),
                       ),
                     ),
@@ -287,18 +287,18 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 ),
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 10),
-                  child: Divider(height: 1, color: Color(0xFFF1F5F9)),
+                  child: Divider(height: 1, color: Color(0xFFF5F5F5)),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.inventory_2_outlined, size: 16, color: Color(0xFF64748B)),
+                        const Icon(Icons.inventory_2_outlined, size: 16, color: Color(0xFF757575)),
                         const SizedBox(width: 6),
                         Text(
                           '$itemsCount sản phẩm',
-                          style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+                          style: const TextStyle(fontSize: 12, color: Color(0xFF757575)),
                         ),
                       ],
                     ),
@@ -306,14 +306,14 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                       children: [
                         const Text(
                           'Tổng tiền: ',
-                          style: TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+                          style: TextStyle(fontSize: 12, color: Color(0xFF757575)),
                         ),
                         Text(
                           '$finalAmount ₫',
                           style: const TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w800,
-                            color: Color(0xFF1D4ED8),
+                            color: Color(0xFFEE4D2D),
                           ),
                         ),
                       ],
@@ -323,14 +323,14 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 if (status == 'New') ...[
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 8),
-                    child: Divider(height: 1, color: Color(0xFFF1F5F9)),
+                    child: Divider(height: 1, color: Color(0xFFF5F5F5)),
                   ),
                   Align(
                     alignment: Alignment.centerRight,
                     child: OutlinedButton.icon(
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFFEF4444),
-                        side: const BorderSide(color: Color(0xFFFCA5A5)),
+                        foregroundColor: const Color(0xFFBA1A1A),
+                        side: const BorderSide(color: Color(0xFFFFB4A4)),
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                       ),
@@ -349,11 +349,11 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF1D4ED8),
+                        color: Color(0xFFEE4D2D),
                       ),
                     ),
                     SizedBox(width: 4),
-                    Icon(Icons.arrow_forward_ios_rounded, size: 12, color: Color(0xFF1D4ED8)),
+                    Icon(Icons.arrow_forward_ios_rounded, size: 12, color: Color(0xFFEE4D2D)),
                   ],
                 ),
               ],
@@ -374,7 +374,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Row(
           children: [
-            Icon(Icons.warning_amber_rounded, color: Color(0xFFEF4444)),
+            Icon(Icons.warning_amber_rounded, color: Color(0xFFBA1A1A)),
             SizedBox(width: 8),
             Text('Xác nhận hủy đơn'),
           ],
@@ -387,7 +387,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFEF4444),
+              backgroundColor: const Color(0xFFBA1A1A),
               foregroundColor: Colors.white,
             ),
             onPressed: () => Navigator.pop(ctx, true),
@@ -420,7 +420,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Hủy đơn hàng thành công!'),
-          backgroundColor: Color(0xFF059669),
+          backgroundColor: Color(0xFF26AA99),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -430,7 +430,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(error.toString()),
-          backgroundColor: const Color(0xFFEF4444),
+          backgroundColor: const Color(0xFFBA1A1A),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -445,17 +445,17 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFFFECACA)),
+          border: Border.all(color: const Color(0xFFFFDAD3)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.error_outline_rounded, color: Color(0xFFEF4444), size: 44),
+            const Icon(Icons.error_outline_rounded, color: Color(0xFFBA1A1A), size: 44),
             const SizedBox(height: 10),
             Text(
               _error ?? 'Không thể tải lịch sử đơn hàng',
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Color(0xFFDC2626), fontSize: 13),
+              style: const TextStyle(color: Color(0xFFBA1A1A), fontSize: 13),
             ),
             const SizedBox(height: 14),
             ElevatedButton.icon(
@@ -463,7 +463,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
               icon: const Icon(Icons.refresh_rounded, size: 16),
               label: const Text('Thử lại'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF1D4ED8),
+                backgroundColor: const Color(0xFFEE4D2D),
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
@@ -479,16 +479,16 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.receipt_long_outlined, size: 60, color: Color(0xFF94A3B8)),
+          Icon(Icons.receipt_long_outlined, size: 60, color: Color(0xFF9E9E9E)),
           SizedBox(height: 12),
           Text(
             'Bạn chưa có đơn hàng nào.',
-            style: TextStyle(color: Color(0xFF64748B), fontSize: 14, fontWeight: FontWeight.bold),
+            style: TextStyle(color: Color(0xFF757575), fontSize: 14, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 4),
           Text(
             'Hãy duyệt sản phẩm và trải nghiệm mua sắm!',
-            style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+            style: TextStyle(color: Color(0xFF9E9E9E), fontSize: 12),
           ),
         ],
       ),
