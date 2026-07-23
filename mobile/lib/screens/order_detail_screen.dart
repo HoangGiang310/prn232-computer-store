@@ -83,7 +83,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
               title: Row(
                 children: [
-                  const Icon(Icons.rate_review_rounded, color: Color(0xFFEE4D2D)),
+                  const Icon(Icons.rate_review_rounded, color: Color(0xFFF04A24)),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -146,7 +146,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFEE4D2D),
+                    backgroundColor: const Color(0xFFF04A24),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
@@ -180,7 +180,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                           ),
                           behavior: SnackBarBehavior.floating,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          backgroundColor: const Color(0xFF26AA99),
+                          backgroundColor: const Color(0xFF0F9D79),
                         ),
                       );
                     } catch (error) {
@@ -212,10 +212,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'delivered':
-        return const Color(0xFF26AA99);
+        return const Color(0xFF0F9D79);
       case 'confirmed':
       case 'processing':
-        return const Color(0xFFEE4D2D);
+        return const Color(0xFFF04A24);
       case 'cancelled':
         return const Color(0xFFBA1A1A);
       default:
@@ -255,10 +255,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     final status = _status ?? 'New';
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: const Color(0xFFF6F7F9),
       appBar: AppBar(
         title: const Text('Chi tiết đơn hàng'),
-        backgroundColor: const Color(0xFFB22204),
+        backgroundColor: const Color(0xFF171A20),
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -274,7 +274,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 padding: const EdgeInsets.all(18),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [const Color(0xFF222222), _getStatusColor(status)],
+                    colors: [const Color(0xFF171A20), _getStatusColor(status)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -318,7 +318,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                           child: Text(
                             paymentMethod,
                             style: const TextStyle(
-                              color: Color(0xFF222222),
+                              color: Color(0xFF171A20),
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
                             ),
@@ -361,11 +361,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   children: [
                     const Row(
                       children: [
-                        Icon(Icons.location_on_rounded, color: Color(0xFFEE4D2D), size: 20),
+                        Icon(Icons.location_on_rounded, color: Color(0xFFF04A24), size: 20),
                         SizedBox(width: 8),
                         Text(
                           'Thông tin nhận hàng',
-                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF222222)),
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF171A20)),
                         ),
                       ],
                     ),
@@ -381,11 +381,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               // Order Items Header
               const Row(
                 children: [
-                  Icon(Icons.shopping_bag_rounded, color: Color(0xFFEE4D2D), size: 20),
+                  Icon(Icons.shopping_bag_rounded, color: Color(0xFFF04A24), size: 20),
                   SizedBox(width: 8),
                   Text(
                     'Sản phẩm trong đơn',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF222222)),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF171A20)),
                   ),
                 ],
               ),
@@ -426,7 +426,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                             width: 52,
                             height: 52,
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFFF5F2),
+                              color: const Color(0xFFFFF7F4),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: firstImage.isNotEmpty
@@ -437,10 +437,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                       width: 52,
                                       height: 52,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (_, __, ___) => const Icon(Icons.laptop_mac_rounded, color: Color(0xFFEE4D2D)),
+                                      errorBuilder: (_, __, ___) => const Icon(Icons.laptop_mac_rounded, color: Color(0xFFF04A24)),
                                     ),
                                   )
-                                : const Icon(Icons.laptop_mac_rounded, color: Color(0xFFEE4D2D)),
+                                : const Icon(Icons.laptop_mac_rounded, color: Color(0xFFF04A24)),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
@@ -452,13 +452,13 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 13,
-                                    color: Color(0xFF222222),
+                                    color: Color(0xFF171A20),
                                   ),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
                                   'SL: $quantity × ${unitPrice.toStringAsFixed(0)} ₫',
-                                  style: const TextStyle(fontSize: 12, color: Color(0xFF757575)),
+                                  style: const TextStyle(fontSize: 12, color: Color(0xFF6F7785)),
                                 ),
                               ],
                             ),
@@ -468,14 +468,14 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                             style: const TextStyle(
                               fontWeight: FontWeight.w800,
                               fontSize: 14,
-                              color: Color(0xFFEE4D2D),
+                              color: Color(0xFFF04A24),
                             ),
                           ),
                         ],
                       ),
                       if (status == 'Delivered' || status == 'Confirmed') ...[
                         const SizedBox(height: 10),
-                        const Divider(height: 1, color: Color(0xFFF5F5F5)),
+                        const Divider(height: 1, color: Color(0xFFF6F7F9)),
                         const SizedBox(height: 8),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
@@ -488,8 +488,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                               icon: const Icon(Icons.star_outline_rounded, size: 16),
                               label: const Text('Viết đánh giá'),
                               style: OutlinedButton.styleFrom(
-                                foregroundColor: const Color(0xFFEE4D2D),
-                                side: const BorderSide(color: Color(0xFFFFDAD3)),
+                                foregroundColor: const Color(0xFFF04A24),
+                                side: const BorderSide(color: Color(0xFFFFE1D8)),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                               ),
@@ -524,12 +524,12 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       _priceRow(
                         'Giảm giá ${voucherCode.isNotEmpty ? "(Voucher: $voucherCode)" : ""}',
                         '-${discountAmount.toStringAsFixed(0)} ₫',
-                        valueColor: const Color(0xFF26AA99),
+                        valueColor: const Color(0xFF0F9D79),
                       ),
                     _priceRow('Phí vận chuyển', 'Miễn phí'),
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 8),
-                      child: Divider(height: 1, color: Color(0xFFF5F5F5)),
+                      child: Divider(height: 1, color: Color(0xFFF6F7F9)),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -543,7 +543,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w900,
-                            color: Color(0xFFEE4D2D),
+                            color: Color(0xFFF04A24),
                           ),
                         ),
                       ],
@@ -636,7 +636,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Hủy đơn hàng thành công!'),
-          backgroundColor: Color(0xFF26AA99),
+          backgroundColor: Color(0xFF0F9D79),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -659,16 +659,16 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 16, color: const Color(0xFF757575)),
+          Icon(icon, size: 16, color: const Color(0xFF6F7785)),
           const SizedBox(width: 8),
           SizedBox(
             width: 90,
-            child: Text(label, style: const TextStyle(fontSize: 12, color: Color(0xFF757575))),
+            child: Text(label, style: const TextStyle(fontSize: 12, color: Color(0xFF6F7785))),
           ),
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF222222)),
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF171A20)),
             ),
           ),
         ],
@@ -682,7 +682,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(fontSize: 12, color: Color(0xFF757575))),
+          Text(label, style: const TextStyle(fontSize: 12, color: Color(0xFF6F7785))),
           Text(value, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: valueColor)),
         ],
       ),

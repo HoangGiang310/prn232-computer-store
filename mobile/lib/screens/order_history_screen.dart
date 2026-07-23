@@ -69,9 +69,9 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
         return const Color(0xFFE1F5F1);
       case 'confirmed':
       case 'processing':
-        return const Color(0xFFFFF5F2);
+        return const Color(0xFFFFF7F4);
       case 'cancelled':
-        return const Color(0xFFFFDAD3);
+        return const Color(0xFFFFE1D8);
       default:
         return const Color(0xFFFFF3D6);
     }
@@ -83,7 +83,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
         return const Color(0xFF1B8577);
       case 'confirmed':
       case 'processing':
-        return const Color(0xFFEE4D2D);
+        return const Color(0xFFF04A24);
       case 'cancelled':
         return const Color(0xFFBA1A1A);
       default:
@@ -113,10 +113,10 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
     final filtered = _filteredOrders;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: const Color(0xFFF6F7F9),
       appBar: AppBar(
         title: const Text('Lịch sử đơn hàng'),
-        backgroundColor: const Color(0xFFB22204),
+        backgroundColor: const Color(0xFF171A20),
         foregroundColor: Colors.white,
         elevation: 0,
         actions: [
@@ -152,17 +152,17 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                       duration: const Duration(milliseconds: 200),
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                       decoration: BoxDecoration(
-                        color: isSelected ? const Color(0xFFEE4D2D) : const Color(0xFFF5F5F5),
+                        color: isSelected ? const Color(0xFFF04A24) : const Color(0xFFF6F7F9),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: isSelected ? const Color(0xFFEE4D2D) : const Color(0xFFE8E8E8),
+                          color: isSelected ? const Color(0xFFF04A24) : const Color(0xFFE6E8EC),
                         ),
                       ),
                       child: Center(
                         child: Text(
                           _formatFilterName(filter),
                           style: TextStyle(
-                            color: isSelected ? Colors.white : const Color(0xFF616161),
+                            color: isSelected ? Colors.white : const Color(0xFF596170),
                             fontSize: 12,
                             fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                           ),
@@ -225,7 +225,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFF5F5F5)),
+        border: Border.all(color: const Color(0xFFF6F7F9)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(10),
@@ -252,10 +252,10 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFFF5F2),
+                        color: const Color(0xFFFFF7F4),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(Icons.receipt_rounded, color: Color(0xFFEE4D2D), size: 18),
+                      child: const Icon(Icons.receipt_rounded, color: Color(0xFFF04A24), size: 18),
                     ),
                     const SizedBox(width: 10),
                     Expanded(
@@ -264,7 +264,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
-                          color: Color(0xFF222222),
+                          color: Color(0xFF171A20),
                         ),
                       ),
                     ),
@@ -287,18 +287,18 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 ),
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 10),
-                  child: Divider(height: 1, color: Color(0xFFF5F5F5)),
+                  child: Divider(height: 1, color: Color(0xFFF6F7F9)),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.inventory_2_outlined, size: 16, color: Color(0xFF757575)),
+                        const Icon(Icons.inventory_2_outlined, size: 16, color: Color(0xFF6F7785)),
                         const SizedBox(width: 6),
                         Text(
                           '$itemsCount sản phẩm',
-                          style: const TextStyle(fontSize: 12, color: Color(0xFF757575)),
+                          style: const TextStyle(fontSize: 12, color: Color(0xFF6F7785)),
                         ),
                       ],
                     ),
@@ -306,14 +306,14 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                       children: [
                         const Text(
                           'Tổng tiền: ',
-                          style: TextStyle(fontSize: 12, color: Color(0xFF757575)),
+                          style: TextStyle(fontSize: 12, color: Color(0xFF6F7785)),
                         ),
                         Text(
                           '$finalAmount ₫',
                           style: const TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w800,
-                            color: Color(0xFFEE4D2D),
+                            color: Color(0xFFF04A24),
                           ),
                         ),
                       ],
@@ -323,7 +323,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 if (status == 'New') ...[
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 8),
-                    child: Divider(height: 1, color: Color(0xFFF5F5F5)),
+                    child: Divider(height: 1, color: Color(0xFFF6F7F9)),
                   ),
                   Align(
                     alignment: Alignment.centerRight,
@@ -349,11 +349,11 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFFEE4D2D),
+                        color: Color(0xFFF04A24),
                       ),
                     ),
                     SizedBox(width: 4),
-                    Icon(Icons.arrow_forward_ios_rounded, size: 12, color: Color(0xFFEE4D2D)),
+                    Icon(Icons.arrow_forward_ios_rounded, size: 12, color: Color(0xFFF04A24)),
                   ],
                 ),
               ],
@@ -420,7 +420,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Hủy đơn hàng thành công!'),
-          backgroundColor: Color(0xFF26AA99),
+          backgroundColor: Color(0xFF0F9D79),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -445,7 +445,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFFFFDAD3)),
+          border: Border.all(color: const Color(0xFFFFE1D8)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -463,7 +463,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
               icon: const Icon(Icons.refresh_rounded, size: 16),
               label: const Text('Thử lại'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFEE4D2D),
+                backgroundColor: const Color(0xFFF04A24),
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
@@ -479,16 +479,16 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.receipt_long_outlined, size: 60, color: Color(0xFF9E9E9E)),
+          Icon(Icons.receipt_long_outlined, size: 60, color: Color(0xFFA0A6B0)),
           SizedBox(height: 12),
           Text(
             'Bạn chưa có đơn hàng nào.',
-            style: TextStyle(color: Color(0xFF757575), fontSize: 14, fontWeight: FontWeight.bold),
+            style: TextStyle(color: Color(0xFF6F7785), fontSize: 14, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 4),
           Text(
             'Hãy duyệt sản phẩm và trải nghiệm mua sắm!',
-            style: TextStyle(color: Color(0xFF9E9E9E), fontSize: 12),
+            style: TextStyle(color: Color(0xFFA0A6B0), fontSize: 12),
           ),
         ],
       ),

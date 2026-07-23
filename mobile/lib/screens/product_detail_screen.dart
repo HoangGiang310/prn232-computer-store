@@ -73,13 +73,34 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       return;
     }
 
+    // Kiểm tra tồn kho trước khi thêm vào giỏ hàng
+    if (widget.product.stockQuantity <= 0) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Sản phẩm hiện đã hết hàng, không thể thêm vào giỏ.'),
+          backgroundColor: Color(0xFFBA1A1A),
+        ),
+      );
+      return;
+    }
+
     final existingItems = await CartService.getCart();
     final existingIndex = existingItems.indexWhere((item) => item.productId == widget.product.id);
     final nextItems = List<CartItem>.from(existingItems);
 
     if (existingIndex >= 0) {
+      final currentQuantity = nextItems[existingIndex].quantity;
+      if (currentQuantity >= widget.product.stockQuantity) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Chỉ còn ${widget.product.stockQuantity} sản phẩm trong kho.')),
+        );
+        return;
+      }
       nextItems[existingIndex] = nextItems[existingIndex].copyWith(
-        quantity: nextItems[existingIndex].quantity + 1,
+        quantity: currentQuantity + 1,
+        stockQuantity: widget.product.stockQuantity,
       );
     } else {
       nextItems.add(CartItem.fromProduct(widget.product));
@@ -109,10 +130,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     final totalReviews = (_summary['totalReviews'] as num?)?.toInt() ?? 0;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: const Color(0xFFF6F7F9),
       appBar: AppBar(
         title: const Text('Chi tiết sản phẩm'),
-        backgroundColor: const Color(0xFFB22204),
+        backgroundColor: const Color(0xFF171A20),
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -130,7 +151,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     height: 220,
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [Color(0xFF222222), Color(0xFFB22204), Color(0xFFEE4D2D)],
+                        colors: [Color(0xFF171A20), Color(0xFF171A20), Color(0xFFF04A24)],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
@@ -186,7 +207,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
                               color: widget.product.stockQuantity > 0
-                                  ? const Color(0xFF26AA99)
+                                  ? const Color(0xFF0F9D79)
                                   : const Color(0xFFBA1A1A),
                               borderRadius: BorderRadius.circular(20),
                             ),
@@ -230,7 +251,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFF5F5F5),
+                                color: const Color(0xFFF6F7F9),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
@@ -238,7 +259,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 style: const TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFF757575),
+                                  color: Color(0xFF6F7785),
                                 ),
                               ),
                             ),
@@ -251,7 +272,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             ),
                             Text(
                               ' ($totalReviews)',
-                              style: const TextStyle(color: Color(0xFF757575), fontSize: 12),
+                              style: const TextStyle(color: Color(0xFF6F7785), fontSize: 12),
                             ),
                           ],
                         ),
@@ -261,7 +282,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w800,
-                            color: Color(0xFF222222),
+                            color: Color(0xFF171A20),
                             height: 1.25,
                           ),
                         ),
@@ -273,7 +294,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               style: const TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.w900,
-                                color: Color(0xFFEE4D2D),
+                                color: Color(0xFFF04A24),
                               ),
                             ),
                           ],
@@ -303,11 +324,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       children: [
                         const Row(
                           children: [
-                            Icon(Icons.memory_rounded, color: Color(0xFFEE4D2D), size: 20),
+                            Icon(Icons.memory_rounded, color: Color(0xFFF04A24), size: 20),
                             SizedBox(width: 8),
                             Text(
                               'Thông số kỹ thuật & Mô tả',
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF222222)),
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF171A20)),
                             ),
                           ],
                         ),
@@ -316,7 +337,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           widget.product.specifications.isNotEmpty
                               ? widget.product.specifications
                               : 'Chưa có thông số chi tiết cho sản phẩm này.',
-                          style: const TextStyle(fontSize: 13, color: Color(0xFF222222), height: 1.5),
+                          style: const TextStyle(fontSize: 13, color: Color(0xFF171A20), height: 1.5),
                         ),
                       ],
                     ),
@@ -326,11 +347,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   // Customer Reviews Section Header
                   const Row(
                     children: [
-                      Icon(Icons.rate_review_rounded, color: Color(0xFFEE4D2D), size: 20),
+                      Icon(Icons.rate_review_rounded, color: Color(0xFFF04A24), size: 20),
                       SizedBox(width: 8),
                       Text(
                         'Đánh giá khách hàng',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF222222)),
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF171A20)),
                       ),
                     ],
                   ),
@@ -354,15 +375,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(18),
-                        border: Border.all(color: const Color(0xFFE8E8E8)),
+                        border: Border.all(color: const Color(0xFFE6E8EC)),
                       ),
                       child: const Column(
                         children: [
-                          Icon(Icons.chat_bubble_outline_rounded, color: Color(0xFF9E9E9E), size: 36),
+                          Icon(Icons.chat_bubble_outline_rounded, color: Color(0xFFA0A6B0), size: 36),
                           SizedBox(height: 8),
                           Text(
                             'Chưa có đánh giá nào cho sản phẩm này.',
-                            style: TextStyle(color: Color(0xFF757575), fontSize: 13),
+                            style: TextStyle(color: Color(0xFF6F7785), fontSize: 13),
                           ),
                         ],
                       ),
@@ -396,11 +417,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               children: [
                                 CircleAvatar(
                                   radius: 16,
-                                  backgroundColor: const Color(0xFFFFF5F2),
+                                  backgroundColor: const Color(0xFFFFF7F4),
                                   child: Text(
                                     customerName.isNotEmpty ? customerName[0].toUpperCase() : 'U',
                                     style: const TextStyle(
-                                      color: Color(0xFFEE4D2D),
+                                      color: Color(0xFFF04A24),
                                       fontWeight: FontWeight.bold,
                                       fontSize: 12,
                                     ),
@@ -434,7 +455,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             const SizedBox(height: 4),
                             Text(
                               content,
-                              style: const TextStyle(fontSize: 12, color: Color(0xFF616161), height: 1.4),
+                              style: const TextStyle(fontSize: 12, color: Color(0xFF596170), height: 1.4),
                             ),
                           ],
                         ),
@@ -469,14 +490,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       children: [
                         const Text(
                           'Giá bán',
-                          style: TextStyle(fontSize: 11, color: Color(0xFF757575)),
+                          style: TextStyle(fontSize: 11, color: Color(0xFF6F7785)),
                         ),
                         Text(
                           widget.product.formattedPrice,
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w900,
-                            color: Color(0xFFEE4D2D),
+                            color: Color(0xFFF04A24),
                           ),
                         ),
                       ],
@@ -493,7 +514,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                           ),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFEE4D2D),
+                            backgroundColor: const Color(0xFFF04A24),
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                             elevation: 2,
