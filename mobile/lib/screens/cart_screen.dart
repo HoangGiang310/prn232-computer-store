@@ -38,7 +38,7 @@ class _CartScreenState extends State<CartScreen> {
           ),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          backgroundColor: const Color(0xFFEF4444),
+          backgroundColor: const Color(0xFFBA1A1A),
           duration: const Duration(seconds: 3),
         ),
       );
@@ -108,10 +108,10 @@ class _CartScreenState extends State<CartScreen> {
     final isAllSelected = _items.isNotEmpty && _selectedProductIds.length == _items.length;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF1F5F9),
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
         title: const Text('Giỏ hàng của bạn'),
-        backgroundColor: const Color(0xFF0F172A),
+        backgroundColor: const Color(0xFFB22204),
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -123,11 +123,11 @@ class _CartScreenState extends State<CartScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.shopping_bag_outlined, size: 64, color: Color(0xFF94A3B8)),
+                        Icon(Icons.shopping_bag_outlined, size: 64, color: Color(0xFF9E9E9E)),
                         SizedBox(height: 12),
                         Text(
                           'Giỏ hàng của bạn đang trống.',
-                          style: TextStyle(fontSize: 15, color: Color(0xFF64748B)),
+                          style: TextStyle(fontSize: 15, color: Color(0xFF757575)),
                         ),
                       ],
                     ),
@@ -140,14 +140,14 @@ class _CartScreenState extends State<CartScreen> {
                         decoration: const BoxDecoration(
                           color: Colors.white,
                           border: Border(
-                            bottom: BorderSide(color: Color(0xFFE2E8F0)),
+                            bottom: BorderSide(color: Color(0xFFE8E8E8)),
                           ),
                         ),
                         child: Row(
                           children: [
                             Checkbox(
                               value: isAllSelected,
-                              activeColor: const Color(0xFF1D4ED8),
+                              activeColor: const Color(0xFFEE4D2D),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                               onChanged: (bool? checked) {
                                 setState(() {
@@ -163,7 +163,7 @@ class _CartScreenState extends State<CartScreen> {
                               'Chọn tất cả (${_items.length} sản phẩm)',
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF0F172A),
+                                color: Color(0xFF222222),
                               ),
                             ),
                             const Spacer(),
@@ -194,7 +194,7 @@ class _CartScreenState extends State<CartScreen> {
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(18),
                                 border: Border.all(
-                                  color: isChecked ? const Color(0xFF93C5FD) : const Color(0xFFF1F5F9),
+                                  color: isChecked ? const Color(0xFFFFDAD3) : const Color(0xFFF5F5F5),
                                   width: isChecked ? 1.5 : 1,
                                 ),
                                 boxShadow: [
@@ -210,7 +210,7 @@ class _CartScreenState extends State<CartScreen> {
                                   // Selection Checkbox
                                   Checkbox(
                                     value: isChecked,
-                                    activeColor: const Color(0xFF1D4ED8),
+                                    activeColor: const Color(0xFFEE4D2D),
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                                     onChanged: (bool? checked) {
                                       setState(() {
@@ -229,7 +229,7 @@ class _CartScreenState extends State<CartScreen> {
                                     width: 54,
                                     height: 54,
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFFEFF6FF),
+                                      color: const Color(0xFFFFF5F2),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: item.imageUrl.isNotEmpty
@@ -240,10 +240,10 @@ class _CartScreenState extends State<CartScreen> {
                                               width: 54,
                                               height: 54,
                                               fit: BoxFit.cover,
-                                              errorBuilder: (_, __, ___) => const Icon(Icons.laptop_mac_rounded, color: Color(0xFF1D4ED8)),
+                                              errorBuilder: (_, __, ___) => const Icon(Icons.laptop_mac_rounded, color: Color(0xFFEE4D2D)),
                                             ),
                                           )
-                                        : const Icon(Icons.laptop_mac_rounded, color: Color(0xFF1D4ED8)),
+                                        : const Icon(Icons.laptop_mac_rounded, color: Color(0xFFEE4D2D)),
                                   ),
                                   const SizedBox(width: 12),
 
@@ -259,19 +259,19 @@ class _CartScreenState extends State<CartScreen> {
                                           style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 13,
-                                            color: Color(0xFF0F172A),
+                                            color: Color(0xFF222222),
                                           ),
                                         ),
                                         const SizedBox(height: 4),
                                         Text(
                                           item.brand,
-                                          style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+                                          style: const TextStyle(fontSize: 11, color: Color(0xFF757575)),
                                         ),
                                         const SizedBox(height: 6),
                                         Text(
                                           '${item.price.toStringAsFixed(0)} ₫',
                                           style: const TextStyle(
-                                            color: Color(0xFF1D4ED8),
+                                            color: Color(0xFFEE4D2D),
                                             fontWeight: FontWeight.w800,
                                             fontSize: 14,
                                           ),
@@ -288,15 +288,15 @@ class _CartScreenState extends State<CartScreen> {
                                         padding: EdgeInsets.zero,
                                         constraints: const BoxConstraints(),
                                         onPressed: () => _removeItem(item.productId),
-                                        icon: const Icon(Icons.delete_outline_rounded, color: Color(0xFFEF4444), size: 20),
+                                        icon: const Icon(Icons.delete_outline_rounded, color: Color(0xFFBA1A1A), size: 20),
                                         tooltip: 'Xóa sản phẩm',
                                       ),
                                       const SizedBox(height: 8),
                                       Container(
                                         decoration: BoxDecoration(
-                                          color: const Color(0xFFF8FAFC),
+                                          color: const Color(0xFFF9F9F9),
                                           borderRadius: BorderRadius.circular(10),
-                                          border: Border.all(color: const Color(0xFFE2E8F0)),
+                                          border: Border.all(color: const Color(0xFFE8E8E8)),
                                         ),
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
@@ -306,7 +306,7 @@ class _CartScreenState extends State<CartScreen> {
                                               borderRadius: BorderRadius.circular(8),
                                               child: const Padding(
                                                 padding: EdgeInsets.all(4),
-                                                child: Icon(Icons.remove, size: 16, color: Color(0xFF475569)),
+                                                child: Icon(Icons.remove, size: 16, color: Color(0xFF616161)),
                                               ),
                                             ),
                                             Padding(
@@ -321,7 +321,7 @@ class _CartScreenState extends State<CartScreen> {
                                               borderRadius: BorderRadius.circular(8),
                                               child: const Padding(
                                                 padding: EdgeInsets.all(4),
-                                                child: Icon(Icons.add, size: 16, color: Color(0xFF475569)),
+                                                child: Icon(Icons.add, size: 16, color: Color(0xFF616161)),
                                               ),
                                             ),
                                           ],
@@ -360,14 +360,14 @@ class _CartScreenState extends State<CartScreen> {
                                   children: [
                                     const Text(
                                       'Tổng thanh toán',
-                                      style: TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+                                      style: TextStyle(fontSize: 12, color: Color(0xFF757575)),
                                     ),
                                     Text(
                                       'Đã chọn $_selectedItemQuantity sản phẩm',
                                       style: const TextStyle(
                                         fontSize: 11,
                                         fontWeight: FontWeight.w500,
-                                        color: Color(0xFF059669),
+                                        color: Color(0xFF26AA99),
                                       ),
                                     ),
                                   ],
@@ -377,7 +377,7 @@ class _CartScreenState extends State<CartScreen> {
                                   style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w900,
-                                    color: Color(0xFF1D4ED8),
+                                    color: Color(0xFFEE4D2D),
                                   ),
                                 ),
                               ],
@@ -406,7 +406,7 @@ class _CartScreenState extends State<CartScreen> {
                                         ),
                                         behavior: SnackBarBehavior.floating,
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                        backgroundColor: const Color(0xFFEF4444),
+                                        backgroundColor: const Color(0xFFBA1A1A),
                                       ),
                                     );
                                     return;
@@ -425,7 +425,7 @@ class _CartScreenState extends State<CartScreen> {
                                   style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                                 ),
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF1D4ED8),
+                                  backgroundColor: const Color(0xFFEE4D2D),
                                   foregroundColor: Colors.white,
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                                   elevation: 2,
@@ -438,7 +438,7 @@ class _CartScreenState extends State<CartScreen> {
                               child: TextButton(
                                 onPressed: _clearCart,
                                 style: TextButton.styleFrom(
-                                  foregroundColor: const Color(0xFFEF4444),
+                                  foregroundColor: const Color(0xFFBA1A1A),
                                 ),
                                 child: const Text('Xóa toàn bộ giỏ hàng'),
                               ),

@@ -127,12 +127,16 @@ export default function AdminPage() {
           <p>BẢNG ĐIỀU KHIỂN SHOP</p>
           <h1>QUẢN TRỊ TOÀN BỘ HỆ THỐNG BÁN HÀNG</h1>
           <span>
-            XIN CHÀO <strong>{username.toUpperCase()}</strong>. THEO DÕI SẢN PHẨM, ĐƠN HÀNG, KHO, NHÂN VIÊN VÀ BÁO CÁO TRONG MỘT MÀN HÌNH.
+            XIN CHÀO <strong>{username.toUpperCase()}</strong>. THEO DÕI SẢN
+            PHẨM, ĐƠN HÀNG, KHO, NHÂN VIÊN VÀ BÁO CÁO TRONG MỘT MÀN HÌNH.
           </span>
           <div className="role-pill">Vai trò: Quản trị toàn diện</div>
         </div>
 
-        <div className="dashboard-hero-visual admin-shop-terminal" aria-hidden="true">
+        <div
+          className="dashboard-hero-visual admin-shop-terminal"
+          aria-hidden="true"
+        >
           <div className="terminal-top">
             <span />
             <span />
@@ -174,11 +178,18 @@ export default function AdminPage() {
             </section>
 
             {adminActionGroups.map((group) => (
-              <section className="dashboard-card card role-group-card" key={group.title}>
+              <section
+                className="dashboard-card card role-group-card"
+                key={group.title}
+              >
                 <h3>{group.title}</h3>
                 <div className="admin-shop-grid">
                   {group.items.map((action) => (
-                    <Link href={action.href} className="admin-shop-action" key={action.href}>
+                    <Link
+                      href={action.href}
+                      className="admin-shop-action"
+                      key={action.href}
+                    >
                       <span className="action-mark">{action.stat}</span>
                       <strong>{action.title}</strong>
                       <small>{action.desc.toUpperCase()}</small>

@@ -41,7 +41,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           ),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          backgroundColor: const Color(0xFFEF4444),
+          backgroundColor: const Color(0xFFBA1A1A),
         ),
       );
       return;
@@ -67,7 +67,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           ),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          backgroundColor: const Color(0xFFEF4444),
+          backgroundColor: const Color(0xFFBA1A1A),
         ),
       );
       return;
@@ -83,7 +83,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
               title: Row(
                 children: [
-                  const Icon(Icons.rate_review_rounded, color: Color(0xFF1D4ED8)),
+                  const Icon(Icons.rate_review_rounded, color: Color(0xFFEE4D2D)),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -146,7 +146,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF1D4ED8),
+                    backgroundColor: const Color(0xFFEE4D2D),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
@@ -180,7 +180,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                           ),
                           behavior: SnackBarBehavior.floating,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          backgroundColor: const Color(0xFF059669),
+                          backgroundColor: const Color(0xFF26AA99),
                         ),
                       );
                     } catch (error) {
@@ -190,7 +190,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                           content: Text(error.toString()),
                           behavior: SnackBarBehavior.floating,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          backgroundColor: const Color(0xFFEF4444),
+                          backgroundColor: const Color(0xFFBA1A1A),
                         ),
                       );
                     } finally {
@@ -212,14 +212,14 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'delivered':
-        return const Color(0xFF059669);
+        return const Color(0xFF26AA99);
       case 'confirmed':
       case 'processing':
-        return const Color(0xFF1D4ED8);
+        return const Color(0xFFEE4D2D);
       case 'cancelled':
-        return const Color(0xFFDC2626);
+        return const Color(0xFFBA1A1A);
       default:
-        return const Color(0xFFD97706);
+        return const Color(0xFF7C5400);
     }
   }
 
@@ -255,10 +255,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     final status = _status ?? 'New';
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF1F5F9),
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
         title: const Text('Chi tiết đơn hàng'),
-        backgroundColor: const Color(0xFF0F172A),
+        backgroundColor: const Color(0xFFB22204),
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -274,7 +274,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 padding: const EdgeInsets.all(18),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [const Color(0xFF0F172A), _getStatusColor(status)],
+                    colors: [const Color(0xFF222222), _getStatusColor(status)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -318,7 +318,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                           child: Text(
                             paymentMethod,
                             style: const TextStyle(
-                              color: Color(0xFF0F172A),
+                              color: Color(0xFF222222),
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
                             ),
@@ -361,11 +361,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   children: [
                     const Row(
                       children: [
-                        Icon(Icons.location_on_rounded, color: Color(0xFF1D4ED8), size: 20),
+                        Icon(Icons.location_on_rounded, color: Color(0xFFEE4D2D), size: 20),
                         SizedBox(width: 8),
                         Text(
                           'Thông tin nhận hàng',
-                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF222222)),
                         ),
                       ],
                     ),
@@ -381,11 +381,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               // Order Items Header
               const Row(
                 children: [
-                  Icon(Icons.shopping_bag_rounded, color: Color(0xFF1D4ED8), size: 20),
+                  Icon(Icons.shopping_bag_rounded, color: Color(0xFFEE4D2D), size: 20),
                   SizedBox(width: 8),
                   Text(
                     'Sản phẩm trong đơn',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF222222)),
                   ),
                 ],
               ),
@@ -426,7 +426,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                             width: 52,
                             height: 52,
                             decoration: BoxDecoration(
-                              color: const Color(0xFFEFF6FF),
+                              color: const Color(0xFFFFF5F2),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: firstImage.isNotEmpty
@@ -437,10 +437,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                       width: 52,
                                       height: 52,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (_, __, ___) => const Icon(Icons.laptop_mac_rounded, color: Color(0xFF1D4ED8)),
+                                      errorBuilder: (_, __, ___) => const Icon(Icons.laptop_mac_rounded, color: Color(0xFFEE4D2D)),
                                     ),
                                   )
-                                : const Icon(Icons.laptop_mac_rounded, color: Color(0xFF1D4ED8)),
+                                : const Icon(Icons.laptop_mac_rounded, color: Color(0xFFEE4D2D)),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
@@ -452,13 +452,13 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 13,
-                                    color: Color(0xFF0F172A),
+                                    color: Color(0xFF222222),
                                   ),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
                                   'SL: $quantity × ${unitPrice.toStringAsFixed(0)} ₫',
-                                  style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+                                  style: const TextStyle(fontSize: 12, color: Color(0xFF757575)),
                                 ),
                               ],
                             ),
@@ -468,14 +468,14 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                             style: const TextStyle(
                               fontWeight: FontWeight.w800,
                               fontSize: 14,
-                              color: Color(0xFF1D4ED8),
+                              color: Color(0xFFEE4D2D),
                             ),
                           ),
                         ],
                       ),
                       if (status == 'Delivered' || status == 'Confirmed') ...[
                         const SizedBox(height: 10),
-                        const Divider(height: 1, color: Color(0xFFF1F5F9)),
+                        const Divider(height: 1, color: Color(0xFFF5F5F5)),
                         const SizedBox(height: 8),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
@@ -488,8 +488,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                               icon: const Icon(Icons.star_outline_rounded, size: 16),
                               label: const Text('Viết đánh giá'),
                               style: OutlinedButton.styleFrom(
-                                foregroundColor: const Color(0xFF1D4ED8),
-                                side: const BorderSide(color: Color(0xFF93C5FD)),
+                                foregroundColor: const Color(0xFFEE4D2D),
+                                side: const BorderSide(color: Color(0xFFFFDAD3)),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                               ),
@@ -524,12 +524,12 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       _priceRow(
                         'Giảm giá ${voucherCode.isNotEmpty ? "(Voucher: $voucherCode)" : ""}',
                         '-${discountAmount.toStringAsFixed(0)} ₫',
-                        valueColor: const Color(0xFF059669),
+                        valueColor: const Color(0xFF26AA99),
                       ),
                     _priceRow('Phí vận chuyển', 'Miễn phí'),
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 8),
-                      child: Divider(height: 1, color: Color(0xFFF1F5F9)),
+                      child: Divider(height: 1, color: Color(0xFFF5F5F5)),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -543,7 +543,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w900,
-                            color: Color(0xFF1D4ED8),
+                            color: Color(0xFFEE4D2D),
                           ),
                         ),
                       ],
@@ -557,7 +557,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   width: double.infinity,
                   child: ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFEF4444),
+                      backgroundColor: const Color(0xFFBA1A1A),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -590,7 +590,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Row(
           children: [
-            Icon(Icons.warning_amber_rounded, color: Color(0xFFEF4444)),
+            Icon(Icons.warning_amber_rounded, color: Color(0xFFBA1A1A)),
             SizedBox(width: 8),
             Text('Xác nhận hủy đơn'),
           ],
@@ -603,7 +603,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFEF4444),
+              backgroundColor: const Color(0xFFBA1A1A),
               foregroundColor: Colors.white,
             ),
             onPressed: () => Navigator.pop(ctx, true),
@@ -636,7 +636,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Hủy đơn hàng thành công!'),
-          backgroundColor: Color(0xFF059669),
+          backgroundColor: Color(0xFF26AA99),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -646,7 +646,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(error.toString()),
-          backgroundColor: const Color(0xFFEF4444),
+          backgroundColor: const Color(0xFFBA1A1A),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -659,16 +659,16 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 16, color: const Color(0xFF64748B)),
+          Icon(icon, size: 16, color: const Color(0xFF757575)),
           const SizedBox(width: 8),
           SizedBox(
             width: 90,
-            child: Text(label, style: const TextStyle(fontSize: 12, color: Color(0xFF64748B))),
+            child: Text(label, style: const TextStyle(fontSize: 12, color: Color(0xFF757575))),
           ),
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF0F172A)),
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF222222)),
             ),
           ),
         ],
@@ -682,7 +682,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(fontSize: 12, color: Color(0xFF64748B))),
+          Text(label, style: const TextStyle(fontSize: 12, color: Color(0xFF757575))),
           Text(value, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: valueColor)),
         ],
       ),

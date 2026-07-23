@@ -173,6 +173,37 @@ export default function Home() {
           }}
         />
 
+        {/* Modern Hero Section */}
+        <section className="home-hero-section">
+          <div className="home-hero-content">
+            <span className="home-hero-badge">⚡ CHÀO MỪNG ĐẾN VỚI TQG COMPUTER</span>
+            <h1>Khám Phá Thế Giới Laptop &amp; Linh Kiện Đỉnh Cao</h1>
+            <p>
+              Cung cấp các sản phẩm máy tính, laptop gaming, văn phòng chính hãng với cấu hình mạnh mẽ, chính sách bảo hành vượt trội và dịch vụ chuyên nghiệp nhất.
+            </p>
+            <div className="home-hero-features">
+              <div className="hero-feature-item">
+                <span className="hero-feature-icon">🛡️</span>
+                <span>100% Chính Hãng</span>
+              </div>
+              <div className="hero-feature-item">
+                <span className="hero-feature-icon">🚚</span>
+                <span>Miễn Phí Vận Chuyển</span>
+              </div>
+              <div className="hero-feature-item">
+                <span className="hero-feature-icon">🛠️</span>
+                <span>Bảo Hành 24 Tháng</span>
+              </div>
+            </div>
+          </div>
+          <div className="home-hero-visual">
+            <div className="visual-circle-glow"></div>
+            <div className="visual-device-mockup">
+              <span className="visual-screen-content">💻</span>
+            </div>
+          </div>
+        </section>
+
         <div className="store-layout">
           <section className="store-feed">
             {searchQuery.trim() && (
