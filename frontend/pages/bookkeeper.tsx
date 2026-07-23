@@ -46,9 +46,9 @@ export default function BookkeeperPage() {
   }
 
   return (
-    <main className="dashboard-page dashboard-bookkeeper-page" style={{ padding: 0 }}>
+    <main className="dashboard-page dashboard-bookkeeper-page">
       <CustomerHeader />
-      <div style={{ padding: "24px 20px 40px" }}>
+      <div className="dashboard-content">
         <section className="dashboard-hero role-hero role-hero-accounting">
         <div className="dashboard-hero-copy">
           <div className="role-pill">Vai trò: Kế toán & báo cáo</div>

@@ -69,9 +69,9 @@ export default function StaffPage() {
   }
 
   return (
-    <main className="dashboard-page dashboard-staff-page" style={{ padding: 0 }}>
+    <main className="dashboard-page dashboard-staff-page">
       <CustomerHeader />
-      <div style={{ padding: "24px 20px 40px" }}>
+      <div className="dashboard-content">
         <section className="dashboard-hero role-hero role-hero-sales">
         <div className="dashboard-hero-copy">
           <div className="role-pill">Vai trò: Nhân viên bán hàng</div>

@@ -132,7 +132,7 @@ export default function CustomerHeader({
         </div>
       )}
 
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+      <div className="store-nav-actions">
         {auth?.role?.toLowerCase() === "customer" ? (
           <>
             <Link
