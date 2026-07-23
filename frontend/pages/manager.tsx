@@ -46,9 +46,9 @@ export default function ManagerPage() {
   }
 
   return (
-    <main className="dashboard-page dashboard-manager-page" style={{ padding: 0 }}>
+    <main className="dashboard-page dashboard-manager-page">
       <CustomerHeader />
-      <div style={{ padding: "24px 20px 40px" }}>
+      <div className="dashboard-content">
         <section className="dashboard-hero role-hero role-hero-warehouse">
         <div className="dashboard-hero-copy">
           <div className="role-pill">Vai trò: Quản lý kho</div>

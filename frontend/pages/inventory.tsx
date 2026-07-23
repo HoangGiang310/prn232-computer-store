@@ -193,6 +193,7 @@ export default function InventoryPage() {
                     <tr>
                       <th>Mã SP</th>
                       <th>Tên</th>
+                      <th>Phân loại</th>
                       <th>Hãng</th>
                       <th style={{ textAlign: "right" }}>Giá</th>
                       <th style={{ textAlign: "right" }}>Tồn kho</th>
