@@ -23,6 +23,19 @@ export default function ProductDetailPage() {
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [activeImage, setActiveImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (product) {
+      const mainImg =
+        product.images?.find((img) => img.isMain)?.imageUrl ||
+        product.images?.[0]?.imageUrl ||
+        null;
+      setActiveImage(mainImg);
+    } else {
+      setActiveImage(null);
+    }
+  }, [product]);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -121,19 +134,39 @@ export default function ProductDetailPage() {
             {product.images && product.images.length > 0 ? (
               <div style={{ display: "grid", gap: "12px" }}>
                 <img
-                  src={product.images.find((img) => img.isMain)?.imageUrl || product.images[0].imageUrl}
+                  src={activeImage || product.images.find((img) => img.isMain)?.imageUrl || product.images[0].imageUrl}
                   alt={product.name}
-                  style={{ width: "100%", maxHeight: "420px", objectFit: "contain", background: "#f8fafc", borderRadius: "12px" }}
+                  style={{ width: "100%", maxHeight: "420px", objectFit: "contain", background: "#f8fafc", borderRadius: "12px", border: "1px solid #e5e7eb" }}
                 />
                 <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                  {product.images.map((img) => (
-                    <img
-                      key={img.id}
-                      src={img.imageUrl}
-                      alt={product.name}
-                      style={{ width: "96px", height: "96px", objectFit: "cover", borderRadius: "8px", border: "1px solid #e5e7eb" }}
-                    />
-                  ))}
+                  {product.images.map((img) => {
+                    const isSelected = activeImage === img.imageUrl;
+                    return (
+                      <button
+                        key={img.id}
+                        type="button"
+                        onClick={() => setActiveImage(img.imageUrl)}
+                        style={{
+                          width: "96px",
+                          height: "96px",
+                          borderRadius: "8px",
+                          border: isSelected ? "2px solid #2563eb" : "1px solid #e5e7eb",
+                          padding: "2px",
+                          background: "#fff",
+                          cursor: "pointer",
+                          overflow: "hidden",
+                          transition: "all 0.2s"
+                        }}
+                        className="pdp-thumb-btn"
+                      >
+                        <img
+                          src={img.imageUrl}
+                          alt={product.name}
+                          style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "6px" }}
+                        />
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             ) : (
