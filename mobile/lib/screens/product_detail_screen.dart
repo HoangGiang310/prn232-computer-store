@@ -21,11 +21,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   List<dynamic> _reviews = [];
   bool _isLoadingReviews = true;
   String? _reviewError;
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
 
   @override
   void initState() {
     super.initState();
     _loadReviews();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadReviews() async {
@@ -145,7 +153,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Product Banner Image Container
+                  // Product Banner Image Container with PageView
                   Container(
                     width: double.infinity,
                     height: 220,
@@ -167,19 +175,61 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        if (widget.product.firstImageUrl.isNotEmpty)
+                        if (widget.product.imageUrls.isNotEmpty)
                           ClipRRect(
                             borderRadius: BorderRadius.circular(24),
-                            child: Image.network(
-                              widget.product.firstImageUrl,
-                              width: double.infinity,
-                              height: 220,
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => const Icon(Icons.computer_rounded, size: 86, color: Colors.white),
+                            child: PageView.builder(
+                              controller: _pageController,
+                              onPageChanged: (index) {
+                                setState(() {
+                                  _currentPage = index;
+                                });
+                              },
+                              itemCount: widget.product.imageUrls.length,
+                              itemBuilder: (context, index) {
+                                return Image.network(
+                                  widget.product.imageUrls[index],
+                                  width: double.infinity,
+                                  height: 220,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => const Icon(
+                                    Icons.computer_rounded,
+                                    size: 86,
+                                    color: Colors.white,
+                                  ),
+                                );
+                              },
                             ),
                           )
                         else
                           const Icon(Icons.computer_rounded, size: 86, color: Colors.white),
+
+                        // Indicators / Page Dots overlay inside the Banner
+                        if (widget.product.imageUrls.length > 1)
+                          Positioned(
+                            bottom: 14,
+                            left: 0,
+                            right: 0,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: List.generate(
+                                widget.product.imageUrls.length,
+                                (index) => AnimatedContainer(
+                                  duration: const Duration(milliseconds: 200),
+                                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                                  width: _currentPage == index ? 16 : 8,
+                                  height: 8,
+                                  decoration: BoxDecoration(
+                                    color: _currentPage == index
+                                        ? const Color(0xFFF04A24)
+                                        : Colors.white.withAlpha(150),
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
                         Positioned(
                           top: 14,
                           left: 14,
@@ -226,6 +276,59 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       ],
                     ),
                   ),
+
+                  // Thumbnails row below the banner
+                  if (widget.product.imageUrls.length > 1) ...[
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      height: 54,
+                      child: Center(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: widget.product.imageUrls.length,
+                          itemBuilder: (context, index) {
+                            final isSelected = _currentPage == index;
+                            return GestureDetector(
+                              onTap: () {
+                                _pageController.animateToPage(
+                                  index,
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut,
+                                );
+                              },
+                              child: Container(
+                                width: 54,
+                                height: 54,
+                                margin: const EdgeInsets.symmetric(horizontal: 5),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: isSelected
+                                        ? const Color(0xFFF04A24)
+                                        : const Color(0xFFE6E8EC),
+                                    width: isSelected ? 2 : 1.2,
+                                  ),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.network(
+                                    widget.product.imageUrls[index],
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, __, ___) => const Icon(
+                                      Icons.computer_rounded,
+                                      size: 24,
+                                      color: Color(0xFF6F7785),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 18),
 
                   // Title & Price Section Card
