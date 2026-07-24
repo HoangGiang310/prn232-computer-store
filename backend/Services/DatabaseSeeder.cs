@@ -17,10 +17,10 @@ namespace ComputerStoreApi.Services
 
         public void SeedAllData()
         {
-            // Đảm bảo database đã được tạo
-            //_context.Database.EnsureCreated();
-
-            _context.Database.Migrate();
+            Console.WriteLine("=== SEEDALLDATA: START ===");
+            try
+            {
+                _context.Database.Migrate();
 
             // 1. INSERT VAI TRÒ (ROLES)
             if (!_context.Roles.Any())
@@ -201,16 +201,60 @@ namespace ComputerStoreApi.Services
                 _context.Products.AddRange(products.Select(x => x.product));
                 _context.SaveChanges();
 
-                _context.ProductImages.AddRange(
-                    products.Select(x => new ProductImage
+                var productImagesToSeed = new List<ProductImage>();
+                foreach (var item in products)
+                {
+                    productImagesToSeed.Add(new ProductImage
                     {
-                        ProductId = x.product.Id,
-                        ImageUrl = x.image,
+                        ProductId = item.product.Id,
+                        ImageUrl = item.image,
                         IsMain = true
-                    })
-                );
+                    });
+
+                    var secondaryImages = GetSecondaryImagesForProductCode(item.product.ProductCode);
+                    foreach (var imgUrl in secondaryImages)
+                    {
+                        productImagesToSeed.Add(new ProductImage
+                        {
+                            ProductId = item.product.Id,
+                            ImageUrl = imgUrl,
+                            IsMain = false
+                        });
+                    }
+                }
+                _context.ProductImages.AddRange(productImagesToSeed);
                 _context.SaveChanges();
             }
+
+            // 4b. ĐẢM BẢO CÁC SẢN PHẨM CÓ ĐỦ HÌNH ẢNH MẪU ĐẸP
+            var existingProducts = _context.Products.Include(p => p.Images).ToList();
+            
+            // Xóa sạch ảnh cũ để nạp lại danh sách ảnh chính và phụ chuẩn Unsplash
+            _context.ProductImages.RemoveRange(_context.ProductImages);
+            _context.SaveChanges();
+
+            foreach (var p in existingProducts)
+            {
+                string mainImageUrl = GetMainImageUrlForProductCode(p.ProductCode);
+                _context.ProductImages.Add(new ProductImage
+                {
+                    ProductId = p.Id,
+                    ImageUrl = mainImageUrl,
+                    IsMain = true
+                });
+
+                var secondaryImages = GetSecondaryImagesForProductCode(p.ProductCode);
+                foreach (var imgUrl in secondaryImages)
+                {
+                    _context.ProductImages.Add(new ProductImage
+                    {
+                        ProductId = p.Id,
+                        ImageUrl = imgUrl,
+                        IsMain = false
+                    });
+                }
+            }
+            _context.SaveChanges();
 
             // 5. INSERT MÃ GIẢM GIÁ (VOUCHERS)
             if (!_context.Vouchers.Any())
@@ -369,6 +413,13 @@ namespace ComputerStoreApi.Services
                     _context.SaveChanges();
                 }
             }
+            Console.WriteLine("=== SEEDALLDATA: COMPLETED ===");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"=== SEEDALLDATA ERROR ===: {ex.Message}\n{ex.StackTrace}");
+                throw;
+            }
         }
 
         // Đảm bảo các tài khoản mẫu luôn tồn tại và đăng nhập được với mật khẩu "Password@123".
@@ -470,6 +521,121 @@ namespace ComputerStoreApi.Services
             {
                 _context.SaveChanges();
             }
+        }
+
+        private List<string> GetSecondaryImagesForProductCode(string productCode)
+        {
+            return productCode switch
+            {
+                "LAP-DELL-XPS13" => new List<string>
+                {
+                    "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&q=80",
+                    "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=800&q=80"
+                },
+                "LAP-MAC-M3AIR" => new List<string>
+                {
+                    "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800&q=80",
+                    "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&q=80"
+                },
+                "LAP-MAC-M3PRO16" => new List<string>
+                {
+                    "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&q=80",
+                    "https://images.unsplash.com/photo-1504707748692-419802cf939d?w=800&q=80"
+                },
+                "LAP-ASUS-ROG16" => new List<string>
+                {
+                    "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=80",
+                    "https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=800&q=80"
+                },
+                "LAP-ASUS-ZEN14" => new List<string>
+                {
+                    "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&q=80",
+                    "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&q=80"
+                },
+                "LAP-LENOVO-LEGION" => new List<string>
+                {
+                    "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=800&q=80",
+                    "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=80"
+                },
+                "LAP-LENOVO-X1" => new List<string>
+                {
+                    "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=800&q=80",
+                    "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&q=80"
+                },
+                "LAP-HP-SPECTRE" => new List<string>
+                {
+                    "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&q=80",
+                    "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&q=80"
+                },
+                "ACC-LOGI-MXMASTER" => new List<string>
+                {
+                    "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=800&q=80",
+                    "https://images.unsplash.com/photo-1625842268584-8f329044f501?w=800&q=80"
+                },
+                "ACC-KEY-KEYCHRON" => new List<string>
+                {
+                    "https://images.unsplash.com/photo-1595225476474-87563907a212?w=800&q=80",
+                    "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=800&q=80"
+                },
+                "ACC-LOGI-G502" => new List<string>
+                {
+                    "https://images.unsplash.com/photo-1527814050087-3793815479db?w=800&q=80",
+                    "https://images.unsplash.com/photo-1625842268584-8f329044f501?w=800&q=80"
+                },
+                "ACC-ASUS-ROG-STRIX" => new List<string>
+                {
+                    "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&q=80",
+                    "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=800&q=80"
+                },
+                "MON-ASUS-TUF27" => new List<string>
+                {
+                    "https://images.unsplash.com/photo-1547119957-637f8679db1e?w=800&q=80",
+                    "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=800&q=80"
+                },
+                "MON-DELL-U2724D" => new List<string>
+                {
+                    "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=800&q=80",
+                    "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=80"
+                },
+                "ACC-HYPERX-CLOUD" => new List<string>
+                {
+                    "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=800&q=80",
+                    "https://images.unsplash.com/photo-1487215078519-e21cc028cb29?w=800&q=80"
+                },
+                _ => new List<string>
+                {
+                    "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&q=80",
+                    "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=800&q=80"
+                }
+            };
+        }
+
+        private string GetMainImageUrlForProductCode(string productCode)
+        {
+            return productCode switch
+            {
+                "LAP-DELL-XPS13" => "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=800&q=80",
+                "LAP-MAC-M3AIR" => "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&q=80",
+                "LAP-MAC-M3PRO16" => "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800&q=80",
+                "LAP-ASUS-ROG16" => "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=800&q=80",
+                "LAP-ASUS-ZEN14" => "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&q=80",
+                "LAP-LENOVO-LEGION" => "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=800&q=80",
+                "LAP-LENOVO-X1" => "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&q=80",
+                "LAP-HP-SPECTRE" => "https://images.unsplash.com/photo-1602080858428-57174f9431cf?w=800&q=80",
+                "LAP-ACER-SWIFT" => "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=800&q=80",
+                "LAP-MSI-KATANA" => "https://images.unsplash.com/photo-1542393545-10f5cde2c810?w=800&q=80",
+                "ACC-LOGI-MXMASTER" => "https://images.unsplash.com/photo-1527814050087-3793815479db?w=800&q=80",
+                "ACC-KEY-KEYCHRON" => "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&q=80",
+                "ACC-LOGI-G502" => "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=800&q=80",
+                "ACC-ASUS-ROG-STRIX" => "https://images.unsplash.com/photo-1595225476474-87563907a212?w=800&q=80",
+                "ACC-LAP-STAND" => "https://images.unsplash.com/photo-1616440347437-b1c73416efc2?w=800&q=80",
+                "MON-ASUS-TUF27" => "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=800&q=80",
+                "MON-DELL-U2724D" => "https://images.unsplash.com/photo-1547119957-637f8679db1e?w=800&q=80",
+                "ACC-HYPERX-CLOUD" => "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=800&q=80",
+                "COM-VGA-RTX4070" => "https://images.unsplash.com/photo-1591488320449-011701bb6704?w=800&q=80",
+                "COM-SSD-SAMSUNG" => "https://images.unsplash.com/photo-1628546098751-a14c000c0f4f?w=800&q=80",
+                _ => "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=800&q=80"
+            };
         }
     }
 }
