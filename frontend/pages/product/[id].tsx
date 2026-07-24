@@ -85,6 +85,19 @@ export default function ProductDetailPage() {
   const [formSuccess, setFormSuccess] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [cartMessage, setCartMessage] = useState("");
+  const [activeImage, setActiveImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (product) {
+      const mainImg =
+        product.images?.find((i: any) => i.isMain)?.imageUrl ||
+        product.images?.[0]?.imageUrl ||
+        null;
+      setActiveImage(mainImg);
+    } else {
+      setActiveImage(null);
+    }
+  }, [product]);
 
   useEffect(() => {
     const auth = getAuth();
@@ -324,17 +337,51 @@ export default function ProductDetailPage() {
 
       <section className="card">
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24 }}>
-          <div className="pdp-gallery">
-            {(() => {
-              const img =
-                product?.images?.find((i: any) => i.isMain)?.imageUrl ||
-                product?.images?.[0]?.imageUrl;
-              return img ? (
-                <img src={img} alt={product?.name} className="pdp-image" />
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <div className="pdp-gallery">
+              {activeImage ? (
+                <img
+                  src={activeImage}
+                  alt={product?.name}
+                  className="pdp-image"
+                  style={{ objectFit: "contain", background: "#f8fafc" }}
+                />
               ) : (
                 <div className="pdp-image-fallback">💻</div>
-              );
-            })()}
+              )}
+            </div>
+            {product?.images && product.images.length > 1 && (
+              <div style={{ display: "flex", gap: "10px", overflowX: "auto", padding: "4px 2px" }}>
+                {product.images.map((img: any) => {
+                  const isSelected = activeImage === img.imageUrl;
+                  return (
+                    <button
+                      key={img.id}
+                      onClick={() => setActiveImage(img.imageUrl)}
+                      style={{
+                        width: "70px",
+                        height: "70px",
+                        borderRadius: "8px",
+                        border: isSelected ? "2px solid var(--ui-brand)" : "1px solid var(--ui-border)",
+                        padding: "2px",
+                        background: "#fff",
+                        cursor: "pointer",
+                        overflow: "hidden",
+                        flexShrink: 0,
+                        boxShadow: isSelected ? "0 0 0 2px rgba(233, 75, 44, 0.2)" : "none",
+                      }}
+                      className="pdp-thumb-btn"
+                    >
+                      <img
+                        src={img.imageUrl}
+                        alt="Product thumbnail"
+                        style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "6px" }}
+                      />
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
           <div>
             <h2>Thông tin sản phẩm</h2>
